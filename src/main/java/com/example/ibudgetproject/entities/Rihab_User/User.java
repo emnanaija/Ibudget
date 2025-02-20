@@ -134,7 +134,11 @@ public class User implements UserDetails, Principal {
         this.userId = userId;
     }
 
-    //rayen rs
+
+
+
+
+    //rayen ----------------------------------------------------------------------------------------------------------
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private SimCardAccount simCardAccount;
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -167,4 +171,12 @@ public class User implements UserDetails, Principal {
     public void setReceivedTransactions(List<SimCardTransactions> receivedTransactions) {
         this.receivedTransactions = receivedTransactions;
     }
+    @Column(unique = true,nullable = false)
+    @JsonProperty("phoneNumber")
+    private String phoneNumber;
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+
 }
