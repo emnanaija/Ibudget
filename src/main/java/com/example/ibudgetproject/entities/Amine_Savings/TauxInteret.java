@@ -1,4 +1,4 @@
-package com.example.ibudgetproject.entities;
+package com.example.ibudgetproject.entities.Amine_Savings;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;

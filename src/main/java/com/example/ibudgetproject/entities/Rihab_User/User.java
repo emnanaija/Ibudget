@@ -1,6 +1,9 @@
-package com.example.ibudgetproject.entities;
+package com.example.ibudgetproject.entities.Rihab_User;
 
+import com.example.ibudgetproject.entities.Rayen_Transactions.SimCardAccount;
+import com.example.ibudgetproject.entities.Rayen_Transactions.SimCardTransactions;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,6 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,7 +32,7 @@ import java.util.Collections;
 public class User implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    private Long userId;
     @JsonProperty("firstName")
     private String firstName ;
     @JsonProperty("lastName")
@@ -122,13 +126,45 @@ public class User implements UserDetails, Principal {
         return firstName+" "+lastName;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
 
-
-
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     //rayen rs
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "sim_card_id", unique = true, nullable = false)
-    private SimCardAccount simCardAccount ;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private SimCardAccount simCardAccount;
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<SimCardTransactions> sentTransactions;
+    @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<SimCardTransactions> receivedTransactions;
 
+    public SimCardAccount getSimCardAccount() {
+        return simCardAccount;
+    }
+
+    public void setSimCardAccount(SimCardAccount simCardAccount) {
+        this.simCardAccount = simCardAccount;
+    }
+
+    public List<SimCardTransactions> getSentTransactions() {
+        return sentTransactions;
+    }
+
+    public void setSentTransactions(List<SimCardTransactions> sentTransactions) {
+        this.sentTransactions = sentTransactions;
+    }
+
+    public List<SimCardTransactions> getReceivedTransactions() {
+        return receivedTransactions;
+    }
+
+    public void setReceivedTransactions(List<SimCardTransactions> receivedTransactions) {
+        this.receivedTransactions = receivedTransactions;
+    }
 }

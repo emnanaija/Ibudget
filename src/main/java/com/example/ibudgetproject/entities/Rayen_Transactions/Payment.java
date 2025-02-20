@@ -1,4 +1,4 @@
-package com.example.ibudgetproject.entities;
+package com.example.ibudgetproject.entities.Rayen_Transactions;
 
 
 import jakarta.persistence.*;

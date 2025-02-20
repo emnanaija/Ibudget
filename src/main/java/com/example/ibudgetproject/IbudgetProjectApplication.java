@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@EntityScan(basePackages = "com.example.ibudgetproject.entities")
 @SpringBootApplication
+@EntityScan(basePackages = "com.example.ibudgetproject.entities")
 public class IbudgetProjectApplication {
 
     public static void main(String[] args) {

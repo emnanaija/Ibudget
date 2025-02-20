@@ -1,13 +1,11 @@
-package com.example.ibudgetproject.entities;
+package com.example.ibudgetproject.entities.Rayen_Transactions;
 
-
+import com.example.ibudgetproject.entities.Rihab_User.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
-import com.example.ibudgetproject.entities.User;
 
 import java.time.LocalDateTime;
-
 
 @Entity
 @Data
@@ -18,21 +16,36 @@ public class SimCardTransactions {
     private long idTransaction;
 
     private double amount;
+
     @Enumerated(EnumType.ORDINAL)
     private TransactionType transactionType;
+
     private String status;
     private String refNum;
     private String desc;
     private LocalDateTime transactionDate = LocalDateTime.now();
 
+    @ManyToOne
+    @JoinColumn(name = "sim_card_id", nullable = false)
+    @JsonBackReference
+    private SimCardAccount simCardAccount;
 
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private User sender;
 
-    //getters w setters lin ythal lombok
-    public Long getIdTransaction() {
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private User receiver;
+
+    @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
+    private Payment payment;
+
+    public long getIdTransaction() {
         return idTransaction;
     }
 
-    public void setIdTransaction(Long idTransaction) {
+    public void setIdTransaction(long idTransaction) {
         this.idTransaction = idTransaction;
     }
 
@@ -116,22 +129,21 @@ public class SimCardTransactions {
         this.payment = payment;
     }
 
-    //relations
-    @ManyToOne
-    @JoinColumn(name = "sim_card_id")
-    @JsonBackReference
-    private SimCardAccount simCardAccount;
 
-    @ManyToOne
-    @JoinColumn(name = "sender_id", nullable = false)
-    private User sender;
-
-    @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
-    private User receiver;
-
-    @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
-    private Payment payment;
-
+//    CREATE TABLE sim_card_transactions (
+//            id_transaction BIGINT AUTO_INCREMENT PRIMARY KEY,
+//            amount DOUBLE NOT NULL,
+//            transaction_type INT NOT NULL,
+//            status VARCHAR(255),
+//    ref_num VARCHAR(255),
+//    description TEXT,
+//    transaction_date DATETIME NOT NULL,
+//    sim_card_id BIGINT NOT NULL,
+//    sender_id INT NOT NULL,
+//    receiver_id INT NOT NULL,
+//    FOREIGN KEY (sim_card_id) REFERENCES sim_card_account(sim_card_id),
+//    FOREIGN KEY (sender_id) REFERENCES _users(user_id),
+//    FOREIGN KEY (receiver_id) REFERENCES _users(user_id)
+//            );
 
 }

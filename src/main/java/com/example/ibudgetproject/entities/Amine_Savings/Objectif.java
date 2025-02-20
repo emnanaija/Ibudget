@@ -1,4 +1,4 @@
-package com.example.ibudgetproject.entities;
+package com.example.ibudgetproject.entities.Amine_Savings;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;

@@ -1,6 +1,5 @@
-package com.example.ibudgetproject.entities;
+package com.example.ibudgetproject.entities.Rihab_User;
 
-import com.example.ibudgetproject.entities.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
