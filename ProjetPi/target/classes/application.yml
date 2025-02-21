@@ -1,0 +1,63 @@
+server:
+  port: 8081
+
+
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    check-template-location: true
+    enabled: true
+    mode: HTML
+    encoding: UTF-8
+    cache: false
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: contactibudget@gmail.com
+    password: xxhe ckox vmsv ilqi
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+  jmx:
+    enabled: true
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/ibudget?createDatabaseIfNotExist=true
+    username: root
+    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: mysql
+    show-sql: true
+
+#
+#  mvc:
+#    log-request-details: true
+
+logging:
+  level:
+    org:
+      springframework:
+        web:
+          debug
+
+
+
+
+
+
+
+
+
+
+
+
+

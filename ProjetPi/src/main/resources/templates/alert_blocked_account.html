@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔑 Account Blocked Alert</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 5px solid red;
+        }
+        h1 {
+            color: #000;
+            font-size: 26px;
+            font-weight: 600;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .activation-link {
+            font-size: 16px;
+            color: red;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        .activation-link:hover {
+            text-decoration: underline;
+            color: darkred;
+        }
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 25px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="icon">⛔</div>
+    <h1>🚨 Account Blocked Alert</h1>
+    <p class="greeting" th:text="'Hello ' + ${userName} + ','"></p>
+    <p>Your account has been temporarily locked for security reasons due to multiple unsuccessful login attempts.</p>
+    <p>To regain access, please request a new activation code by clicking on the link below:</p>
+    <a th:href="${null}"  class="activation-link">🔓Regain Access</a>
+    <p class="footer">🔐 Need help? Contact our support team.</p>
+</div>
+</body>
+</html>
