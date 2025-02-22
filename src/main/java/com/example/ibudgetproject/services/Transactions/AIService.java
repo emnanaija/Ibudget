@@ -8,6 +8,7 @@ import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.reflect.TypeToken;
@@ -232,51 +233,59 @@ public class AIService {
      */
     private String extractGeneratedText(String jsonResponse) {
         try {
-            // Log the raw response for debugging
             System.out.println("Raw API Response: " + jsonResponse);
 
-            // Parse the response as a JSON object
+            if (jsonResponse == null || jsonResponse.trim().isEmpty()) {
+                return "API Error: Empty response.";
+            }
+
+            // Parse the entire API response
             Type responseType = new TypeToken<Map<String, Object>>() {}.getType();
             Map<String, Object> responseBody = GSON.fromJson(jsonResponse, responseType);
 
-            // Check if the response contains the expected structure
             if (responseBody.containsKey("candidates")) {
                 List<Map<String, Object>> candidates = (List<Map<String, Object>>) responseBody.get("candidates");
                 if (!candidates.isEmpty()) {
                     Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
                     if (content != null && content.containsKey("parts")) {
-                        List<Map<String, String>> parts = (List<Map<String, String>>) content.get("parts");
+                        List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
                         if (!parts.isEmpty()) {
-                            String text = parts.get(0).get("text");
+                            String text = (String) parts.get(0).get("text");
 
-                            // Handle text that contains a JSON code block
-                            if (text != null && text.contains("```json")) {
-                                // Extract the JSON object from the code block
-                                text = text.replace("```json", "").replace("```", "").trim();
-                            }
-
-                            // Handle text that contains embedded JSON
+                            // Extract the JSON object from the text
                             if (text != null && text.contains("{")) {
-                                // Extract the JSON object from the text
                                 int jsonStart = text.indexOf("{");
                                 int jsonEnd = text.lastIndexOf("}") + 1;
-                                text = text.substring(jsonStart, jsonEnd).trim();
-                            }
+                                String jsonString = text.substring(jsonStart, jsonEnd).trim();
 
-                            // Parse the extracted JSON object
-                            Type messageType = new TypeToken<Map<String, String>>() {}.getType();
-                            Map<String, String> messageMap = GSON.fromJson(text, messageType);
-                            return messageMap.get("message");
+                                // Parse the extracted JSON object
+                                Type messageType = new TypeToken<Map<String, String>>() {}.getType();
+                                Map<String, String> messageMap = GSON.fromJson(jsonString, messageType);
+                                return messageMap.get("message");
+                            } else {
+                                return "API Error: Message not found in response.";
+                            }
+                        } else {
+                            return "API Error: No parts found in response.";
                         }
+                    } else {
+                        return "API Error: No content found in response.";
                     }
+                } else {
+                    return "API Error: No candidates found in response.";
                 }
+            } else {
+                return "API Error: Invalid response structure.";
             }
 
-            // If the response doesn't contain the expected structure, return an error message
-            return "API Error: Unexpected JSON structure in response.";
+        } catch (JsonSyntaxException e) {
+            System.err.println("JSON Syntax Error: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
+            return "API Error: Invalid JSON syntax. Details: " + e.getMessage();
+        } catch (NullPointerException e) {
+            System.err.println("Null Pointer Exception: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
+            return "API Error: Null pointer exception. Details: " + e.getMessage();
         } catch (Exception e) {
-            // Log the exception for debugging
-            System.err.println("Error parsing API response: " + e.getMessage());
+            System.err.println("Error parsing API response: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
             return "API Error: Failed to parse response. Details: " + e.getMessage();
         }
     }

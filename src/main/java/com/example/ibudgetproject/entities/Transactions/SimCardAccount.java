@@ -2,6 +2,7 @@ package com.example.ibudgetproject.entities.Transactions;
 
 import com.example.ibudgetproject.entities.User.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
@@ -36,7 +37,7 @@ public class SimCardAccount {
 
     @OneToOne
     @JoinColumn(name = "user_id", unique = true, nullable = false)
-    @JsonBackReference
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "simCardAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -44,6 +45,7 @@ public class SimCardAccount {
     private List<SimTransactions> transactions;
 
     @OneToMany(mappedBy = "simCardAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<RechargeCard> rechargeCards;
 
     @PrePersist

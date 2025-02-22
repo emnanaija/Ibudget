@@ -1,6 +1,7 @@
 package com.example.ibudgetproject.entities.Transactions;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -110,6 +111,7 @@ public class Payment {
     //relations
     @OneToOne
     @JoinColumn(name = "transaction_id", nullable = false)
+    @JsonBackReference
     private SimTransactions transaction;
 
     @ManyToOne

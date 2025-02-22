@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,26 @@ public class SimCardTransactionService implements ISimCardTransactionService {
 
     @Autowired
     private SimCardAccountRepository simCardAccountRepository;
+
+    //---------------------Advenced_transactions---------------------------------------
+    @Autowired
+    private AdvancedTransactionService advancedTransactionService;
+    public SimTransactions scheduleTransaction(SimTransactions transaction, LocalDateTime scheduledTime) {
+        return advancedTransactionService.scheduleTransaction(transaction, scheduledTime);
+    }
+
+    public List<SimTransactions> scheduleRecurringTransaction(SimTransactions transaction, LocalDateTime startTime, int intervalDays, int numberOfRepetitions) {
+        return advancedTransactionService.scheduleRecurringTransaction(transaction, startTime, intervalDays, numberOfRepetitions);
+    }
+
+    public SimTransactions conditionalTransaction(SimTransactions transaction, double balanceThreshold) {
+        return advancedTransactionService.conditionalTransaction(transaction, balanceThreshold);
+    }
+
+    public List<SimTransactions> batchTransactions(List<SimTransactions> transactions) {
+        return advancedTransactionService.batchTransactions(transactions);
+    }
+    //-----------------------------------------------------------------------------
 
     @Override
     public List<SimTransactions> getAllTransactions() {

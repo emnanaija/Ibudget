@@ -1,6 +1,7 @@
 package com.example.ibudgetproject.entities.Transactions;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -73,5 +74,6 @@ public class RechargeCard {
 
     @ManyToOne
     @JoinColumn(name = "sim_card_id")
+    @JsonBackReference
     private SimCardAccount simCardAccount;
 }

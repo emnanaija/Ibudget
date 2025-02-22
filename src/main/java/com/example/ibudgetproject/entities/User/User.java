@@ -50,7 +50,7 @@ public class User implements UserDetails, Principal {
     private String profession;
     private Boolean accountLocked ;
     private int failedAttempts = 0;
-    private Boolean accountEnabled  ;
+    private boolean  accountEnabled  ;
 
     @Enumerated(EnumType.STRING)
     private TypeAccount accountType;
@@ -142,10 +142,8 @@ public class User implements UserDetails, Principal {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private SimCardAccount simCardAccount;
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<SimTransactions> sentTransactions;
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<SimTransactions> receivedTransactions;
 
     public SimCardAccount getSimCardAccount() {
