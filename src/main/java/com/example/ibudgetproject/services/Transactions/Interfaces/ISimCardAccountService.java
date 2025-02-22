@@ -5,6 +5,7 @@ import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface ISimCardAccountService {
@@ -24,7 +25,7 @@ public interface ISimCardAccountService {
     List<SimTransactions> getTransactionsByUser(Long userId);
 
     // Monte Carlo Predictions
-    double[] predictTransactionVolumes(Long simCardId, int numFutureMonths);
+    Map<String, Object> predictTransactionVolumes(Long simCardId, int numFutureMonths);
 
     double optimizeBudget(Long simCardId, double totalBudget);
 }

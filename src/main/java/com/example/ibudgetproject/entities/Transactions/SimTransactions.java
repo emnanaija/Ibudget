@@ -2,6 +2,7 @@ package com.example.ibudgetproject.entities.Transactions;
 
 import com.example.ibudgetproject.entities.User.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
@@ -17,16 +18,21 @@ import java.time.LocalDateTime;
 public class SimTransactions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private long idTransaction;
-
+    @Expose
     private double amount;
-
+    @Expose
     @Enumerated(EnumType.ORDINAL)
     private TransactionType transactionType;
-
+    @Expose
     private String status;
+    @Expose
     private String refNum;
+    @Expose
     private String descreption;
+    @Column(name = "transaction_date",nullable = true)
+    @Expose
     private LocalDateTime transactionDate = LocalDateTime.now();
 
     @ManyToOne

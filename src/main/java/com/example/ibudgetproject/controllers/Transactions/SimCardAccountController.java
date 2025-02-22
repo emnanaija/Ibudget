@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -37,7 +38,7 @@ public class    SimCardAccountController {
     }
 
     @GetMapping("/{simCardId}/predictTransactionVolumes")
-    public double[] predictTransactionVolumes(
+    public Map<String, Object> predictTransactionVolumes(
             @PathVariable Long simCardId,
             @RequestParam int numFutureMonths) {
         return simCardAccountService.predictTransactionVolumes(simCardId, numFutureMonths);

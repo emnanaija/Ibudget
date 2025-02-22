@@ -3,6 +3,7 @@ package com.example.ibudgetproject.entities.Transactions;
 import com.example.ibudgetproject.entities.User.User;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,15 +21,17 @@ import java.util.List;
 public class SimCardAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Expose
     private long simCardId;
-
+    @Expose
     @Column(nullable = false)
     private double balance = 0.0;
-
+    @Expose
     @Column(nullable = false)
     private String currency = "TND";
-
+    @Expose
     private LocalDateTime createdAt;
+    @Expose
     private LocalDateTime updatedAt;
 
     @OneToOne

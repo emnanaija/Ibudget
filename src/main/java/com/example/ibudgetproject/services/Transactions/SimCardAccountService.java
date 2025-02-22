@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -105,7 +106,7 @@ public class SimCardAccountService implements ISimCardAccountService {
     }
 
 
-    public double[] predictTransactionVolumes(Long simCardId, int numFutureMonths) {
+    public Map<String, Object> predictTransactionVolumes(Long simCardId, int numFutureMonths) {
         SimCardAccount account = simCardAccountRepository.findById(simCardId)
                 .orElseThrow(() -> new RuntimeException("Account not found with id: " + simCardId));
         return monteCarloService.predictTransactionVolumes(account, numFutureMonths);
