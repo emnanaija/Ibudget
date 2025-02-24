@@ -1,6 +1,5 @@
 package com.example.ibudgetproject.services;
 
-
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
 import com.example.ibudgetproject.services.Transactions.AIService;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -18,18 +18,21 @@ public class MonteCarloService {
     @Autowired
     private AIService aiService;
 
-
-
-    //function to predict volum of transactions
-    public double[] predictTransactionVolumes(SimCardAccount account, int numFutureMonths) {
+    public Map<String, Object> predictTransactionVolumes(SimCardAccount account, int numFutureMonths) {
         List<SimTransactions> transactions = account.getTransactions();
         Random random = new Random();
         double[] forecastedVolumes = new double[numFutureMonths];
 
-        transactions = aiService.cleanData(transactions);
-        double[] optimizedParams = aiService.analyzeTransactionParameters(transactions);
-        double avgVolume = optimizedParams[0];
-        double stdDevVolume = optimizedParams[1];
+        // 1. AI-Powered Data Cleaning
+        Map<String, Object> cleanedDataResult = aiService.cleanData(transactions);
+        List<SimTransactions> cleanedTransactions = (List<SimTransactions>) cleanedDataResult.get("cleanedTransactions");
+        String cleaningMessage = (String) cleanedDataResult.get("message");
+
+        // 2. AI-Powered Parameter Analysis
+        Map<String, Object> analysisResult = aiService.analyzeTransactionParameters(cleanedTransactions);
+        double avgVolume = (double) analysisResult.get("average");
+        double stdDevVolume = (double) analysisResult.get("stdDev");
+        String analysisMessage = (String) analysisResult.get("message");
 
         for (int month = 0; month < numFutureMonths; month++) {
             double totalVolume = 0.0;
@@ -40,34 +43,32 @@ public class MonteCarloService {
             forecastedVolumes[month] = totalVolume / NUM_SIMULATIONS;
         }
 
-        // AI insights
-        String insights = aiService.analyzeResults(forecastedVolumes);
-        System.out.println("AI Insights: " + insights);
+        // 3. AI-Powered Result Interpretation
+        Map<String, Object> forecastResult = aiService.analyzeResults(forecastedVolumes);
+        String forecastMessage = (String) forecastResult.get("message");
 
-        // Display prediction with insights
-        for (int i = 0; i < numFutureMonths; i++) {
-            System.out.println("Month " + (i + 1) + ": " + forecastedVolumes[i] + " - " + insights);
-        }
+        // Build the response map
+        Map<String, Object> response = new java.util.HashMap<>();
+        response.put("forecastedVolumes", forecastedVolumes);
+        response.put("cleaningMessage", cleaningMessage);
+        response.put("analysisMessage", analysisMessage);
+        response.put("forecastMessage", forecastMessage);
 
-        return forecastedVolumes;
+        return response;
     }
-
-
-
 
     public double optimizeBudget(SimCardAccount account, double totalBudget) {
         List<SimTransactions> transactions = account.getTransactions();
         Random random = new Random();
 
-        // Calculate historical average and standard deviation
-        double avgAmount = transactions.stream()
-                .mapToDouble(SimTransactions::getAmount)
-                .average()
-                .orElse(0.0);
-        double stdDevAmount = Math.sqrt(transactions.stream()
-                .mapToDouble(t -> Math.pow(t.getAmount() - avgAmount, 2))
-                .average()
-                .orElse(0.0));
+        // 1. AI-Powered Data Cleaning
+        Map<String, Object> cleanedDataResult = aiService.cleanData(transactions);
+        List<SimTransactions> cleanedTransactions = (List<SimTransactions>) cleanedDataResult.get("cleanedTransactions");
+
+        // 2. AI-Powered Parameter Analysis
+        Map<String, Object> analysisResult = aiService.analyzeTransactionParameters(cleanedTransactions);
+        double avgAmount = (double) analysisResult.get("average");
+        double stdDevAmount = (double) analysisResult.get("stdDev");
 
         // Monte Carlo simulations for budget allocation
         double bestAllocation = 0.0;
@@ -77,7 +78,7 @@ public class MonteCarloService {
             double allocation = random.nextDouble() * totalBudget;
             double totalSpending = 0.0;
 
-            for (SimTransactions transaction : transactions) {
+            for (SimTransactions transaction : cleanedTransactions) {
                 double simulatedAmount = avgAmount + random.nextGaussian() * stdDevAmount;
                 totalSpending += Math.min(simulatedAmount, allocation);
             }

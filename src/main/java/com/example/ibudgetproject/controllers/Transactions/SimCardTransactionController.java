@@ -5,9 +5,11 @@ import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
 import com.example.ibudgetproject.services.Transactions.Interfaces.ISimCardTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,8 +50,7 @@ public class SimCardTransactionController {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
     }
-<<<<<<< Updated upstream
-=======
+
 
 
     //----------------------------advanced_transactions---------------------------------------
@@ -95,5 +96,4 @@ public class SimCardTransactionController {
         List<SimTransactions> batch = transactionService.batchTransactions(transactions);
         return ResponseEntity.ok(batch);
     }
->>>>>>> Stashed changes
 }

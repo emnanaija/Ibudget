@@ -7,67 +7,92 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
-<<<<<<< Updated upstream
-=======
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
->>>>>>> Stashed changes
 import com.google.gson.reflect.TypeToken;
-
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class AIService {
 
-
-    //import the api key for gemini +url (url+key will be sent to gemini + prompt msg )
     @Value("${gemini.api.key}")
     private String apiKey;
     private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new GsonFactory();
-    private static final Gson GSON = new Gson();
 
+    private static final Gson GSON = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation() // Only serialize fields with @Expose
+            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+            .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
+            .create();
 
-    //---------------------------------Rayen/Transactions---------------------------------------------------------------------------
+    public static class LocalDateTimeAdapter extends TypeAdapter<LocalDateTime> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-
-
-    // assited data cleaning and fix
-    public List<SimTransactions> cleanData(List<SimTransactions> transactions) {
-        String prompt = "Analyze the following transactions and identify outliers: " + transactions.toString();
-        String aiResponse = generateMessage(prompt);
-        return transactions;
-    }
-
-    //assisted transaction analysis
-    public double[] analyzeTransactionParameters(List<SimTransactions> transactions) {
-        String prompt = "Analyze the following transactions and predict future averages and standard deviations: " + transactions.toString();
-        String aiResponse = generateMessage(prompt);
-        return new double[]{100.0, 15.0};
-    }
-<<<<<<< Updated upstream
-//assisted results
-    public String analyzeResults(double[] forecastedVolumes) {
-        double avg = 0;
-        for (double volume : forecastedVolumes) {
-            avg += volume;
+        @Override
+        public void write(JsonWriter out, LocalDateTime value) throws IOException {
+            if (value == null) {
+                out.nullValue();
+            } else {
+                out.value(formatter.format(value));
+            }
         }
-        avg /= forecastedVolumes.length;
-=======
+
+        @Override
+        public LocalDateTime read(JsonReader in) throws IOException {
+            if (in.peek() == com.google.gson.stream.JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            } else {
+                String dateString = in.nextString();
+                return LocalDateTime.parse(dateString, formatter);
+            }
+        }
+    }
+
+    public static class LocalDateAdapter extends TypeAdapter<LocalDate> {
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+
+        @Override
+        public void write(JsonWriter out, LocalDate value) throws IOException {
+            if (value == null) {
+                out.nullValue();
+            } else {
+                out.value(formatter.format(value));
+            }
+        }
+
+        @Override
+        public LocalDate read(JsonReader in) throws IOException {
+            if (in.peek() == com.google.gson.stream.JsonToken.NULL) {
+                in.nextNull();
+                return null;
+            } else {
+                String dateString = in.nextString();
+                return LocalDate.parse(dateString, formatter);
+            }
+        }
+    }
 
 
     public Map<String, Object> analyzeResults(double[] forecastedVolumes) {
         double avg = Arrays.stream(forecastedVolumes).average().orElse(0.0);
->>>>>>> Stashed changes
 
         String evaluation;
         if (avg > 500) {
@@ -78,16 +103,27 @@ public class AIService {
             evaluation = "Low transaction volume. You may need to adjust budget expectations.";
         }
 
-        String prompt = "Analyze the following forecasted transaction volumes and provide insights explain it like am 5 years old and use emojis: " + GSON.toJson(forecastedVolumes) +
-                ". based on trends, offer financial advice make it short and simple : " + evaluation;
+        String prompt = "Analyze the following forecasted transaction volumes and provide insights. " +
+                "Explain it like I'm 5 years old and use emojis: " + GSON.toJson(forecastedVolumes) +
+                ". Based on trends, offer financial advice (make it short and simple): " + evaluation +
+                " Return a JSON object: {\"message\": \"Insights and advice\"}.";
+        String aiResponse = generateMessage(prompt);
 
-        return generateMessage(prompt);
+        try {
+            Type responseType = new TypeToken<Map<String, String>>() {}.getType();
+            Map<String, String> responseMap = GSON.fromJson(aiResponse, responseType);
+            String message = responseMap.get("message");
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", message);
+            return result;
+        } catch (Exception e) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("message", "Error processing AI response: " + e.getMessage());
+            return result;
+        }
     }
-//-----------------------------------------------------------------------------------------------------------------
 
-<<<<<<< Updated upstream
-    // ai api call to generate message + prompt + timeout to avoid long waiting time
-=======
 
     public Map<String, Object> cleanData(List<SimTransactions> transactions) {
         String prompt = "Analyze the following transactions and identify outliers. " +
@@ -155,7 +191,6 @@ public class AIService {
     }
 
 
->>>>>>> Stashed changes
     public String generateMessage(String prompt) {
         try {
             Map<String, Object> requestBody = new HashMap<>();
@@ -172,18 +207,28 @@ public class AIService {
             request.setReadTimeout(15000);
 
             HttpResponse response = request.execute();
-            return extractGeneratedText(response.parseAsString());
+            String rawResponse = response.parseAsString();
+            System.out.println("Raw API Response: " + rawResponse); // Log the raw response
+
+            if (response.getStatusCode() != 200) {
+                return "API Error: " + rawResponse; // Handle non-200 responses
+            }
+
+            return extractGeneratedText(rawResponse);
         } catch (IOException e) {
             throw new RuntimeException("Error calling Gemini API: " + e.getMessage(), e);
         }
     }
 
-<<<<<<< Updated upstream
-    //extract text from the generated ai output
-=======
->>>>>>> Stashed changes
     private String extractGeneratedText(String jsonResponse) {
         try {
+            System.out.println("Raw API Response: " + jsonResponse);
+
+            if (jsonResponse == null || jsonResponse.trim().isEmpty()) {
+                return "API Error: Empty response.";
+            }
+
+            // Parse the entire API response
             Type responseType = new TypeToken<Map<String, Object>>() {}.getType();
             Map<String, Object> responseBody = GSON.fromJson(jsonResponse, responseType);
 
@@ -192,14 +237,45 @@ public class AIService {
                 if (!candidates.isEmpty()) {
                     Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
                     if (content != null && content.containsKey("parts")) {
-                        List<Map<String, String>> parts = (List<Map<String, String>>) content.get("parts");
-                        return parts.get(0).get("text");
+                        List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
+                        if (!parts.isEmpty()) {
+                            String text = (String) parts.get(0).get("text");
+
+                            // Extract the JSON object from the text
+                            if (text != null && text.contains("{")) {
+                                int jsonStart = text.indexOf("{");
+                                int jsonEnd = text.lastIndexOf("}") + 1;
+                                String jsonString = text.substring(jsonStart, jsonEnd).trim();
+
+                                // Parse the extracted JSON object
+                                Type messageType = new TypeToken<Map<String, String>>() {}.getType();
+                                Map<String, String> messageMap = GSON.fromJson(jsonString, messageType);
+                                return messageMap.get("message");
+                            } else {
+                                return "API Error: Message not found in response.";
+                            }
+                        } else {
+                            return "API Error: No parts found in response.";
+                        }
+                    } else {
+                        return "API Error: No content found in response.";
                     }
+                } else {
+                    return "API Error: No candidates found in response.";
                 }
+            } else {
+                return "API Error: Invalid response structure.";
             }
+
+        } catch (JsonSyntaxException e) {
+            System.err.println("JSON Syntax Error: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
+            return "API Error: Invalid JSON syntax. Details: " + e.getMessage();
+        } catch (NullPointerException e) {
+            System.err.println("Null Pointer Exception: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
+            return "API Error: Null pointer exception. Details: " + e.getMessage();
         } catch (Exception e) {
-            throw new RuntimeException("Failed to parse Gemini API response: " + e.getMessage(), e);
+            System.err.println("Error parsing API response: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
+            return "API Error: Failed to parse response. Details: " + e.getMessage();
         }
-        return "No response generated.";
     }
 }
