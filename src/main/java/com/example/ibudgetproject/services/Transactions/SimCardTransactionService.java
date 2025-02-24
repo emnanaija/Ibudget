@@ -27,6 +27,34 @@ public class SimCardTransactionService implements ISimCardTransactionService {
     @Autowired
     private SimCardAccountRepository simCardAccountRepository;
 
+<<<<<<< Updated upstream
+=======
+    //---------------------Advenced_transactions---------------------------------------
+    @Autowired
+    private AdvancedTransactionService advancedTransactionService;
+    public SimTransactions scheduleTransaction(SimTransactions transaction, LocalDateTime scheduledTime) {
+        return advancedTransactionService.scheduleTransaction(transaction, scheduledTime);
+    }
+
+    public List<SimTransactions> scheduleRecurringTransaction(SimTransactions transaction, LocalDateTime startTime, int intervalDays, int numberOfRepetitions) {
+        return advancedTransactionService.scheduleRecurringTransaction(transaction, startTime, intervalDays, numberOfRepetitions);
+    }
+
+    public SimTransactions conditionalTransaction(SimTransactions transaction, double balanceThreshold) {
+        return advancedTransactionService.conditionalTransaction(transaction, balanceThreshold);
+    }
+
+    public List<SimTransactions> batchTransactions(List<SimTransactions> transactions) {
+        return advancedTransactionService.batchTransactions(transactions);
+    }
+    //-----------------------------------------------------------------------------
+
+
+
+    public SimCardAccount getSimCardAccountById(long id){
+        return simCardAccountRepository.findById(id).orElse(null);
+    }
+>>>>>>> Stashed changes
     @Override
     public List<SimTransactions> getAllTransactions() {
         return transactionRepository.findAll();

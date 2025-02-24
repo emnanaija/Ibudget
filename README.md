@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="
-  <img src="download.jpg" alt="I-Budget Logo" width="150"/>
+  <img src="download.jpg" ,alt="I-Budget Logo" width="150"/>
 </p>
 
 ## Problem Statement

@@ -7,6 +7,12 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.JsonObjectParser;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
+<<<<<<< Updated upstream
+=======
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.TypeAdapter;
+>>>>>>> Stashed changes
 import com.google.gson.reflect.TypeToken;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +54,7 @@ public class AIService {
         String aiResponse = generateMessage(prompt);
         return new double[]{100.0, 15.0};
     }
+<<<<<<< Updated upstream
 //assisted results
     public String analyzeResults(double[] forecastedVolumes) {
         double avg = 0;
@@ -55,6 +62,12 @@ public class AIService {
             avg += volume;
         }
         avg /= forecastedVolumes.length;
+=======
+
+
+    public Map<String, Object> analyzeResults(double[] forecastedVolumes) {
+        double avg = Arrays.stream(forecastedVolumes).average().orElse(0.0);
+>>>>>>> Stashed changes
 
         String evaluation;
         if (avg > 500) {
@@ -72,7 +85,77 @@ public class AIService {
     }
 //-----------------------------------------------------------------------------------------------------------------
 
+<<<<<<< Updated upstream
     // ai api call to generate message + prompt + timeout to avoid long waiting time
+=======
+
+    public Map<String, Object> cleanData(List<SimTransactions> transactions) {
+        String prompt = "Analyze the following transactions and identify outliers. " +
+                "Return a JSON object: {\"outlierIds\": [id1, id2, ...], \"message\": \"Explanation of outliers and tips\"}. " +
+                GSON.toJson(transactions);
+        String aiResponse = generateMessage(prompt);
+
+        try {
+            Type responseType = new TypeToken<Map<String, Object>>() {}.getType();
+            Map<String, Object> responseMap = GSON.fromJson(aiResponse, responseType);
+
+            List<Double> outlierIdsDouble = (List<Double>) responseMap.get("outlierIds");
+            List<Long> outlierIds = outlierIdsDouble.stream().map(Double::longValue).collect(Collectors.toList());
+
+            String message = (String) responseMap.get("message");
+
+            List<SimTransactions> cleanedTransactions = transactions.stream()
+                    .filter(t -> !outlierIds.contains(t.getIdTransaction()))
+                    .collect(Collectors.toList());
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("cleanedTransactions", cleanedTransactions);
+            result.put("message", message);
+
+            return result;
+        } catch (Exception e) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("cleanedTransactions", transactions);
+            result.put("message", "Error processing AI response: " + e.getMessage());
+            return result;
+        }
+    }
+
+
+    public Map<String, Object> analyzeTransactionParameters(List<SimTransactions> transactions) {
+        String prompt = "Analyze the following transactions and predict future averages and standard deviations. " +
+                "Return a JSON object: {\"average\": number, \"stdDev\": number, \"message\": \"Explanation and tips\"}. " +
+                GSON.toJson(transactions);
+        String aiResponse = generateMessage(prompt);
+
+        try {
+            Type responseType = new TypeToken<Map<String, Double>>() {}.getType();
+            Map<String, Double> responseMap = GSON.fromJson(aiResponse, responseType);
+
+            double average = responseMap.get("average");
+            double stdDev = responseMap.get("stdDev");
+
+            Type responseTypeString = new TypeToken<Map<String, String>>() {}.getType();
+            Map<String, String> responseMapString = GSON.fromJson(aiResponse, responseTypeString);
+            String message = responseMapString.get("message");
+
+            Map<String, Object> result = new HashMap<>();
+            result.put("average", average);
+            result.put("stdDev", stdDev);
+            result.put("message", message);
+
+            return result;
+        } catch (Exception e) {
+            Map<String, Object> result = new HashMap<>();
+            result.put("average", 100.0);
+            result.put("stdDev", 15.0);
+            result.put("message", "Error processing AI response: " + e.getMessage());
+            return result;
+        }
+    }
+
+
+>>>>>>> Stashed changes
     public String generateMessage(String prompt) {
         try {
             Map<String, Object> requestBody = new HashMap<>();
@@ -95,7 +178,10 @@ public class AIService {
         }
     }
 
+<<<<<<< Updated upstream
     //extract text from the generated ai output
+=======
+>>>>>>> Stashed changes
     private String extractGeneratedText(String jsonResponse) {
         try {
             Type responseType = new TypeToken<Map<String, Object>>() {}.getType();

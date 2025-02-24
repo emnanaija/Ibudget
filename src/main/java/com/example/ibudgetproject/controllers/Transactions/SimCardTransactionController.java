@@ -1,6 +1,7 @@
 package com.example.ibudgetproject.controllers.Transactions;
 
 
+import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
 import com.example.ibudgetproject.services.Transactions.Interfaces.ISimCardTransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,4 +48,52 @@ public class SimCardTransactionController {
         transactionService.deleteTransaction(id);
         return ResponseEntity.noContent().build();
     }
+<<<<<<< Updated upstream
+=======
+
+
+    //----------------------------advanced_transactions---------------------------------------
+    @PostMapping("/schedule")
+    public ResponseEntity<SimTransactions> scheduleTransaction(
+            @RequestBody SimTransactions transaction,
+            @RequestParam("scheduledTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime scheduledTime) {
+        SimTransactions scheduled = transactionService.scheduleTransaction(transaction, scheduledTime);
+        return ResponseEntity.ok(scheduled);
+    }
+
+    @PostMapping("/recurring")
+    public ResponseEntity<List<SimTransactions>> scheduleRecurringTransaction(
+            @RequestBody SimTransactions transaction,
+            @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startTime,
+            @RequestParam("intervalDays") int intervalDays,
+            @RequestParam("numberOfRepetitions") int numberOfRepetitions) {
+        List<SimTransactions> recurring = transactionService.scheduleRecurringTransaction(transaction, startTime, intervalDays, numberOfRepetitions);
+        return ResponseEntity.ok(recurring);
+    }
+
+    @PostMapping("/conditional")
+    public ResponseEntity<?> conditionalTransaction(
+            @RequestBody SimTransactions transaction,
+            @RequestParam("balanceThreshold") double balanceThreshold
+    ) {
+        try {
+            // Fetch the SimCardAccount from the database
+            SimCardAccount simCardAccount = transactionService.getSimCardAccountById(transaction.getSimCardAccount().getSimCardId());
+            transaction.setSimCardAccount(simCardAccount);
+
+            // Add logging to inspect the transaction object
+            System.out.println("Received Transaction: " + transaction);
+            System.out.println("Balance Threshold: " + balanceThreshold);
+            SimTransactions conditional = transactionService.conditionalTransaction(transaction, balanceThreshold);
+            return ResponseEntity.ok(conditional);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/batch")
+    public ResponseEntity<List<SimTransactions>> batchTransactions(@RequestBody List<SimTransactions> transactions) {
+        List<SimTransactions> batch = transactionService.batchTransactions(transactions);
+        return ResponseEntity.ok(batch);
+    }
+>>>>>>> Stashed changes
 }

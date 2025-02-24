@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 
 @Getter
-
+@Setter
 @Entity
-@Data
 @Table(name = "sim_transactions")
 public class SimTransactions {
     @Id
@@ -29,17 +29,20 @@ public class SimTransactions {
     private String descreption;
     private LocalDateTime transactionDate = LocalDateTime.now();
 
+    @Getter
     @ManyToOne
     @JoinColumn(name = "sim_card_id", nullable = false)
-    @JsonBackReference
+    @JsonBackReference("simCardAccountTransactions")
     private SimCardAccount simCardAccount;
 
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
+    @JsonBackReference("userSentTransactions")
     private User sender;
 
     @ManyToOne
     @JoinColumn(name = "receiver_id", nullable = false)
+    @JsonBackReference("userReceivedTransactions")
     private User receiver;
 
     @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL)
@@ -101,10 +104,6 @@ public class SimTransactions {
         this.transactionDate = transactionDate;
     }
 
-    public SimCardAccount getSimCardAccount() {
-        return simCardAccount;
-    }
-
     public void setSimCardAccount(SimCardAccount simCardAccount) {
         this.simCardAccount = simCardAccount;
     }
@@ -133,7 +132,19 @@ public class SimTransactions {
         this.payment = payment;
     }
 
-    //    CREATE TABLE sim_card_transactions (
+    public String getDescreption() {
+        return descreption;
+    }
+
+    public void setDescreption(String descreption) {
+        this.descreption = descreption;
+    }
+
+    public SimCardAccount getSimCardAccount() {
+        return simCardAccount;
+    }
+
+//    CREATE TABLE sim_card_transactions (
 //            id_transaction BIGINT AUTO_INCREMENT PRIMARY KEY,
 //            amount DOUBLE NOT NULL,
 //            transaction_type INT NOT NULL,

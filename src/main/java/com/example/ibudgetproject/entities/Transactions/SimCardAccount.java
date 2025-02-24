@@ -15,7 +15,6 @@ import java.util.List;
 @Getter
 @Entity
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
 public class SimCardAccount {
     @Id
@@ -37,7 +36,7 @@ public class SimCardAccount {
     private User user;
 
     @OneToMany(mappedBy = "simCardAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonManagedReference
+    @JsonManagedReference("simCardAccountTransactions")
     private List<SimTransactions> transactions;
 
     @OneToMany(mappedBy = "simCardAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -55,6 +54,14 @@ public class SimCardAccount {
     }
 
 
+
+
+
+    public SimCardAccount() {
+    }
+    public SimCardAccount(long simCardId) {
+        this.simCardId = simCardId;
+    }
     public long getSimCardId() {
         return simCardId;
     }

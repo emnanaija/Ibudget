@@ -2,6 +2,7 @@ package com.example.ibudgetproject.entities.User;
 
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -32,6 +33,7 @@ import java.util.List;
 public class User implements UserDetails, Principal {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id",unique = true,nullable = false)
     private Long userId;
     @JsonProperty("firstName")
     private String firstName ;
@@ -140,12 +142,23 @@ public class User implements UserDetails, Principal {
 
     //rayen ----------------------------------------------------------------------------------------------------------
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private SimCardAccount simCardAccount;
+
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+<<<<<<< Updated upstream
     @JsonManagedReference
+=======
+    @JsonManagedReference("userSentTransactions")
+>>>>>>> Stashed changes
     private List<SimTransactions> sentTransactions;
+
     @OneToMany(mappedBy = "receiver", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+<<<<<<< Updated upstream
     @JsonManagedReference
+=======
+    @JsonManagedReference("userReceivedTransactions")
+>>>>>>> Stashed changes
     private List<SimTransactions> receivedTransactions;
 
     public SimCardAccount getSimCardAccount() {
