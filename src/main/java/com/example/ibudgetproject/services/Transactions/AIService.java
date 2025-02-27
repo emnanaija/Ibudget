@@ -32,7 +32,7 @@ public class AIService {
 
     @Value("${gemini.api.key}")
     private String apiKey;
-    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent";
+    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
@@ -110,7 +110,8 @@ public class AIService {
         String aiResponse = generateMessage(prompt);
 
         try {
-            Type responseType = new TypeToken<Map<String, String>>() {}.getType();
+            Type responseType = new TypeToken<Map<String, String>>() {
+            }.getType();
             Map<String, String> responseMap = GSON.fromJson(aiResponse, responseType);
             String message = responseMap.get("message");
 
@@ -132,7 +133,8 @@ public class AIService {
         String aiResponse = generateMessage(prompt);
 
         try {
-            Type responseType = new TypeToken<Map<String, Object>>() {}.getType();
+            Type responseType = new TypeToken<Map<String, Object>>() {
+            }.getType();
             Map<String, Object> responseMap = GSON.fromJson(aiResponse, responseType);
 
             List<Double> outlierIdsDouble = (List<Double>) responseMap.get("outlierIds");
@@ -165,13 +167,15 @@ public class AIService {
         String aiResponse = generateMessage(prompt);
 
         try {
-            Type responseType = new TypeToken<Map<String, Double>>() {}.getType();
+            Type responseType = new TypeToken<Map<String, Double>>() {
+            }.getType();
             Map<String, Double> responseMap = GSON.fromJson(aiResponse, responseType);
 
             double average = responseMap.get("average");
             double stdDev = responseMap.get("stdDev");
 
-            Type responseTypeString = new TypeToken<Map<String, String>>() {}.getType();
+            Type responseTypeString = new TypeToken<Map<String, String>>() {
+            }.getType();
             Map<String, String> responseMapString = GSON.fromJson(aiResponse, responseTypeString);
             String message = responseMapString.get("message");
 
@@ -208,14 +212,16 @@ public class AIService {
 
             HttpResponse response = request.execute();
             String rawResponse = response.parseAsString();
-            System.out.println("Raw API Response: " + rawResponse); // Log the raw response
+            System.out.println("Raw API Response: " + rawResponse);
 
             if (response.getStatusCode() != 200) {
-                return "API Error: " + rawResponse; // Handle non-200 responses
+                System.err.println("API Error: Status Code: " + response.getStatusCode() + ", Response: " + rawResponse);
+                return "API Error: Status Code: " + response.getStatusCode() + ", Response: " + rawResponse;
             }
 
             return extractGeneratedText(rawResponse);
         } catch (IOException e) {
+            System.err.println("Error calling Gemini API: " + e.getMessage());
             throw new RuntimeException("Error calling Gemini API: " + e.getMessage(), e);
         }
     }
@@ -228,54 +234,40 @@ public class AIService {
                 return "API Error: Empty response.";
             }
 
-            // Parse the entire API response
-            Type responseType = new TypeToken<Map<String, Object>>() {}.getType();
-            Map<String, Object> responseBody = GSON.fromJson(jsonResponse, responseType);
+            // Try to extract a valid JSON substring
+            int jsonStart = jsonResponse.indexOf("{");
+            int jsonEnd = jsonResponse.lastIndexOf("}") + 1;
 
-            if (responseBody.containsKey("candidates")) {
-                List<Map<String, Object>> candidates = (List<Map<String, Object>>) responseBody.get("candidates");
-                if (!candidates.isEmpty()) {
-                    Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
-                    if (content != null && content.containsKey("parts")) {
-                        List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
-                        if (!parts.isEmpty()) {
-                            String text = (String) parts.get(0).get("text");
+            if (jsonStart >= 0 && jsonEnd > jsonStart) {
+                String jsonSubstring = jsonResponse.substring(jsonStart, jsonEnd);
 
-                            // Extract the JSON object from the text
-                            if (text != null && text.contains("{")) {
-                                int jsonStart = text.indexOf("{");
-                                int jsonEnd = text.lastIndexOf("}") + 1;
-                                String jsonString = text.substring(jsonStart, jsonEnd).trim();
+                // Parse JSON safely
+                Type responseType = new TypeToken<Map<String, Object>>() {
+                }.getType();
+                Map<String, Object> responseBody = GSON.fromJson(jsonSubstring, responseType);
 
-                                // Parse the extracted JSON object
-                                Type messageType = new TypeToken<Map<String, String>>() {}.getType();
-                                Map<String, String> messageMap = GSON.fromJson(jsonString, messageType);
-                                return messageMap.get("message");
-                            } else {
-                                return "API Error: Message not found in response.";
+                if (responseBody.containsKey("candidates")) {
+                    List<Map<String, Object>> candidates = (List<Map<String, Object>>) responseBody.get("candidates");
+
+                    if (!candidates.isEmpty()) {
+                        Map<String, Object> content = (Map<String, Object>) candidates.get(0).get("content");
+
+                        if (content != null && content.containsKey("parts")) {
+                            List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
+
+                            if (!parts.isEmpty()) {
+                                return (String) parts.get(0).get("text");
                             }
-                        } else {
-                            return "API Error: No parts found in response.";
                         }
-                    } else {
-                        return "API Error: No content found in response.";
                     }
-                } else {
-                    return "API Error: No candidates found in response.";
                 }
-            } else {
-                return "API Error: Invalid response structure.";
             }
 
-        } catch (JsonSyntaxException e) {
-            System.err.println("JSON Syntax Error: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
-            return "API Error: Invalid JSON syntax. Details: " + e.getMessage();
-        } catch (NullPointerException e) {
-            System.err.println("Null Pointer Exception: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
-            return "API Error: Null pointer exception. Details: " + e.getMessage();
+            return "API Error: No valid JSON response from AI.";
+        } catch (JsonSyntaxException | ClassCastException e) {
+            return "Error parsing AI response: Malformed JSON. " + e.getMessage();
         } catch (Exception e) {
-            System.err.println("Error parsing API response: " + e.getMessage() + "\nRaw Response: " + jsonResponse);
-            return "API Error: Failed to parse response. Details: " + e.getMessage();
+            return "Unexpected error while processing AI response: " + e.getMessage();
         }
     }
 }
