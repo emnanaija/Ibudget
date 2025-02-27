@@ -1,11 +1,19 @@
 package com.example.ibudgetproject.services;
 
+import com.example.ibudgetproject.DTO.Savings.SimulationResultDTO;
+import com.example.ibudgetproject.entities.Savings.CompteEpargne;
+import com.example.ibudgetproject.entities.Savings.Depot;
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
+import com.example.ibudgetproject.repositories.Savings.CompteEpargneRepository;
 import com.example.ibudgetproject.services.Transactions.AIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -91,5 +99,71 @@ public class MonteCarloService {
         }
 
         return bestAllocation;
+    }
+
+    // Simulation compte epargne
+
+    @Autowired
+    private CompteEpargneRepository compteEpargneRepository;
+
+    private static final int NOMBRE_SIMULATIONS = 1000;
+
+    public SimulationResultDTO simulerMonteCarlo(Long compteId, int dureeAnnees) {
+        // Récupérer le compte épargne
+        CompteEpargne compte = compteEpargneRepository.findById(compteId)
+                .orElseThrow(() -> new RuntimeException("Compte non trouvé"));
+
+        BigDecimal soldeInitial = compte.getSolde().setScale(2, RoundingMode.HALF_UP);
+        BigDecimal tauxInteret = compte.getTauxInteret().getTaux().setScale(4, RoundingMode.HALF_UP);
+
+        // Récupérer les dépôts mensuels
+        List<Depot> depots = compte.getDepots();
+        BigDecimal totalDepotsMensuels = depots.stream()
+                .map(Depot::getMontant)
+                .reduce(BigDecimal.ZERO, BigDecimal::add)
+                .setScale(2, RoundingMode.HALF_UP);
+
+        Random random = new Random();
+        List<BigDecimal> simulations = new ArrayList<>();
+
+        // Exécuter plusieurs simulations
+        for (int i = 0; i < NOMBRE_SIMULATIONS; i++) {
+            BigDecimal solde = soldeInitial;
+            LocalDate date = LocalDate.now();
+
+            for (int mois = 0; mois < dureeAnnees * 12; mois++) {
+                // Générer une variation aléatoire de l'économie (-3% à +3%)
+                BigDecimal variationEconomique = new BigDecimal((random.nextDouble() - 0.5) * 0.06).setScale(4, RoundingMode.HALF_UP);
+                BigDecimal tauxInteretEffectif = tauxInteret.add(variationEconomique).setScale(4, RoundingMode.HALF_UP);
+
+                // Ajouter les intérêts du mois
+                BigDecimal interets = solde.multiply(tauxInteretEffectif.divide(BigDecimal.valueOf(12), RoundingMode.HALF_UP)) .setScale(2, RoundingMode.HALF_UP);
+                solde = solde.add(interets) .setScale(2, RoundingMode.HALF_UP);
+
+                // Ajouter les dépôts mensuels
+                solde = solde.add(totalDepotsMensuels) .setScale(2, RoundingMode.HALF_UP);
+            }
+
+            simulations.add(solde);
+        }
+
+        // Calculer les statistiques sur les résultats
+        BigDecimal somme = simulations.stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+        BigDecimal moyenne = somme.divide(BigDecimal.valueOf(NOMBRE_SIMULATIONS), 2,RoundingMode.HALF_UP);
+
+        simulations.sort(BigDecimal::compareTo);
+        BigDecimal intervalleMin = simulations.get((int) (NOMBRE_SIMULATIONS * 0.05));
+        BigDecimal intervalleMax = simulations.get((int) (NOMBRE_SIMULATIONS * 0.95));
+        List<BigDecimal> simulationsReduites = new ArrayList<>();
+        if (simulations.size() >= 4) {
+            simulationsReduites.add(simulations.get(0));
+            simulationsReduites.add(simulations.get(1));
+            simulationsReduites.add(simulations.get(simulations.size() - 2));
+            simulationsReduites.add(simulations.get(simulations.size() - 1));
+        } else {
+            simulationsReduites = simulations;
+        }
+
+        return new SimulationResultDTO(moyenne, intervalleMin, intervalleMax, simulationsReduites);
     }
 }

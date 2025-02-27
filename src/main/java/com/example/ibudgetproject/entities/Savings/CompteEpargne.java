@@ -3,6 +3,7 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -20,6 +21,8 @@ public class CompteEpargne {
     private List<Objectif> objectifs;
     @OneToMany(mappedBy = "compteEpargne", cascade = CascadeType.ALL)
     private List<Depot> depots;
+    @OneToMany(mappedBy = "compteEpargne", cascade = CascadeType.ALL)
+    private List<DepotLog> depotsSupprimes = new ArrayList<>();
 
     // Getters and Setters
     public Long getId() {
@@ -53,5 +56,9 @@ public class CompteEpargne {
     public void setDepots(List<Depot> depots) {
         this.depots = depots;
     }
+    public List<DepotLog> getDepotsSupprimes() {
+        return depotsSupprimes;
+    }
+
 }
 
