@@ -6,7 +6,6 @@ import com.example.ibudgetproject.entities.Savings.Depot;
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
 import com.example.ibudgetproject.repositories.Savings.CompteEpargneRepository;
-import com.example.ibudgetproject.services.Transactions.AIService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
