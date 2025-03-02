@@ -35,6 +35,8 @@ public class DepenseReccurente {
     private LocalDate dateDebut;
     private LocalDate dateFin; // Optionnel, pour arrêter la récurrence à une date précise
 
+
+
     @Enumerated(EnumType.STRING)
     private FrequenceDepense frequence;
 }

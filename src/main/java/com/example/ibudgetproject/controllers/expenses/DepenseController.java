@@ -2,6 +2,7 @@ package com.example.ibudgetproject.controllers.expenses;
 
 import com.example.ibudgetproject.entities.expenses.Depense;
 import com.example.ibudgetproject.services.expenses.DepenseService;
+import com.example.ibudgetproject.services.expenses.ExcelExportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -19,6 +20,8 @@ public class DepenseController {
 
     @Autowired
     private DepenseService depenseService;
+    @Autowired
+    private ExcelExportService excelExportService;
 
 
 
@@ -101,6 +104,18 @@ public class DepenseController {
         } catch (Exception e) {
             // En cas d'erreur
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @GetMapping("/export-excel")
+    public String exportExcel() {
+        try {
+            excelExportService.generateExcelReport();
+            return "Le rapport Excel a été généré avec succès!";
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Une erreur est survenue lors de la génération du rapport Excel.";
         }
     }
 }
