@@ -19,8 +19,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -210,6 +212,60 @@ public class DepenseService {
         // Utiliser la méthode du repository qui inclut déjà le filtrage sur l'état "REALISEE"
         return depenseRepository.findByWalletIdAndDateBetweenAndEtat(walletId, startOfMonth, endOfMonth, EtatDepense.REALISEE);
     }
+
+
+
+    // Générer et enregistrer des dépenses dans la base de données
+    public List<Depense> generateAndSaveDepensesWithOutliers(int numberOfDepenses) {
+        List<Depense> depenses = new ArrayList<>();
+        Random random = new Random();
+
+        // Récupérer le Wallet et la catégorie avec les IDs spécifiés
+        SpendingWallet wallet = walletRepository.findById(1L)
+                .orElseThrow(() -> new IllegalArgumentException("Wallet avec ID 1 non trouvé"));
+        ExpenseCategory category = categoryRepository.findById(2L)
+                .orElseThrow(() -> new IllegalArgumentException("Category avec ID 2 non trouvée"));
+
+        // Générer des dépenses avec des anomalies
+        for (int i = 0; i < numberOfDepenses; i++) {
+            Depense depense = new Depense();
+
+            // Générer un montant réaliste entre 10 et 200, mais avec quelques anomalies
+            double montant = 10 + (random.nextDouble() * (200 - 10)); // Montant entre 10 et 200
+            // Ajouter une petite chance de générer une valeur aberrante (par exemple, montant extrêmement bas ou haut)
+            if (random.nextInt(100) < 5) {
+                montant = random.nextInt(1000);  // Valeur aberrante élevée
+            }
+            if (random.nextInt(100) < 5) {
+                montant = 0.01;  // Valeur aberrante faible
+            }
+            depense.setMontant(montant);
+
+            // Générer une date réaliste (par exemple entre aujourd'hui et 6 mois avant)
+            LocalDate date = LocalDate.now().minusDays(random.nextInt(180));
+            // Ajouter une chance d'anomalie de date (par exemple, une date future ou très ancienne)
+            if (random.nextInt(100) < 5) {
+                date = LocalDate.now().plusDays(random.nextInt(30)); // Date future aberrante
+            }
+            depense.setDate(date);
+
+            // Générer un état avec une distribution réaliste (soit "REALISEE" soit "PREVUE")
+            EtatDepense etat = random.nextInt(100) < 80 ? EtatDepense.REALISEE : EtatDepense.PREVUE;
+            depense.setEtat(etat);
+
+            // Associer le Wallet et la catégorie récupérés
+            depense.setWallet(wallet);
+            depense.setCategory(category);
+
+            depense.setPhotoUrl(null);  // Laisser l'URL de la photo nulle pour l'instant
+
+            depenses.add(depense);
+        }
+
+        // Sauvegarder toutes les dépenses générées dans la base de données
+        return depenseRepository.saveAll(depenses);
+    }
+
 
 }
 

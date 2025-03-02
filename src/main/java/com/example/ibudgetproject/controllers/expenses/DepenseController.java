@@ -92,5 +92,15 @@ public class DepenseController {
         return depenseService.getDepensesForMonth(walletId, mois, annee);
     }
 
-
+    @PostMapping("/generate")
+    public ResponseEntity<List<Depense>> generateDepenses(@RequestParam int numberOfDepenses) {
+        try {
+            // Appel du service pour générer les dépenses
+            List<Depense> depenses = depenseService.generateAndSaveDepensesWithOutliers(numberOfDepenses);
+            return new ResponseEntity<>(depenses, HttpStatus.CREATED); // Retourne les dépenses générées avec le statut 201
+        } catch (Exception e) {
+            // En cas d'erreur
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

@@ -40,6 +40,10 @@ public class ExpenseCategory {
     public double getSoldeRestant() {
         return budgetAlloué - montantDepensé;
     }
+    @Override
+    public String toString() {
+        return this.nom;  // Retourne le nom ou un autre attribut pertinent de la catégorie
+    }
 
 }
 

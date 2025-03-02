@@ -3,15 +3,19 @@ package com.example.ibudgetproject.services.expenses;
 import com.example.ibudgetproject.entities.expenses.Depense;
 import com.example.ibudgetproject.entities.expenses.DepenseReccurente;
 import com.example.ibudgetproject.entities.expenses.EtatDepense;
+import com.example.ibudgetproject.entities.expenses.ExpenseCategory;
 import com.example.ibudgetproject.repositories.expenses.DepenseReccurenteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -125,4 +129,27 @@ public class DepenseReccurenteService {
         }
     }
 
-}
+    public Map<ExpenseCategory, Double> calculerTotalMontantParCategorie() {
+        // Récupérer toutes les dépenses récurrentes
+        List<DepenseReccurente> depensesRecurrentes = depenseRecurrenteRepository.findAll();
+
+        // Créer une map pour stocker le total des montants par catégorie
+        Map<ExpenseCategory, Double> totalMontantParCategorie = new HashMap<>();
+
+        // Parcourir les dépenses récurrentes et calculer le total par catégorie
+        for (DepenseReccurente depense : depensesRecurrentes) {
+            ExpenseCategory categorie = depense.getCategorie();
+            Double montant = depense.getMontant().doubleValue(); // Conversion au cas où le montant est un BigDecimal
+
+            // Ajouter au total existant pour cette catégorie
+            totalMontantParCategorie.put(categorie,
+                    totalMontantParCategorie.getOrDefault(categorie, 0.0) + montant);
+        }
+
+        return totalMontantParCategorie;
+
+    }
+
+
+
+    }

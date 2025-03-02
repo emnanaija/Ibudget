@@ -5,6 +5,8 @@ import com.example.ibudgetproject.entities.Savings.CompteEpargne;
 import com.example.ibudgetproject.entities.Savings.Depot;
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
+import com.example.ibudgetproject.entities.expenses.ExpenseCategory;
+import com.example.ibudgetproject.entities.expenses.FluctuationRateProvider;
 import com.example.ibudgetproject.repositories.Savings.CompteEpargneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,10 +14,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class MonteCarloService {
@@ -165,4 +164,63 @@ public class MonteCarloService {
 
         return new SimulationResultDTO(moyenne, intervalleMin, intervalleMax, simulationsReduites);
     }
+
+//emna
+    private static final int ITERATIONS = 1000;  // Nombre de simulations
+    private static final int MOIS = 12;          // Nombre de mois (12 mois pour la simulation)
+
+    private FluctuationRateProvider fluctuationRateProvider = new FluctuationRateProvider();
+
+    // Simule les dépenses totales pour chaque catégorie pendant les 12 mois
+    public Map<ExpenseCategory, Map<Integer, Double>> simulerDepensesParCategorie(Map<ExpenseCategory, Double> totalMontantParCategorie) {
+        Random random = new Random();
+
+        // Map pour stocker les résultats mensuels par catégorie
+        Map<ExpenseCategory, Map<Integer, Double>> resultatsParCategorie = new HashMap<>();
+
+        // Effectuer plusieurs simulations (ITERATIONS)
+        for (int i = 0; i < ITERATIONS; i++) {
+            // Parcourir chaque catégorie
+            for (Map.Entry<ExpenseCategory, Double> entry : totalMontantParCategorie.entrySet()) {
+                ExpenseCategory categorie = entry.getKey();
+                double montantActuel = entry.getValue(); // Montant total actuel des dépenses pour cette catégorie
+                double tauxFluctuation = fluctuationRateProvider.getFluctuationRate(categorie.getNom()); // Récupérer le taux de fluctuation pour la catégorie
+
+                // Appliquer la fluctuation à chaque catégorie (pour chaque mois)
+                Map<Integer, Double> resultatsMois = resultatsParCategorie.getOrDefault(categorie, new HashMap<>());
+
+                // Appliquer la fluctuation sur le montant total pour chaque mois
+                for (int mois = 1; mois <= MOIS; mois++) {
+                    double fluctuation = random.nextGaussian() * tauxFluctuation; // Utiliser une fluctuation aléatoire
+                    double montantSimule = montantActuel * (1 + fluctuation); // Montant après fluctuation
+
+                    // Ajouter le montant simulé pour le mois courant
+                    resultatsMois.put(mois, resultatsMois.getOrDefault(mois, 0.0) + montantSimule);
+                }
+
+                // Mettre à jour les résultats de cette catégorie
+                resultatsParCategorie.put(categorie, resultatsMois);
+            }
+        }
+
+        // Calculer la moyenne des résultats sur toutes les simulations pour chaque mois
+        Map<ExpenseCategory, Map<Integer, Double>> resultatsMoyenneParCategorie = new HashMap<>();
+        for (Map.Entry<ExpenseCategory, Map<Integer, Double>> entry : resultatsParCategorie.entrySet()) {
+            ExpenseCategory categorie = entry.getKey();
+            Map<Integer, Double> resultatsMois = entry.getValue();
+
+            // Calcul de la moyenne pour chaque mois
+            Map<Integer, Double> resultatsMoyenne = new HashMap<>();
+            for (Map.Entry<Integer, Double> moisEntry : resultatsMois.entrySet()) {
+                int mois = moisEntry.getKey();
+                double moyenneMois = moisEntry.getValue() / ITERATIONS;
+                resultatsMoyenne.put(mois, moyenneMois);
+            }
+
+            resultatsMoyenneParCategorie.put(categorie, resultatsMoyenne);
+        }
+
+        return resultatsMoyenneParCategorie;
+    }
 }
+
