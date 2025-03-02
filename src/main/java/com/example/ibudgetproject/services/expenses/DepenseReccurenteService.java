@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -159,7 +160,13 @@ public class DepenseReccurenteService {
 
     //financal advice
 
+    public Map<ExpenseCategory, List<DepenseReccurente>> getDepensesParCategorie() {
+        List<DepenseReccurente> toutesLesDepenses = depenseRecurrenteRepository.findAll();
 
+        // Grouper les dépenses par catégorie
+        return toutesLesDepenses.stream()
+                .collect(Collectors.groupingBy(DepenseReccurente::getCategorie));
+    }
 }
 
 
