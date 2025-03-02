@@ -5,6 +5,7 @@ import com.example.ibudgetproject.entities.expenses.DepenseReccurente;
 import com.example.ibudgetproject.entities.expenses.EtatDepense;
 import com.example.ibudgetproject.entities.expenses.ExpenseCategory;
 import com.example.ibudgetproject.repositories.expenses.DepenseReccurenteRepository;
+import com.example.ibudgetproject.services.MonteCarloService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,11 @@ public class DepenseReccurenteService {
 
     @Autowired
     private  DepenseService depenseService;
+    @Autowired
+    private GeminiService geminiService;
+
+    @Autowired
+    private MonteCarloService monteCarloSimulationService;
 
 
     public DepenseReccurente ajouterDepense(DepenseReccurente depense) {
@@ -151,5 +157,10 @@ public class DepenseReccurenteService {
     }
 
 
+    //financal advice
 
-    }
+
+}
+
+
+

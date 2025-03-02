@@ -186,12 +186,17 @@ public class MonteCarloService {
                 double montantActuel = entry.getValue(); // Montant total actuel des dépenses pour cette catégorie
                 double tauxFluctuation = fluctuationRateProvider.getFluctuationRate(categorie.getNom()); // Récupérer le taux de fluctuation pour la catégorie
 
-                // Appliquer la fluctuation à chaque catégorie (pour chaque mois)
+                // Initialiser la map des résultats pour cette catégorie (si ce n'est pas déjà fait)
                 Map<Integer, Double> resultatsMois = resultatsParCategorie.getOrDefault(categorie, new HashMap<>());
 
                 // Appliquer la fluctuation sur le montant total pour chaque mois
                 for (int mois = 1; mois <= MOIS; mois++) {
-                    double fluctuation = random.nextGaussian() * tauxFluctuation; // Utiliser une fluctuation aléatoire
+                    // Utiliser une fluctuation aléatoire, basée sur une distribution normale
+                    double fluctuation = random.nextGaussian() * tauxFluctuation; // Variation basée sur une loi normale
+
+                    // Si tu préfères une fluctuation uniforme, tu pourrais faire quelque chose comme ça :
+                    // double fluctuation = (random.nextDouble() * 2 * tauxFluctuation) - tauxFluctuation;
+
                     double montantSimule = montantActuel * (1 + fluctuation); // Montant après fluctuation
 
                     // Ajouter le montant simulé pour le mois courant
@@ -222,5 +227,6 @@ public class MonteCarloService {
 
         return resultatsMoyenneParCategorie;
     }
+
 }
 
