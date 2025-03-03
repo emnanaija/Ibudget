@@ -3,6 +3,7 @@ package com.example.ibudgetproject.entities.User;
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -48,9 +49,13 @@ public class User implements UserDetails, Principal {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String profession;
+    @Enumerated(EnumType.STRING)
+    private Tone aiTonePreference;
+    @Enumerated(EnumType.STRING)
+    private FinancialKnowledgeLevel financialKnowledgeLevel;
     private Boolean accountLocked ;
     private int failedAttempts = 0;
-    private boolean  accountEnabled  ;
+    private Boolean accountEnabled  ;
 
     @Enumerated(EnumType.STRING)
     private TypeAccount accountType;
@@ -66,12 +71,24 @@ public class User implements UserDetails, Principal {
     @Column(insertable= false)
     private LocalDateTime lastModifiedDate;
 
+    private boolean deletionRequested;
+
+    private  String phoneNumber;
+
+    private  Boolean updateRequested;
+    private String firstNameUpdate ;
+    private String lastNameUpdate ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate dateOfBirthUpdate ;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_FK")
     private Role role;
 
+    @OneToMany(mappedBy ="user")
+    @JsonIgnore
+    private List<ConnexionInformation> connexionInformationList;
     @Override
     public String getName() {
         return email;
@@ -169,9 +186,7 @@ public class User implements UserDetails, Principal {
     public void setReceivedTransactions(List<SimTransactions> receivedTransactions) {
         this.receivedTransactions = receivedTransactions;
     }
-    @Column(unique = true,nullable = false)
-    @JsonProperty("phoneNumber")
-    private String phoneNumber;
+
     public String getPhoneNumber() {
         return phoneNumber;
     }

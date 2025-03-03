@@ -30,12 +30,11 @@ public class MonteCarloService {
         Random random = new Random();
         double[] forecastedVolumes = new double[numFutureMonths];
 
-        // 1. AI-Powered Data Cleaning
         Map<String, Object> cleanedDataResult = aiService.cleanData(transactions);
         List<SimTransactions> cleanedTransactions = (List<SimTransactions>) cleanedDataResult.get("cleanedTransactions");
         String cleaningMessage = (String) cleanedDataResult.get("message");
 
-        // 2. AI-Powered Parameter Analysis
+
         Map<String, Object> analysisResult = aiService.analyzeTransactionParameters(cleanedTransactions);
         double avgVolume = (double) analysisResult.get("average");
         double stdDevVolume = (double) analysisResult.get("stdDev");
