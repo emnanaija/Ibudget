@@ -108,14 +108,13 @@ public class Payment {
     }
 
     //relations
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "transaction_id", nullable = false)
     private SimTransactions transaction;
 
     @ManyToOne
     @JoinColumn(name = "bill_id", nullable = true)
     private Bill bill;
-
 
 
 }

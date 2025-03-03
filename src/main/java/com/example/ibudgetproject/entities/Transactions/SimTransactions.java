@@ -26,6 +26,7 @@ public class SimTransactions {
 
     private String status;
     private String refNum;
+    @Column(name = "descreption")
     private String descreption;
     private LocalDateTime transactionDate = LocalDateTime.now();
 
