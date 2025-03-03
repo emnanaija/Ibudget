@@ -6,6 +6,7 @@ import com.example.ibudgetproject.services.MonteCarloService;
 import com.example.ibudgetproject.services.expenses.DepenseReccurenteService;
 import com.example.ibudgetproject.services.expenses.ExpenseCategoryService;
 import com.example.ibudgetproject.services.expenses.GeminiService;
+import com.example.ibudgetproject.services.expenses.SimulationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,8 @@ public class DepenseRecurrenteController {
 
     @Autowired
     private GeminiService geminiService;
+    @Autowired
+    private SimulationService simulationService;
 
     @PostMapping
     public ResponseEntity<DepenseReccurente> ajouterDepense(@RequestBody DepenseReccurente depense) {
@@ -77,40 +80,10 @@ public class DepenseRecurrenteController {
 
     @GetMapping("/simulation-et-recommandations")
     public ResponseEntity<String> simulerEtObtenirRecommandations() {
-        // 1️⃣ Récupérer les dépenses totales par catégorie
-        Map<ExpenseCategory, Double> totalMontantParCategorie = depenseRecurrenteService.calculerTotalMontantParCategorie();
+        // Appeler la méthode du service SimulationService
+        String recommendations = simulationService.simulerEtObtenirRecommandations();
 
-        // 2️⃣ Exécuter la simulation de Monte Carlo
-        Map<ExpenseCategory, Map<Integer, Double>> resultatsSimulation = monteCarloService.simulerDepensesParCategorie(totalMontantParCategorie);
-
-        // 3️⃣ Construire un prompt détaillé pour chaque catégorie
-        StringBuilder prompt = new StringBuilder();
-        prompt.append("J'ai effectué une simulation de mes dépenses récurrentes par catégorie pour les 12 prochains mois. Voici les résultats :\n\n");
-
-        for (Map.Entry<ExpenseCategory, Map<Integer, Double>> entry : resultatsSimulation.entrySet()) {
-            ExpenseCategory categorie = entry.getKey();
-            Map<Integer, Double> resultatsMois = entry.getValue();
-
-            prompt.append("Catégorie : ").append(categorie.getNom()).append("\n");
-            prompt.append("Dépenses mensuelles simulées :\n");
-
-            for (Map.Entry<Integer, Double> moisEntry : resultatsMois.entrySet()) {
-                int mois = moisEntry.getKey();
-                double montant = moisEntry.getValue();
-                prompt.append("  Mois ").append(mois).append(": ").append(String.format("%.2f", montant)).append(" TND\n");
-            }
-
-            // 4️⃣ Ajouter une analyse pour chaque catégorie
-            prompt.append("\nAnalyse demandée :\n");
-            prompt.append("1️⃣ Quelles pourraient être les raisons de ces fluctuations pour la catégorie '")
-                    .append(categorie.getNom()).append("' ?\n");
-            prompt.append("2️⃣ Quels conseils financiers pourrais-tu me donner pour mieux gérer cette catégorie et optimiser mon budget ?\n\n");
-        }
-
-        // 5️⃣ Envoyer le prompt à Gemini
-        String recommendations = geminiService.getSuggestions(prompt.toString());
-
-        // 6️⃣ Retourner les recommandations
+        // Retourner les recommandations dans la réponse HTTP
         return ResponseEntity.ok(recommendations);
     }
 

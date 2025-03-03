@@ -19,12 +19,10 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class DepenseService {
@@ -265,6 +263,10 @@ public class DepenseService {
         // Sauvegarder toutes les dépenses générées dans la base de données
         return depenseRepository.saveAll(depenses);
     }
+
+
+
+
 
 
 }
