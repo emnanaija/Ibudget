@@ -3,26 +3,18 @@ package com.example.ibudgetproject.Services;
 import com.example.ibudgetproject.Entities.Compensation;
 import com.example.ibudgetproject.Entities.InsurancePolicy;
 import com.example.ibudgetproject.Entities.User;
-import org.springframework.beans.factory.annotation.Value;
+
 import com.example.ibudgetproject.Repositories.InsuranceRepository;
 import com.example.ibudgetproject.Repositories.UserRepository;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.JsonNode;
-import java.io.IOException;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
+
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)

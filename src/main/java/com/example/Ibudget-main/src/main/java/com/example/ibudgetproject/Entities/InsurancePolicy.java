@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -12,16 +13,16 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-@Entity
 @Getter
+@Entity
+
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class InsurancePolicy {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
-    private int insurance_policy_id;
+    private int id;
     @JsonProperty("policy_number")
     private int policy_number;
     @Enumerated(EnumType.STRING)
@@ -54,16 +55,13 @@ public void initializeFields(){
     this.expiration_date = subscription_date.plus(1, ChronoUnit.YEARS);
 
 }
-    public int getInsurance_policy_id() {
-        return insurance_policy_id;
-    }
 
 
     // Méthode toString pour afficher les détails de la police
     @Override
     public String toString() {
         return "InsurancePolicy{" +
-                "insurance_policy_id=" + insurance_policy_id +
+                "insurance_policy_id=" + id +
                 ", policy_number=" + policy_number +
                 ", insurance_type='" + insurance_type + '\'' +
                 ", premium=" + premium +
@@ -79,64 +77,114 @@ public void initializeFields(){
     @OneToMany(mappedBy = "insurancePolicy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Claim> claims;
 
-    public User getUser() {
-        return user;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "id_user", nullable = false)
+
+    private User user ;
+
+    public int getInsurance_policy_id() {
+        return id;
+    }
+
+    public void setInsurance_policy_id(int id) {
+        this.id = id;
     }
 
     public int getPolicy_number() {
         return policy_number;
     }
 
+    public void setPolicy_number(int policy_number) {
+        this.policy_number = policy_number;
+    }
+
     public InsuranceType getInsurance_type() {
         return insurance_type;
+    }
+
+    public void setInsurance_type(InsuranceType insurance_type) {
+        this.insurance_type = insurance_type;
     }
 
     public String getDetails() {
         return details;
     }
 
+    public void setDetails(String details) {
+        this.details = details;
+    }
+
     public double getPremium() {
         return premium;
+    }
+
+    public void setPremium(double premium) {
+        this.premium = premium;
     }
 
     public LocalDateTime getSubscription_date() {
         return subscription_date;
     }
 
+    public void setSubscription_date(LocalDateTime subscription_date) {
+        this.subscription_date = subscription_date;
+    }
+
     public LocalDateTime getExpiration_date() {
         return expiration_date;
+    }
+
+    public void setExpiration_date(LocalDateTime expiration_date) {
+        this.expiration_date = expiration_date;
     }
 
     public String getStatus() {
         return status;
     }
 
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public float getDeductible() {
         return deductible;
+    }
+
+    public void setDeductible(float deductible) {
+        this.deductible = deductible;
     }
 
     public String getFrequency() {
         return frequency;
     }
 
+    public void setFrequency(String frequency) {
+        this.frequency = frequency;
+    }
+
     public String getGuarantor_cin() {
         return guarantor_cin;
+    }
+
+    public void setGuarantor_cin(String guarantor_cin) {
+        this.guarantor_cin = guarantor_cin;
     }
 
     public List<Claim> getClaims() {
         return claims;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setClaims(List<Claim> claims) {
+        this.claims = claims;
     }
 
-    @ManyToOne(optional = true)
-    @JoinColumn(name = "user_id", nullable = false)
-    @JsonIgnore
-    private User user ;
-
-
+    public User getUser() {
+        return user;
+    }
 }
 
 

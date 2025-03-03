@@ -14,6 +14,7 @@ import org.springframework.http.*;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -22,7 +23,7 @@ import java.util.Optional;
 
 public class GeminiService implements IGeminiService{
 
-    private final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateText";
+    private final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private final String apiKey = "AIzaSyBewFzBhs8qe4kL_sqX7b_4O2ISH3K14Yc"; // Clé API
     private final RestTemplate restTemplate = new RestTemplate();
     @Autowired
@@ -47,7 +48,11 @@ public class GeminiService implements IGeminiService{
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("prompt", Map.of("text", prompt));
+        Map<String, Object> content = new HashMap<>();
+        Map<String, Object> part = new HashMap<>();
+        part.put("text", prompt);
+        content.put("parts", List.of(part));
+        requestBody.put("contents", List.of(content));
 
         HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
         ResponseEntity<Map> response = restTemplate.exchange(
@@ -56,9 +61,6 @@ public class GeminiService implements IGeminiService{
         if (response.getBody() != null && response.getBody().containsKey("candidates")) {
             String outputText = response.getBody().get("candidates").toString();
             double premium = extractPremiumFromText(outputText);
-
-
-
             return premium;
         }
 
@@ -69,7 +71,7 @@ public class GeminiService implements IGeminiService{
         try {
             return Double.parseDouble(text.replaceAll("[^0-9.]", ""));
         } catch (NumberFormatException e) {
-            return 100.0; // Valeur par défaut en cas d'erreur
+            return 100.0;
         }
     }
 }

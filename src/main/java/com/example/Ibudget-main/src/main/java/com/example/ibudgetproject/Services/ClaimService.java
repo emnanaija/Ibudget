@@ -1,7 +1,9 @@
 package com.example.ibudgetproject.Services;
 
 import com.example.ibudgetproject.Entities.Claim;
+import com.example.ibudgetproject.Entities.InsurancePolicy;
 import com.example.ibudgetproject.Repositories.ClaimRepository;
+import com.example.ibudgetproject.Repositories.InsuranceRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -19,9 +21,15 @@ public class ClaimService implements IClaimService{
     @Autowired
     private ClaimRepository claimRepository ;
 
+    @Autowired
+    private InsuranceRepository insuranceRepository ;
+
     @Override
-    public Claim createClaim(Claim claim) {
-       return claimRepository.save(claim) ;
+    public Claim createClaimForInsurance(int insuranceId, Claim claim) {
+        InsurancePolicy insurancePolicy = insuranceRepository.findById(insuranceId)
+                .orElseThrow(() -> new RuntimeException("Insurance policy not found with id: " + insuranceId));
+        claim.setInsurancePolicy(insurancePolicy);
+        return claimRepository.save(claim);
     }
 
     @Override
@@ -50,9 +58,16 @@ public class ClaimService implements IClaimService{
         return claimRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Claim not found with id: " + id));
     }
-
     @Override
     public List<Claim> getAllClaims() {
         return claimRepository.findAll();
     }
+
+    @Override
+    public List<Claim> getClaimsByInsurance(int insuranceId) {
+       return claimRepository.findByInsurancePolicy_Id(insuranceId);
+
+
+    }
+
 }

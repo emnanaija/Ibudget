@@ -51,4 +51,6 @@ public class CompensationController {
         Compensation compensation = compensationService.processCompensation(policyId);
         return ResponseEntity.ok("Compensation enregistrée : " + compensation.getAmount_paid() + " €");
     }
+
+
 }

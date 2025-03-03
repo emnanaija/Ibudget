@@ -14,9 +14,9 @@ public class ClaimController {
     @Autowired
     private IClaimService claimService;
 
-    @PostMapping("add")
-    public Claim createClaim(@RequestBody Claim claim) {
-        return claimService.createClaim(claim);
+    @PostMapping("add/{insuranceId}")
+    public Claim createClaim(@PathVariable int insuranceId, @RequestBody Claim claim) {
+        return claimService.createClaimForInsurance(insuranceId, claim);
     }
 
 
@@ -40,6 +40,9 @@ public class ClaimController {
     public List<Claim> getAllClaims() {
         return claimService.getAllClaims();
     }
-
+    @GetMapping("/insurance/{insuranceId}")
+    public List<Claim> getClaimsByInsurance(@PathVariable int insuranceId) {
+        return claimService.getClaimsByInsurance(insuranceId);
+    }
 
 }

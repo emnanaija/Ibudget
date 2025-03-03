@@ -79,7 +79,7 @@ public class CompensationService implements ICompensationService{
 
         // Récupérer tous les sinistres validés
         List<Claim> validClaims = policy.getClaims().stream()
-                .filter(claim -> Boolean.TRUE.equals(claim.get)) // On garde ceux avec claim_status == true
+                .filter(claim -> Boolean.TRUE.equals(claim.isClaim_status())) // On garde ceux avec claim_status == true
                 .collect(Collectors.toList());
 
         if (validClaims.isEmpty()) {
