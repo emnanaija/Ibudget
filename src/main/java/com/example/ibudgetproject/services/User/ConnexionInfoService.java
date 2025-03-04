@@ -170,8 +170,8 @@ public class ConnexionInfoService implements IConnexionInfoService {
     }
 
 
-//******Verify connexion info
-public boolean verifyConnectionInfo(User user, HttpServletRequest request) throws Exception {
+    //******Verify connexion info
+    public boolean verifyConnectionInfo(User user, HttpServletRequest request) throws Exception {
         List<ConnexionInformation> storedInfoList = connexionRepository.findByUser(user);
 
         if (storedInfoList.isEmpty()) {
@@ -237,7 +237,7 @@ public boolean verifyConnectionInfo(User user, HttpServletRequest request) throw
 
     }
 
-//*******Validate the device via the email link
+    //*******Validate the device via the email link
     public void validateConnexionInfo(String token) throws Exception {
         String decryptedData = encryptor.decrypt(token); // Decrypt token to get "email:timestamp"
         String[] parts = decryptedData.split(":");
@@ -262,8 +262,8 @@ public boolean verifyConnectionInfo(User user, HttpServletRequest request) throw
         List<ConnexionInformation> storedInfoList = connexionRepository.findByUser(user);
         for (ConnexionInformation storedInfo : storedInfoList) {
             if (storedInfo.getDeviceName().equals(deviceName)){
-            storedInfo.setIsApproved(true);
-            connexionRepository.save(storedInfo);
+                storedInfo.setIsApproved(true);
+                connexionRepository.save(storedInfo);
             }
         }
     }

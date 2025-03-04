@@ -18,9 +18,9 @@ public class ConnexionInfoController {
 
     @GetMapping("/getAll")
     public List<ConnexionInformation> getAllCnxInfo(@AuthenticationPrincipal User connectedUser)
-{
-    return service.getAllCnxInfo(connectedUser);
-}
+    {
+        return service.getAllCnxInfo(connectedUser);
+    }
     @GetMapping("/getById")
     public ConnexionInformation getCnxInfo(@RequestParam Long id)
     {
@@ -40,7 +40,7 @@ public class ConnexionInfoController {
     @PatchMapping("/changeApproval")
     public  ResponseEntity<String> changeApproval(Long id, Boolean value,@AuthenticationPrincipal User user) throws Exception {
         try{
-        service.update(id,value,user);
+            service.update(id,value,user);
             return ResponseEntity.ok("Approval attribute changed with succcess");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

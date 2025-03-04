@@ -29,15 +29,15 @@ public class UserController {
     private IUserService service;
     @Autowired
     private AIService aiService;
-   @PostMapping("/completeProfile")
-   public ResponseEntity<?> completeProfile(@RequestBody @Valid CompleteProfileRequest request, HttpServletRequest req,@RequestParam String email ) throws MessagingException {
-       try {
-           service.completProfile(request,req,email);
-           return ResponseEntity.status(HttpStatus.CREATED).body("Registered with success");
-       } catch (Exception e) {
-           return ResponseEntity.badRequest().body(e.getMessage());
-       }
-   }
+    @PostMapping("/completeProfile")
+    public ResponseEntity<?> completeProfile(@RequestBody @Valid CompleteProfileRequest request, HttpServletRequest req,@RequestParam String email ) throws MessagingException {
+        try {
+            service.completProfile(request,req,email);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Registered with success");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 
 
     @PostMapping("/register")
@@ -59,7 +59,7 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        }
+    }
 
     @PostMapping("/refreshToken")
     public void refreshToken(
@@ -82,16 +82,16 @@ public class UserController {
         }
     }
 
-        @PostMapping("/resendActivationCode")
-        public ResponseEntity<?> resendVerificationCode (@RequestParam String email)
-        {
-            try {
-                service.resendActivationCode(email);
-                return ResponseEntity.ok("Activation code sent");
-            } catch (RuntimeException | MessagingException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
-            }
+    @PostMapping("/resendActivationCode")
+    public ResponseEntity<?> resendVerificationCode (@RequestParam String email)
+    {
+        try {
+            service.resendActivationCode(email);
+            return ResponseEntity.ok("Activation code sent");
+        } catch (RuntimeException | MessagingException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
     @PatchMapping("/changePassword")
     public ResponseEntity<?> changePassword(
@@ -106,17 +106,17 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-@PutMapping("/updateUser")
-     public ResponseEntity<?> updateUser(@AuthenticationPrincipal User connectedUser
-        ,@RequestBody UpdateUserRequest userDetails)
-{
-    try {
-        service.updateUser(connectedUser,userDetails);
-        return ResponseEntity.ok("Information updated with success");
-    } catch (Exception e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    @PutMapping("/updateUser")
+    public ResponseEntity<?> updateUser(@AuthenticationPrincipal User connectedUser
+            ,@RequestBody UpdateUserRequest userDetails)
+    {
+        try {
+            service.updateUser(connectedUser,userDetails);
+            return ResponseEntity.ok("Information updated with success");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
-}
     @PostMapping("/sendResetPasswordEmail")
     public ResponseEntity<String> sendResetEmail(@RequestParam String email) {
         try {
@@ -185,28 +185,28 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getDeletionRequests() {
         try {
-        List<User> users = service.getUsersRequestedDeletion();
-        return ResponseEntity.ok(users);
+            List<User> users = service.getUsersRequestedDeletion();
+            return ResponseEntity.ok(users);
         }catch(Exception e) {
             return ResponseEntity.status(NOT_FOUND).body(e.getMessage());}
     }
 
-   /* @PostMapping("/chat")
-    public String generateContent(@AuthenticationPrincipal User connectedUser,@RequestBody ChatRequest request) {
-        // Assuming UserInputDto contains input, financialLevel, and aiTonePreference fields
-        return aiService.generateContent(request.getInput(), connectedUser.getFinancialKnowledgeLevel(),connectedUser.getAiTonePreference());
-    }*/
-   @PostMapping("/getChatResponse")
-   public String getFinancialEducationResponse(@AuthenticationPrincipal User connectedUser,@RequestBody ChatRequest request) {
-       // Get user financial knowledge level and AI tone from request
-       FinancialKnowledgeLevel knowledgeLevel = connectedUser.getFinancialKnowledgeLevel();
-       Tone tone = connectedUser.getAiTonePreference();
+    /* @PostMapping("/chat")
+     public String generateContent(@AuthenticationPrincipal User connectedUser,@RequestBody ChatRequest request) {
+         // Assuming UserInputDto contains input, financialLevel, and aiTonePreference fields
+         return aiService.generateContent(request.getInput(), connectedUser.getFinancialKnowledgeLevel(),connectedUser.getAiTonePreference());
+     }*/
+    @PostMapping("/getChatResponse")
+    public String getFinancialEducationResponse(@AuthenticationPrincipal User connectedUser,@RequestBody ChatRequest request) {
+        // Get user financial knowledge level and AI tone from request
+        FinancialKnowledgeLevel knowledgeLevel = connectedUser.getFinancialKnowledgeLevel();
+        Tone tone = connectedUser.getAiTonePreference();
 
-       // Generate and return AI-generated response based on the user's question
-       return aiService.getFinancialEducation(request.getQuestion(), knowledgeLevel, tone);
-   }
+        // Generate and return AI-generated response based on the user's question
+        return aiService.getFinancialEducation(request.getQuestion(), knowledgeLevel, tone);
+    }
 
-   //**** Update first/last name and date of birth
+    //**** Update first/last name and date of birth
     @PostMapping("/sendUpdateRequest")
     public ResponseEntity<?> sendUpdateRequest(@AuthenticationPrincipal User connectedUser,@RequestBody UpdateUserByAdminRequest request) {
 
@@ -242,5 +242,5 @@ public class UserController {
         }
     }
 
-    }
+}
 

@@ -25,26 +25,26 @@ public class EmailService {
 
     @Async
     public void sendEmail(String to
-                          , String userName ,
+            , String userName ,
                           EmailTemplateName emailTemplate,
                           String receivedObject , ConnexionInformation cnxInfo,
                           String mapUrl,
                           String subject ) throws MessagingException {
         try {
-        String templateName;
-        if (emailTemplate == null){
-            templateName="Confirm Email";
-        }
-        else{
-            templateName=emailTemplate.name();
-        }
+            String templateName;
+            if (emailTemplate == null){
+                templateName="Confirm Email";
+            }
+            else{
+                templateName=emailTemplate.name();
+            }
 
-        MimeMessage mimeMessage =mailSender.createMimeMessage();
-        MimeMessageHelper helper =new MimeMessageHelper(
-                mimeMessage,
-                MimeMessageHelper.MULTIPART_MODE_MIXED,
-                StandardCharsets.UTF_8.name()
-        );
+            MimeMessage mimeMessage =mailSender.createMimeMessage();
+            MimeMessageHelper helper =new MimeMessageHelper(
+                    mimeMessage,
+                    MimeMessageHelper.MULTIPART_MODE_MIXED,
+                    StandardCharsets.UTF_8.name()
+            );
 
 
             Map<String,Object> properties= new HashMap<>();
@@ -56,23 +56,23 @@ public class EmailService {
             properties.put("location",cnxInfo.getCity());
             properties.put("mapUrl",mapUrl);
 
-        Context context = new Context();
-        context.setVariables(properties);
+            Context context = new Context();
+            context.setVariables(properties);
 
-        helper.setFrom("contact@ibudget.com");
-        helper.setTo(to);
-        helper.setSubject(subject);
+            helper.setFrom("contact@ibudget.com");
+            helper.setTo(to);
+            helper.setSubject(subject);
 
-        String template = templateEngine.process(templateName, context);
-        helper.setText(template, true);
+            String template = templateEngine.process(templateName, context);
+            helper.setText(template, true);
 
-        mailSender.send(mimeMessage);
-        log.info("Email sent successfully to {}", to);
-    } catch (MessagingException e) {
-        log.error("MessagingException while sending email: {}", e.getMessage(), e);
-    } catch (Exception e) {
-        log.error("Unexpected error while sending email: {}", e.getMessage(), e);
-    }
+            mailSender.send(mimeMessage);
+            log.info("Email sent successfully to {}", to);
+        } catch (MessagingException e) {
+            log.error("MessagingException while sending email: {}", e.getMessage(), e);
+        } catch (Exception e) {
+            log.error("Unexpected error while sending email: {}", e.getMessage(), e);
+        }
 
     }
 }

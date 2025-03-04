@@ -30,11 +30,11 @@ public class RoleService implements IRoleService {
             throw new Exception("Role already exists");
         }
         try{
-        var role=Role.builder()
-                .name(roleName)
-                .build();
+            var role=Role.builder()
+                    .name(roleName)
+                    .build();
 
-        repository.save(role);
+            repository.save(role);
         }catch (Exception e)
         {
             throw  new Exception("Failed to add role");

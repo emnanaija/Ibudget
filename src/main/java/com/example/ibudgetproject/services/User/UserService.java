@@ -2,6 +2,7 @@ package com.example.ibudgetproject.services.User;
 
 import com.example.ibudgetproject.configurations.EmailTemplateName;
 import com.example.ibudgetproject.DTO.User.*;
+import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.User.ConnexionInformation;
 import com.example.ibudgetproject.entities.User.TypeAccount;
 import com.example.ibudgetproject.entities.User.User;
@@ -9,6 +10,7 @@ import com.example.ibudgetproject.repositories.User.ConnexionInfoRepository;
 import com.example.ibudgetproject.repositories.User.RoleRepository;
 import com.example.ibudgetproject.repositories.User.UserRepository;
 import com.example.ibudgetproject.security.JWTService;
+import com.example.ibudgetproject.services.Transactions.SimCardAccountService;
 import com.example.ibudgetproject.services.User.Interfaces.IConnexionInfoService;
 import com.example.ibudgetproject.services.User.Interfaces.IUserService;
 import com.example.ibudgetproject.utilities.EncryptionUtility;
@@ -44,6 +46,10 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserService implements IUserService {
+    //rayen--------------------------------------------------------------
+    @Autowired
+    private SimCardAccountService simCardAccountService;
+    //-------------------------------------------------------------------
     @Autowired
     private UserRepository userRepository;
 
@@ -213,14 +219,15 @@ public class UserService implements IUserService {
     }
 
     //***Register
-    public void register(RegisterRequest request , HttpServletRequest req) throws Exception {
+    public void register(RegisterRequest request, HttpServletRequest req) throws Exception {
         String code = generateActivationCode();
         var userRole = roleRepository.findByName("ROLE_USER_FREMIUM")
                 .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
-        if (!isEmailValid(request.getEmail()))
-        {
+
+        if (!isEmailValid(request.getEmail())) {
             throw new Exception("Email not valid or doesn't exists");
         }
+
         var user = User.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -245,10 +252,22 @@ public class UserService implements IUserService {
                 .updateRequested(false)
                 .build();
 
+        // Save the user
         userRepository.save(user);
-        cnxInfoService.add(user,req,"register");
-        sendActivationEmail(user);
 
+        // rayen---------------creation_sim_card_account_ma_kol_user----------------
+        SimCardAccount simCardAccount = new SimCardAccount();
+        simCardAccount.setUser(user);
+        simCardAccount.setBalance(0.0);
+        simCardAccount.setCurrency("TND");
+        simCardAccount.setCreatedAt(LocalDateTime.now());
+        simCardAccount.setUpdatedAt(LocalDateTime.now());
+
+        simCardAccountService.createSimCardAccount(simCardAccount);
+        //--------------------------------------------------------------------------------
+
+        cnxInfoService.add(user, req, "register");
+        sendActivationEmail(user);
     }
     @Override
     public void completProfile(CompleteProfileRequest request, HttpServletRequest req, String email) throws Exception {

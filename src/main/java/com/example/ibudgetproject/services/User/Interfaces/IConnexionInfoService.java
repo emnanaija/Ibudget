@@ -9,8 +9,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface IConnexionInfoService {
-     ConnexionInformation add(User user , HttpServletRequest request, String method);
-     List<ConnexionInformation> getAllCnxInfo(User user);
+    ConnexionInformation add(User user , HttpServletRequest request, String method);
+    List<ConnexionInformation> getAllCnxInfo(User user);
     ConnexionInformation getCnxInfoById(Long id);
     void deleteCnxInfoById(Long id) throws Exception;
     void update(Long id, Boolean value,User user) throws Exception;
