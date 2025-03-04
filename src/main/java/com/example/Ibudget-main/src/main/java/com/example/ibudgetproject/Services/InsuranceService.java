@@ -70,6 +70,29 @@ public class InsuranceService implements IInsuranceService {
         return policies;
     }
 
+/*
+    public InsurancePolicy applyOffers(int insuranceId) {
+        InsurancePolicy policy = getInsurancePolicyById(insuranceId);
+        double calculatedPremium = policy.getPremium();
+
+        if (calculatedPremium > 2000) {
+            policy.setDetails(policy.getDetails() + " - Offre: Paiement échelonné disponible.");
+        }
+        if(userHasMultiplePolicies(policy.getUser().getIdUser())){ // Modification ici
+            policy.setPremium(calculatedPremium * 0.95);
+            policy.setDetails(policy.getDetails() + " - Offre: 5% de réduction pour regroupement de polices.");
+        }
+
+        return insurancePolicyRepository.save(policy);
+    }
+
+    private boolean userHasMultiplePolicies(long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
+        return insurancePolicyRepository.findByUserId(userId).size() > 1;
+    }*/
+
+
 
 
 

@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,45 @@ public class Document {
     private String description;
 
 @ManyToOne
+@JoinColumn(name = "claim_id")
+@JsonBackReference
 private Claim claim ;
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Claim getClaim() {
+        return claim;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setClaim(Claim claim) {
+        this.claim = claim;
+    }
 
     public Long getId() {
         return id;

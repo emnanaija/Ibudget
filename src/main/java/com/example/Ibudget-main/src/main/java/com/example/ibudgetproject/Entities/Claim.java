@@ -1,6 +1,8 @@
 package com.example.ibudgetproject.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,7 +35,7 @@ public class Claim {
     @JsonProperty("claim_status")
     private boolean claim_status;
     @JsonProperty("expert_report")
-    private String expert_report;
+    private boolean expert_report;
 
     @ManyToOne(optional = true)
     @JoinColumn(name = "insurance_policy_id")
@@ -41,10 +43,13 @@ public class Claim {
     private InsurancePolicy insurancePolicy;
 
     @OneToMany(mappedBy = "claim", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Document> documents;
 
     @ManyToOne
+
     @JoinColumn(name = "compensation_id")
+    @JsonBackReference
     private Compensation compensation;
 
     //gettters and setters
@@ -105,11 +110,11 @@ public class Claim {
         this.claim_status = claim_status;
     }
 
-    public String getExpert_report() {
+    public boolean isExpert_report() {
         return expert_report;
     }
 
-    public void setExpert_report(String expert_report) {
+    public void setExpert_report(boolean expert_report) {
         this.expert_report = expert_report;
     }
 

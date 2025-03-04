@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CompensationRepository extends JpaRepository<Compensation,Integer> {
+
+    Compensation findByBeneficiaryid(long beneficiaryid);
 }

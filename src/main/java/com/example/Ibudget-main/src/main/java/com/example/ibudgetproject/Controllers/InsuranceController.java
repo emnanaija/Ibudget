@@ -53,6 +53,18 @@ public class InsuranceController {
     }
 
 
+    @GetMapping("/test-extract-premium/{insuranceId}")
+    public double testExtractPremium(@PathVariable int insuranceId) {
+
+        InsurancePolicy insurancePolicy = insurancePolicyService.getInsurancePolicyById(insuranceId);
+
+
+        String geminiResponse = "Le prix est de 1234.56 euros pour l'assurance " + insuranceId;
+
+
+        return geminiService.extractPremiumFromText(geminiResponse);
+    }
+
 
 
 

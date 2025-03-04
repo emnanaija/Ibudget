@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.Entities;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -20,15 +21,23 @@ public class Compensation {
 
     @JsonProperty("payment_status")
     private boolean payment_status;
-    @JsonProperty("beneficiary")
-    private String beneficiary;
+    @JsonProperty("beneficiaryid")
+    private long beneficiaryid;
     @JsonProperty("comment")
     private String comment;
-    @JsonProperty("validation_date")
-    private LocalDateTime validation_date;
+
 
     @OneToMany(mappedBy = "compensation", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private List<Claim> coveredClaims;
+
+    public List<Claim> getCoveredClaims() {
+        return coveredClaims;
+    }
+
+    public void setBeneficiaryid(long beneficiaryid) {
+        this.beneficiaryid = beneficiaryid;
+    }
 
     public int getId() {
         return id;
@@ -58,17 +67,13 @@ public class Compensation {
         this.payment_status = payment_status;
     }
 
-    public void setBeneficiary(String beneficiary) {
-        this.beneficiary = beneficiary;
-    }
+
 
     public void setComment(String comment) {
         this.comment = comment;
     }
 
-    public void setValidation_date(LocalDateTime validation_date) {
-        this.validation_date = validation_date;
-    }
+
 
     public void setCoveredClaims(List<Claim> coveredClaims) {
         this.coveredClaims = coveredClaims;

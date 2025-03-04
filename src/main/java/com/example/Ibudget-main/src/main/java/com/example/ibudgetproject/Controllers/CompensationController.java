@@ -46,11 +46,6 @@ public class CompensationController {
 
 
 
-    @PostMapping("/process/{policyId}")
-    public ResponseEntity<String> processCompensation(@PathVariable int policyId) {
-        Compensation compensation = compensationService.processCompensation(policyId);
-        return ResponseEntity.ok("Compensation enregistrée : " + compensation.getAmount_paid() + " €");
-    }
 
 
 }

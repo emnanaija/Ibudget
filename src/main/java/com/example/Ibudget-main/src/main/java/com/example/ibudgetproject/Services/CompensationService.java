@@ -69,51 +69,5 @@ public class CompensationService implements ICompensationService{
 
 
 
-    public Compensation processCompensation(Integer policyId) {
-        // Récupérer le contrat d'assurance
-        InsurancePolicy policy = insurancePolicyRepository.findById(policyId)
-                .orElseThrow(() -> new RuntimeException("Contrat non trouvé !"));
-
-        // Récupérer la prime payée
-        double premium = policy.getPremium();
-
-        // Récupérer tous les sinistres validés
-        List<Claim> validClaims = policy.getClaims().stream()
-                .filter(claim -> Boolean.TRUE.equals(claim.isClaim_status())) // On garde ceux avec claim_status == true
-                .collect(Collectors.toList());
-
-        if (validClaims.isEmpty()) {
-            throw new RuntimeException("Aucun sinistre validé pour ce contrat !");
-        }
-
-        // Calculer la somme des claimed_amount
-        double totalClaimedAmount = validClaims.stream()
-                .mapToDouble(Claim::getClaimed_amount)
-                .sum();
-
-        // Déterminer le taux de couverture en fonction de la prime
-        double coverageRate = Math.min(1, 0.5 + (premium / 5000));
-
-        // Calculer le montant à payer
-        double amountPaid = totalClaimedAmount * coverageRate;
-
-        // Créer la compensation
-        Compensation compensation = new Compensation();
-        compensation.setAmount_paid(amountPaid);
-        compensation.setPayment_date(LocalDateTime.now());
-        compensation.setPayment_status(false); // En attente de paiement
-        compensation.setCoveredClaims(validClaims); // Associer les sinistres à cette compensation
-
-        // Associer la compensation aux sinistres
-        for (Claim claim : validClaims) {
-            claim.setCompensation(compensation);
-        }
-
-        // Sauvegarder les sinistres mis à jour
-        claimRepository.saveAll(validClaims);
-
-        // Sauvegarder la compensation
-        return compensationRepository.save(compensation);
-    }
 
 }

@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface IDocumentService {
 
-    Document createDocument(Document document) ;
+    Document createDocument(Document document,int claimId) ;
     Document updateDocument(Document document);
     void deleteDocument(Long id) ;
     Document getDocumentByid(Long id) ;
-    List<Document> getAllDocuments() ;
+    List<Document> getAllDocumentsByClaimId(int claimId);
 }

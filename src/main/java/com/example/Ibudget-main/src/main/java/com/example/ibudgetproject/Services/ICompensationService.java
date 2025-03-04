@@ -13,5 +13,5 @@ public interface ICompensationService {
     void deleteCompensation(int id) ;
     Compensation getCompensationByid(int id) ;
     List<Compensation> getAllCompensations() ;
-    Compensation processCompensation(Integer policyId);
+    //Compensation processCompensation(Integer policyId);
 }

@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.Services;
 
+import com.example.ibudgetproject.Entities.Claim;
 import com.example.ibudgetproject.Entities.Document;
 import com.example.ibudgetproject.Repositories.ClaimRepository;
 import com.example.ibudgetproject.Repositories.CompensationRepository;
@@ -19,11 +20,16 @@ public class DocumentService implements IDocumentService{
     @Autowired
     private DocumentRepository documentRepository ;
 
-    @Override
-    public Document createDocument(Document document) {
-        return documentRepository.save(document) ;
-    }
+    @Autowired
+    private ClaimRepository claimRepository ;
 
+    @Override
+    public Document createDocument(Document document, int claimId) { // Ajout de claimId comme paramètre
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new RuntimeException("Claim not found with id: " + claimId));
+        document.setClaim(claim);
+        return documentRepository.save(document);
+    }
     @Override
     public Document updateDocument(Document document) {
         if (documentRepository.existsById(document.getId())) {
@@ -51,7 +57,7 @@ public class DocumentService implements IDocumentService{
     }
 
     @Override
-    public List<Document> getAllDocuments() {
-        return documentRepository.findAll();
+    public List<Document> getAllDocumentsByClaimId(int claimId) { // Ajout de la méthode pour récupérer par ClaimId
+        return documentRepository.findByClaimId(claimId);
     }
 }
