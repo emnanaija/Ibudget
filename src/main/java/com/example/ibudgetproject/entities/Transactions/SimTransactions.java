@@ -29,6 +29,11 @@ public class SimTransactions {
     @Column(name = "descreption")
     private String descreption;
     private LocalDateTime transactionDate = LocalDateTime.now();
+    private double feeAmount;
+
+
+
+
 
     @Getter
     @ManyToOne
@@ -145,20 +150,11 @@ public class SimTransactions {
         return simCardAccount;
     }
 
-//    CREATE TABLE sim_card_transactions (
-//            id_transaction BIGINT AUTO_INCREMENT PRIMARY KEY,
-//            amount DOUBLE NOT NULL,
-//            transaction_type INT NOT NULL,
-//            status VARCHAR(255),
-//    ref_num VARCHAR(255),
-//    description TEXT,
-//    transaction_date DATETIME NOT NULL,
-//    sim_card_id BIGINT NOT NULL,
-//    sender_id INT NOT NULL,
-//    receiver_id INT NOT NULL,
-//    FOREIGN KEY (sim_card_id) REFERENCES sim_card_account(sim_card_id),
-//    FOREIGN KEY (sender_id) REFERENCES _users(user_id),
-//    FOREIGN KEY (receiver_id) REFERENCES _users(user_id)
-//            );
+    public double getFeeAmount() {
+        return feeAmount;
+    }
 
+    public void setFeeAmount(double feeAmount) {
+        this.feeAmount = feeAmount;
+    }
 }

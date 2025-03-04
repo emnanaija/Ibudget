@@ -166,6 +166,12 @@
             <version>7.1.17</version>
         </dependency>
 
+        <!--______________________emna/dep________________________________________-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version> <!-- Utilise la dernière version stable -->
+        </dependency>
 
 
         <!--_________________________ bkeyet dep_______________________________ -->
