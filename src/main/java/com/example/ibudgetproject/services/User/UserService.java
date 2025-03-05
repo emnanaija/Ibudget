@@ -15,6 +15,7 @@ import com.example.ibudgetproject.services.User.Interfaces.IConnexionInfoService
 import com.example.ibudgetproject.services.User.Interfaces.IUserService;
 import com.example.ibudgetproject.utilities.EncryptionUtility;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.MalformedJwtException;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -557,6 +558,30 @@ public class UserService implements IUserService {
         );
 
     }
+    //Teba3 Achref
+    public User findUserProfileByJwt(String jwt) throws Exception {
+        try {
+            // Supprimer le préfixe "Bearer " s'il est présent
+            if (jwt != null && jwt.startsWith("Bearer ")) {
+                jwt = jwt.substring(7); // Supprime "Bearer "
+            }
+
+            // Supprimer les espaces autour du JWT
+            jwt = jwt.trim();
+
+            String email = jwtService.extractUserName(jwt); // Extraire l'email
+            User user = userRepository.findByEmail(email).orElse(null); // Rechercher l'utilisateur
+
+            if (user == null) {
+                throw new Exception("User not found");
+            }
+            return user;
+        } catch (MalformedJwtException e) {
+            // Gérer l'exception JWT malformé
+            throw new Exception("Malformed JWT: " + e.getMessage());
+        }
+    }
+
 
 
 
