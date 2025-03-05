@@ -40,6 +40,7 @@ public class SimCardAccount {
     private List<SimTransactions> transactions;
 
     @OneToMany(mappedBy = "simCardAccount", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference("simCardAccountRechargeCards") // Add this line
     private List<RechargeCard> rechargeCards;
 
     @PrePersist

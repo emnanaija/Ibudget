@@ -237,6 +237,7 @@ public class AIService {
         }
     }
 
+
     private String extractGeneratedText(String jsonResponse) {
         try {
             System.out.println("Raw API Response: " + jsonResponse);
@@ -253,8 +254,7 @@ public class AIService {
                 String jsonSubstring = jsonResponse.substring(jsonStart, jsonEnd);
 
                 // Parse JSON safely
-                Type responseType = new TypeToken<Map<String, Object>>() {
-                }.getType();
+                Type responseType = new TypeToken<Map<String, Object>>() {}.getType();
                 Map<String, Object> responseBody = GSON.fromJson(jsonSubstring, responseType);
 
                 if (responseBody.containsKey("candidates")) {

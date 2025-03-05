@@ -10,4 +10,5 @@ public interface IRechargeCardService {
 
     @Transactional
     SimCardAccount rechargeAccountWithImage(Long simCardId, String imagePath) throws IOException;
+    SimCardAccount rechargeAccountWithoutNotification(Long simCardId, String rechargeCode);
 }

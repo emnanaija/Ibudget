@@ -75,4 +75,11 @@ public class RechargeController {
         return filePath.toString();
     }
 
+    @PostMapping("/no-notification/{simCardId}")
+    public ResponseEntity<SimCardAccount> rechargeAccountWithoutNotification(
+            @PathVariable Long simCardId,
+            @RequestParam String rechargeCode) {
+        SimCardAccount updatedAccount = rechargeCardServicee.rechargeAccountWithoutNotification(simCardId, rechargeCode);
+        return ResponseEntity.ok(updatedAccount);
+    }
 }

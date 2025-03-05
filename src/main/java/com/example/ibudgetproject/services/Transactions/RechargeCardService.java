@@ -87,4 +87,28 @@ public class RechargeCardService implements IRechargeCardService {
     private String generateUniqueCode() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 12).toUpperCase();
     }
+    @Transactional
+    public SimCardAccount rechargeAccountWithoutNotification(Long simCardId, String rechargeCode) {
+        RechargeCard rechargeCard = rechargeCardRepository.findByCode(rechargeCode)
+                .orElseThrow(() -> new RuntimeException("Recharge card not found with code: " + rechargeCode));
+
+        if (rechargeCard.isUsed()) {
+            throw new RuntimeException("Card already used");
+        }
+
+        SimCardAccount simCardAccount = simCardAccountRepository.findById(simCardId)
+                .orElseThrow(() -> new RuntimeException("SimCardAccount not found with id: " + simCardId));
+
+        double newBalance = simCardAccount.getBalance() + rechargeCard.getAmount();
+        simCardAccount.setBalance(newBalance);
+
+        rechargeCard.setUsed(true);
+        rechargeCard.setSimCardAccount(simCardAccount);
+
+        rechargeCardRepository.save(rechargeCard);
+        simCardAccountRepository.save(simCardAccount);
+
+        // Skip notification
+        return simCardAccount;
+    }
 }

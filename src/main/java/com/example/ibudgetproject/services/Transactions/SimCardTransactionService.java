@@ -69,49 +69,48 @@ public class SimCardTransactionService implements ISimCardTransactionService {
     @Override
     @Transactional
     public SimTransactions createTransaction(SimTransactions transaction) {
-        // Validate sender and receiver
+        // verif sender and reciver
         User sender = userRepository.findById(transaction.getSender().getUserId())
                 .orElseThrow(() -> new RuntimeException("Sender not found"));
         User receiver = userRepository.findById(transaction.getReceiver().getUserId())
                 .orElseThrow(() -> new RuntimeException("Receiver not found"));
 
-        // Validate sender's SimCardAccount
+        //validate sim cardaccount for sender
         SimCardAccount senderAccount = simCardAccountRepository.findById(transaction.getSimCardAccount().getSimCardId())
                 .orElseThrow(() -> new RuntimeException("Sender's account not found"));
 
-        // Calculate fee (you can define your fee calculation logic here)
+        //fee log
         double feeAmount = calculateFee(transaction.getAmount());
         transaction.setFeeAmount(feeAmount);
 
-        // Ensure sender has enough balance for both the transaction and the fee
+        // enough balanc for transaction+ fee
         if (senderAccount.getBalance() < (transaction.getAmount() + feeAmount)) {
             throw new RuntimeException("Insufficient balance for this transaction and fee.");
         }
 
-        // Deduct the transaction amount and fee from the sender
+        // -balance
         senderAccount.setBalance(senderAccount.getBalance() - (transaction.getAmount() + feeAmount));
 
-        // Get or create receiver's SimCardAccount
+        // reciver acc
         SimCardAccount receiverAccount = simCardAccountRepository.findById(receiver.getUserId())
                 .orElseThrow(() -> new RuntimeException("Receiver's account not found"));
         receiverAccount.setBalance(receiverAccount.getBalance() + transaction.getAmount());
 
-        // Fetch the system fee beneficiary account (owned by the admin)
-        long systemFeeAccountId = 2L; // Use the numeric ID for the system fee account
+        // add fee to app
+        long systemFeeAccountId = 1L;
         SimCardAccount feeBeneficiaryAccount = simCardAccountRepository.findById(systemFeeAccountId)
                 .orElseThrow(() -> new RuntimeException("System fee beneficiary account not found"));
 
-        // Save the fee to the admin's fee beneficiary account
+
         feeBeneficiaryAccount.setBalance(feeBeneficiaryAccount.getBalance() + feeAmount);
 
         logger.info("Fee of {} collected and added to system fee account (ID: {}).", feeAmount, systemFeeAccountId);
 
-        // Save updates
+        // sv
         simCardAccountRepository.save(senderAccount);
         simCardAccountRepository.save(receiverAccount);
         simCardAccountRepository.save(feeBeneficiaryAccount);
 
-        // Set relationships and save transaction
         transaction.setSender(sender);
         transaction.setReceiver(receiver);
         transaction.setSimCardAccount(senderAccount);
