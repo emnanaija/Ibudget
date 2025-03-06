@@ -6,6 +6,7 @@ import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,14 +20,14 @@ import java.util.List;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(unique = true)
     private String name;
 
     @OneToMany(mappedBy="role")
     @JsonIgnore
-    private List<User> users;
+    private List<User>users;
 
     @CreatedDate
     @Column(nullable = false,updatable = false)

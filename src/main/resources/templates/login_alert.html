@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚨 Unusual Login Attempt Detected</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 5px solid red;
+        }
+        h1 {
+            color: #d9534f;
+            font-size: 26px;
+            font-weight: 600;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .approval-link {
+            font-size: 16px;
+            color: red;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+        .approval-link:hover {
+            text-decoration: underline;
+            color: darkred;
+        }
+        .footer {
+            font-size: 14px;
+            color: #777;
+            margin-top: 25px;
+            border-top: 1px solid #ddd;
+            padding-top: 15px;
+        }
+        .icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+        .device-info {
+            background-color: #f1f1f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .device-info p {
+            margin: 5px 0;
+            font-weight: 500;
+        }
+        .device-info span {
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="icon">🚨</div>
+    <h1>⚠️ Unusual Login Attempt Detected</h1>
+    <p class="greeting" th:text="'Hello ' + ${userName} + ','"></p>
+    <p>🔍 We detected a login attempt to your account from an unrecognized device. The details of this device are provided below:</p>
+
+    <div class="device-info">
+        <p><strong>Device Name:</strong> <span th:text="${deviceName}"></span></p>
+        <p><strong>Device Type:</strong> <span th:text="${deviceType}"></span></p>
+        <p><strong>Login Attempt Time:</strong> <span th:text="${loginAttemptTime}"></span></p>
+        <p><strong>Location:</strong> <span th:text="${location}"></span></p>
+        <p><strong>View location:</strong> <a th:href="${mapUrl}" class="approval-link">Map</a></p>
+    </div>
+
+    <p>If this is you, please approve the device by clicking on the link below. Once approved, you will be able to log in from this device securely and without additional verification in the future.</p>
+
+    <a th:href="${receivedObject}" class="approval-link">Approve device</a>
+
+    <div class="footer">
+        <p>📩If you are not the person who tried to log in, please check your security or <strong>contact support</strong>.</p>
+    </div>
+</div>
+</body>
+</html>

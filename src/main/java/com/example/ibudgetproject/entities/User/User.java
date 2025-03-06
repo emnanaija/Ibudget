@@ -2,8 +2,12 @@ package com.example.ibudgetproject.entities.User;
 
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
+import com.example.ibudgetproject.entities.User.ConnexionInformation;
+import com.example.ibudgetproject.entities.User.Gender;
+import com.example.ibudgetproject.entities.User.Role;
+import com.example.ibudgetproject.entities.User.TypeAccount;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -48,9 +53,13 @@ public class User implements UserDetails, Principal {
     @Enumerated(EnumType.STRING)
     private Gender gender;
     private String profession;
+    @Enumerated(EnumType.STRING)
+    private Tone aiTonePreference;
+    @Enumerated(EnumType.STRING)
+    private FinancialKnowledgeLevel financialKnowledgeLevel;
     private Boolean accountLocked ;
     private int failedAttempts = 0;
-    private boolean  accountEnabled  ;
+    private Boolean accountEnabled  ;
 
     @Enumerated(EnumType.STRING)
     private TypeAccount accountType;
@@ -66,11 +75,24 @@ public class User implements UserDetails, Principal {
     @Column(insertable= false)
     private LocalDateTime lastModifiedDate;
 
+    private boolean deletionRequested;
+
+    private  String phoneNumber;
+
+    private  Boolean updateRequested;
+    private String firstNameUpdate ;
+    private String lastNameUpdate ;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    private LocalDate dateOfBirthUpdate ;
 
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_FK")
     private Role role;
+
+    @OneToMany(mappedBy ="user")
+    @JsonIgnore
+    private List<ConnexionInformation> connexionInformationList;
 
     @Override
     public String getName() {
@@ -87,19 +109,17 @@ public class User implements UserDetails, Principal {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password=password;
-    }
+
 
 
 
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // List authorities=new ArrayList();
-        // authorities.add(new SimpleGrantedAuthority(this.role.getName()));
-        // return authorities;
-        return Collections.singleton(new SimpleGrantedAuthority("User"));
+       List authorities=new ArrayList();
+       authorities.add(new SimpleGrantedAuthority(this.role.getName()));
+        return authorities;
+       // return Collections.singleton(new SimpleGrantedAuthority("USER_FREMIUM"));
     }
 
 
@@ -125,19 +145,6 @@ public class User implements UserDetails, Principal {
     public String fullName(){
         return firstName+" "+lastName;
     }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-
-  //achref--------------------------------------------------------------------------------------------------
-
-
     //rayen ----------------------------------------------------------------------------------------------------------
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private SimCardAccount simCardAccount;
@@ -169,12 +176,5 @@ public class User implements UserDetails, Principal {
     public void setReceivedTransactions(List<SimTransactions> receivedTransactions) {
         this.receivedTransactions = receivedTransactions;
     }
-    @Column(unique = true,nullable = false)
-    @JsonProperty("phoneNumber")
-    private String phoneNumber;
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
 
 }
