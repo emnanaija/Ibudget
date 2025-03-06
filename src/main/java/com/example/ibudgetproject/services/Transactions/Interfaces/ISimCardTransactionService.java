@@ -19,4 +19,5 @@ public interface ISimCardTransactionService {
     List<SimTransactions> batchTransactions(List<SimTransactions> transactions);
     SimTransactions conditionalTransaction(SimTransactions transaction, double balanceThreshold);
     List<SimTransactions> scheduleRecurringTransaction(SimTransactions transaction, LocalDateTime startTime, int intervalDays, int numberOfRepetitions);
+    SimTransactions createSubscriptionTransaction(Long userId, double subscriptionFee);
 }

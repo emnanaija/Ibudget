@@ -1,4 +1,5 @@
 package com.example.ibudgetproject.entities.Savings;
+import com.example.ibudgetproject.entities.User.User;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -23,6 +24,17 @@ public class CompteEpargne {
     private List<Depot> depots;
     @OneToMany(mappedBy = "compteEpargne", cascade = CascadeType.ALL)
     private List<DepotLog> depotsSupprimes = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     // Getters and Setters
     public Long getId() {

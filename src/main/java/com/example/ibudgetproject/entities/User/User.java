@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.entities.User;
 
+import com.example.ibudgetproject.entities.Savings.CompteEpargne;
 import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.Transactions.SimTransactions;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -190,6 +192,12 @@ public class User implements UserDetails, Principal {
     public String getPhoneNumber() {
         return phoneNumber;
     }
+
+
+    //amine--------------------------------------------------------
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CompteEpargne> comptesEpargne = new ArrayList<>();
 
 
 }

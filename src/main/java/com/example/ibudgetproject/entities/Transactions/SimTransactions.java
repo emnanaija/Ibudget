@@ -47,7 +47,7 @@ public class SimTransactions {
     private User sender;
 
     @ManyToOne
-    @JoinColumn(name = "receiver_id", nullable = false)
+    @JoinColumn(name = "receiver_id", nullable = true)
     @JsonBackReference("userReceivedTransactions")
     private User receiver;
 

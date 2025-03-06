@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.repositories.User;
 
+import com.example.ibudgetproject.entities.User.TypeAccount;
 import com.example.ibudgetproject.entities.User.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -21,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByDeletionRequestedTrue();
     List<User> findByUpdateRequestedTrue();
+
+    List<User> findByAccountType(TypeAccount typeAccount);
 }

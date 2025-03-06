@@ -4,6 +4,7 @@ public enum TransactionType {
     LocalCurrency,
     HederaToken,
     Transfer,
-    PAYMENT
+    PAYMENT,
 
+    SUBSCRIPTION
 }

@@ -1,10 +1,13 @@
 package com.example.ibudgetproject.services.Savings;
 import com.example.ibudgetproject.entities.Savings.CompteEpargne;
 import com.example.ibudgetproject.entities.Savings.TauxInteret;
+import com.example.ibudgetproject.entities.User.User;
 import com.example.ibudgetproject.repositories.Savings.CompteEpargneRepository;
 import com.example.ibudgetproject.repositories.Savings.TauxInteretRepository;
+import com.example.ibudgetproject.repositories.User.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.ibudgetproject.entities.User.TypeAccount;
 import java.math.BigDecimal;
 
 import java.math.RoundingMode;
@@ -16,6 +19,8 @@ public class CompteEpargneService {
     private CompteEpargneRepository compteEpargneRepository;
     @Autowired
     private TauxInteretRepository tauxInteretRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public List<CompteEpargne> getAllCompteEpargnes() {
         return compteEpargneRepository.findAll();
@@ -25,14 +30,20 @@ public class CompteEpargneService {
         return compteEpargneRepository.findById(id).orElse(null);
     }
 
-    public CompteEpargne saveCompteEpargne(CompteEpargne compteEpargne) {
-        if (compteEpargne.getTauxInteret() != null && compteEpargne.getTauxInteret().getId() != null) {
-            TauxInteret tauxExistant = tauxInteretRepository.findById(compteEpargne.getTauxInteret().getId())
-                    .orElseThrow(() -> new RuntimeException("Taux introuvable"));
-            compteEpargne.setTauxInteret(tauxExistant);
-        }
+    public CompteEpargne saveCompteEpargne(Long userId, CompteEpargne compteEpargne) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        // Determine TauxInteret based on User's AccountType
+        Long tauxId = (user.getAccountType() == TypeAccount.Fremium) ? 1L : 2L;
+        TauxInteret tauxInteret = tauxInteretRepository.findById(tauxId)
+                .orElseThrow(() -> new RuntimeException("Taux d'intérêt introuvable"));
+
+        compteEpargne.setTauxInteret(tauxInteret);
+        compteEpargne.setUser(user); // Set the user object
         return compteEpargneRepository.save(compteEpargne);
     }
+
     public CompteEpargne updateCompteEpargne(Long id, CompteEpargne updatedCompteEpargne) {
         CompteEpargne existingCompteEpargne = compteEpargneRepository.findById(id).orElse(null);
         if (existingCompteEpargne != null) {
