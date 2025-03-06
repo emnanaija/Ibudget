@@ -12,10 +12,43 @@ public class GeolocationResponse {
     @JsonProperty("ip")
     private String ipAddress;
 
+    public String getIpAddress() {
+        if (ipAddress==null)
+            return "UNKOWN";
+        return ipAddress;
+    }
+
     private String city;
+
+    public String getCity() {
+        if (city==null)
+            return "UNKOWN";
+        return city;
+    }
+
     private String region;
+
+    public String getRegion() {
+        if (region==null)
+            return "UNKOWN";
+        return region;
+    }
+
     private String country;
+
+    public String getCountry() {
+        if (country==null)
+            return "UNKOWN";
+        return country;
+    }
+
     private String timezone;
+
+    public String getTimezone() {
+        if (timezone==null)
+            return "UNKOWN";
+        return timezone;
+    }
 
     @JsonProperty("loc")
     private String location;
@@ -23,6 +56,11 @@ public class GeolocationResponse {
     private double longitude;
 
     public void setLocation(String location) throws Exception {
+        if (location==null)
+        {
+            this.latitude = 0.0;
+            this.longitude =0.0;
+        }
         this.location = location;
         if (location != null && !location.isEmpty()) {
             String[] latLong = location.split(",");
@@ -40,14 +78,16 @@ public class GeolocationResponse {
 
     @Data
     public static class  Privacy {
-        private boolean vpn;
+        private Boolean vpn;
     }
     private Privacy privacy;
-    @Data
-    public static class ASN {
-        @JsonProperty("name")
-        private String internetProvider;
-    }
-    private ASN asn ;
 
+    @JsonProperty("org")
+    private String internetProvider;
+
+    public String getInternetProvider() {
+        if (internetProvider==null)
+            return "UNKOWN";
+        return internetProvider;
+    }
 }

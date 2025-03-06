@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .csrf(cs->cs.disable())
                 .authorizeHttpRequests((req->req
                         .requestMatchers("user/register","user/login","user/activateAccount","user/resendActivationCode"
-                                ,"user/sendResetEmail","user/resetPassword","connexionInfo/approveLogIn","/oauth2/**","/user/completeProfile","user/sendResetPasswordEmail","/getChatResponse")
+                                ,"user/sendResetEmail","user/resetPassword","connexionInfo/approveLogIn","/oauth2/**","/user/completeProfile","user/sendResetPasswordRequest")
                         .permitAll()
                         .anyRequest().authenticated()))
                 .oauth2Login(oauth2 -> oauth2

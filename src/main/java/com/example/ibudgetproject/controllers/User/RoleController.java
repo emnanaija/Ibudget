@@ -4,6 +4,7 @@ import com.example.ibudgetproject.DTO.User.RoleRequest;
 import com.example.ibudgetproject.DTO.User.UpdateRoleRequest;
 import com.example.ibudgetproject.entities.User.Role;
 import com.example.ibudgetproject.services.User.Interfaces.IRoleService;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequestMapping("/role")
-@PreAuthorize("hasRole('ADMIN')")
+@RolesAllowed("ROLE_ADMIN")
 public class RoleController {
     @Autowired
     private IRoleService service;

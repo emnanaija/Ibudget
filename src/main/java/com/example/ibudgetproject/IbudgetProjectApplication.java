@@ -38,8 +38,8 @@ public class IbudgetProjectApplication {
     @Bean
     public CommandLineRunner runner(RoleRepository roleRepository) {
         return args -> {
-            if (roleRepository.findByName("ROLE_USER_FREMIUM").isEmpty()) {
-                roleRepository.save(Role.builder().name("ROLE_USER_FREMIUM").build());
+            if (roleRepository.findByName("ROLE_ADMIN").isEmpty()) {
+                roleRepository.save(Role.builder().name("ROLE_ADMIN").build());
             }
         };
     }

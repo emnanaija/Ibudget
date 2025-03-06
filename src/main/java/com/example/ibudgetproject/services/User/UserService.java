@@ -85,18 +85,21 @@ public class UserService implements IUserService {
 
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
     private static final long tokenExpirationInMinutes = 5;
-    ////*****CRUD
+
 //**Get User
+    @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found!"));
     }
 
+    @Override
     public List<User> getAllUsers() {
 
         return userRepository.findAll();
     }
     //**Delete User**
+    @Override
     public boolean requestDeleteAccount(String email) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -110,11 +113,12 @@ public class UserService implements IUserService {
         return false;
 
     }
-
+    @Override
     public List<User> getUsersRequestedDeletion() {
         return userRepository.findByDeletionRequestedTrue();
     }
 
+    @Override
     public boolean deleteUsersByAdmin() {
         List<User> usersToDelete = userRepository.findByDeletionRequestedTrue();
         if (!usersToDelete.isEmpty()) {
@@ -124,6 +128,7 @@ public class UserService implements IUserService {
         return false;
 
     }
+    @Override
     public void updateUser(User connectedUser, UpdateUserRequest userDetails) throws Exception {
         if(verifyPassword(connectedUser.getEmail(), userDetails.getCurrentPassword()))
         {
@@ -206,6 +211,7 @@ public class UserService implements IUserService {
     }
 
     ////******Verify that the email is valid and exists
+    @Override
 
     public boolean isEmailValid(String email) {
         String url = String.format("%s?api_key=%s&email=%s", apiUrl, apiKey, email);
@@ -220,6 +226,7 @@ public class UserService implements IUserService {
     }
 
     //***Register
+    @Override
     public void register(RegisterRequest request, HttpServletRequest req) throws Exception {
         String code = generateActivationCode();
         var userRole = roleRepository.findByName("ROLE_USER_FREMIUM")
@@ -311,12 +318,13 @@ public class UserService implements IUserService {
 
 
     ////***Account Activation
+    @Override
     public void activateAccount(ActivationRequest activationRequest) {
         Optional<User> optionalUser = userRepository.findByEmail(activationRequest.getEmail());
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if (user.getActivationCodeExpiry().isBefore(LocalDateTime.now())) {
-                throw new RuntimeException("Verification code has expired");
+                throw new RuntimeException("Activation code has expired");
             }
             if (user.getActivationCode().equals(activationRequest.getActivationCode())) {
                 user.setAccountEnabled(true);
@@ -327,12 +335,13 @@ public class UserService implements IUserService {
                 user.setFailedAttempts(0);
                 userRepository.save(user);
             } else {
-                throw new RuntimeException("Invalid verification code");
+                throw new RuntimeException("Invalid activation code");
             }
         } else {
             throw new RuntimeException("User not found");
         }
     }
+    @Override
 
     public void resendActivationCode(String email) throws MessagingException {
         Optional<User> optionalUser = userRepository.findByEmail(email);
@@ -352,6 +361,7 @@ public class UserService implements IUserService {
 
     }
     ///*****LogIn
+    @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request , HttpServletRequest req) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
 
@@ -405,14 +415,16 @@ public class UserService implements IUserService {
     }
 
     ///*****Refresh token
+    @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        final String header = request.getHeader("Refresh-Token");
         final String refreshToken;
         final String userEmail;
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (header == null ) {
             return;
+        }else {
+            refreshToken = header;
         }
-        refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUserName(refreshToken);
         if (userEmail != null) {
             var user = this.userRepository.findByEmail(userEmail)
@@ -429,6 +441,7 @@ public class UserService implements IUserService {
     }
 
     ///****Password
+    @Override
     public void changePassword(ChangePasswordRequest request, User user) {
 
         if (!encoder.matches(request.getCurrentPassword(), user.getPassword())) {
@@ -440,6 +453,7 @@ public class UserService implements IUserService {
         user.setPassword(encoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
+    @Override
     public void resetPassword(String token, ResetPasswordRequest request) throws Exception {
         String decryptedData = encryptor.decrypt(token);
         String[] parts = decryptedData.split(":");
@@ -463,6 +477,7 @@ public class UserService implements IUserService {
         user.setPassword(encoder.encode(request.getNewPassword()));
         userRepository.save(user);
     }
+    @Override
     public boolean verifyPassword(String email, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -472,6 +487,7 @@ public class UserService implements IUserService {
         return false;
     }
     ///***Code Gneration
+    @Override
     public String generateActivationCode() {
 
         String characters = "0123456789";
@@ -489,6 +505,7 @@ public class UserService implements IUserService {
 
     }
     //***les Emails
+    @Override
     public void sendActivationEmail(User user) throws MessagingException {
         String activationCode = user.getActivationCode();
 
@@ -503,6 +520,7 @@ public class UserService implements IUserService {
         );
 
     }
+    @Override
     public void sendAccountBlockedAlertEmail(User user) throws MessagingException {
         String activationCode = user.getActivationCode();
 
@@ -517,6 +535,7 @@ public class UserService implements IUserService {
         );
 
     }
+    @Override
     public void sendRestoreAccountAccessEmail(User user) throws MessagingException {
         String activationCode = user.getActivationCode();
 
@@ -531,11 +550,12 @@ public class UserService implements IUserService {
         );
 
     }
+    @Override
     public void sendPasswordResetEmail(String email) throws Exception {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
         if (userOptional.isEmpty()) {
-            throw new RuntimeException("User not found");
+            throw new Exception("User not found");
         }
         User user = userOptional.get();
 

@@ -5,7 +5,9 @@ import com.example.ibudgetproject.entities.User.FinancialKnowledgeLevel;
 import com.example.ibudgetproject.entities.User.Tone;
 import com.example.ibudgetproject.entities.User.User;
 import com.example.ibudgetproject.services.AIService;
+import com.example.ibudgetproject.services.User.ChatService;
 import com.example.ibudgetproject.services.User.Interfaces.IUserService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,7 +30,7 @@ public class UserController {
     @Autowired
     private IUserService service;
     @Autowired
-    private AIService aiService;
+    private ChatService chatService;
     @PostMapping("/completeProfile")
     public ResponseEntity<?> completeProfile(@RequestBody @Valid CompleteProfileRequest request, HttpServletRequest req,@RequestParam String email ) throws MessagingException {
         try {
@@ -83,10 +85,10 @@ public class UserController {
     }
 
     @PostMapping("/resendActivationCode")
-    public ResponseEntity<?> resendVerificationCode (@RequestParam String email)
+    public ResponseEntity<?> resendVerificationCode (@RequestBody  ResendActivationCodeRequest request)
     {
         try {
-            service.resendActivationCode(email);
+            service.resendActivationCode(request.getEmail());
             return ResponseEntity.ok("Activation code sent");
         } catch (RuntimeException | MessagingException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -106,7 +108,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/updateUser")
+    @PatchMapping("/updateUser")
     public ResponseEntity<?> updateUser(@AuthenticationPrincipal User connectedUser
             ,@RequestBody UpdateUserRequest userDetails)
     {
@@ -117,13 +119,13 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/sendResetPasswordEmail")
-    public ResponseEntity<String> sendResetEmail(@RequestParam String email) {
+    @PostMapping("/sendResetPasswordRequest")
+    public ResponseEntity<String> sendResetEmail(@RequestBody ResetPasswordEmailRequest request) {
         try {
-            service.sendPasswordResetEmail(email);
+            service.sendPasswordResetEmail(request.getEmail());
             return ResponseEntity.ok("Password reset link sent to email");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -136,8 +138,9 @@ public class UserController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
-    @PreAuthorize("hasRole('ADMIN')")
+
     @GetMapping("/getUserByAdmin/{userId}")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<?> getUserById(@PathVariable Long userId) {
         try {
             User user = service.getUserById(userId);
@@ -146,8 +149,8 @@ public class UserController {
             return ResponseEntity.status(NOT_FOUND).body(e.getMessage());
         }
     }
-    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/getAllUsersByAdmin")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<?> getAllUsers() {
         try {
             List<User> users = service.getAllUsers();
@@ -158,6 +161,7 @@ public class UserController {
     }
 
     @PostMapping("/accountDeletionRequest")
+    @RolesAllowed({"ROLE_USER_FREMIUM", "ROLE_USER_PREMIUM"})
     public ResponseEntity<String> requestDeleteAccount(@AuthenticationPrincipal User connectedUser  , @RequestBody String password) {
         if (!service.verifyPassword(connectedUser.getEmail(),password)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Password does not match.");
@@ -171,7 +175,7 @@ public class UserController {
     }
 
     @DeleteMapping("/deleteUserByAdmin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<String> deleteUserByAdmin() {
         boolean isDeleted = service.deleteUsersByAdmin();
         if (isDeleted) {
@@ -182,7 +186,7 @@ public class UserController {
     }
 
     @GetMapping("/getDeletionRequestsAdmin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<?> getDeletionRequests() {
         try {
             List<User> users = service.getUsersRequestedDeletion();
@@ -191,23 +195,11 @@ public class UserController {
             return ResponseEntity.status(NOT_FOUND).body(e.getMessage());}
     }
 
-    /* @PostMapping("/chat")
-     public String generateContent(@AuthenticationPrincipal User connectedUser,@RequestBody ChatRequest request) {
-         // Assuming UserInputDto contains input, financialLevel, and aiTonePreference fields
-         return aiService.generateContent(request.getInput(), connectedUser.getFinancialKnowledgeLevel(),connectedUser.getAiTonePreference());
-     }*/
-    @PostMapping("/getChatResponse")
-    public String getFinancialEducationResponse(@AuthenticationPrincipal User connectedUser,@RequestBody ChatRequest request) {
-        // Get user financial knowledge level and AI tone from request
-        FinancialKnowledgeLevel knowledgeLevel = connectedUser.getFinancialKnowledgeLevel();
-        Tone tone = connectedUser.getAiTonePreference();
 
-        // Generate and return AI-generated response based on the user's question
-        return aiService.getFinancialEducation(request.getQuestion(), knowledgeLevel, tone);
-    }
 
     //**** Update first/last name and date of birth
     @PostMapping("/sendUpdateRequest")
+    @RolesAllowed({"ROLE_USER_FREMIUM", "ROLE_USER_PREMIUM"})
     public ResponseEntity<?> sendUpdateRequest(@AuthenticationPrincipal User connectedUser,@RequestBody UpdateUserByAdminRequest request) {
 
         if (!service.verifyPassword(connectedUser.getEmail(),request.getCurrentPassword())) {
@@ -222,7 +214,7 @@ public class UserController {
     }
 
     @GetMapping("/getUpdateRequestsAdmin")
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<?> getUpdateRequests() {
         try {
             List<User> users = service.getUsersRequestedUpdate();
@@ -232,7 +224,7 @@ public class UserController {
     }
 
     @PostMapping("/updateUserByAdmin/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<String> updateUserByAdmin(@PathVariable Long userId) {
         boolean isUpdated = service.updateUserByAdmin(userId);
         if (isUpdated) {
@@ -240,6 +232,18 @@ public class UserController {
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Couldn't update user , please check the id");
         }
+    }
+    @PostMapping("/advice")
+    @RolesAllowed({"ROLE_USER_FREMIUM", "ROLE_USER_PREMIUM"})
+    public ResponseEntity<String> getFinancialAdvice(@RequestBody ChatRequest request, @AuthenticationPrincipal User connectedUser) {
+        try {
+            String advice = chatService.generateFinancialAdvice(request.getQuestion(), connectedUser.getAiTonePreference(), connectedUser.getFinancialKnowledgeLevel());
+            return ResponseEntity.ok(advice);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace(); // Log the exception properly in a real application
+            return ResponseEntity.internalServerError().body("Error generating financial advice.");
+        }
+
     }
 
 }

@@ -30,7 +30,7 @@ public class OAuth2AuthenticationHandler implements AuthenticationSuccessHandler
         Optional<User> optionalUser=userRepository.findByEmail(userEmail);
         if (!optionalUser.isPresent()) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            response.getWriter().write("You need to register first to IBudget, to do so you have to provide the following informations in order to complete the registration");
+            response.getWriter().write("You need to register first to IBudget, to do so you have to provide the following informations in order to complete the registration and have a better experience .IMPORTANT! For enhanced security and to enable features like updating your profile, we require you to create a password for your account");
             //Je vais donner le profile completion link after working on the backend o el email yedakhel toul
             //String redirectLink="http://localhost:8090/user/completeProfile?email="+userEmail
             //response.sendRedirect(redirectLink)

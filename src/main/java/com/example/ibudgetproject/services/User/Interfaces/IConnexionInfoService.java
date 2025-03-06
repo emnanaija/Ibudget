@@ -11,9 +11,9 @@ import java.util.List;
 public interface IConnexionInfoService {
     ConnexionInformation add(User user , HttpServletRequest request, String method);
     List<ConnexionInformation> getAllCnxInfo(User user);
-    ConnexionInformation getCnxInfoById(Long id);
-    void deleteCnxInfoById(Long id) throws Exception;
-    void update(Long id, Boolean value,User user) throws Exception;
+    ConnexionInformation getCnxInfoById(Long id,User user) throws Exception;
+    void deleteCnxInfoById(Long id,User user) throws Exception;
+    void updateApproval(Long id, Boolean value,User user) throws Exception;
     GeolocationResponse getGeoInfo(HttpServletRequest request);
     DeviceResponse getDeviceInfo(HttpServletRequest request);
     boolean verifyConnectionInfo(User user, HttpServletRequest request) throws Exception;

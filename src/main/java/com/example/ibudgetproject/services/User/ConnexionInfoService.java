@@ -49,8 +49,8 @@ public class ConnexionInfoService implements IConnexionInfoService {
     private  RestTemplate restTemplate = new RestTemplate();
 
     private EncryptionUtility encryptor = new EncryptionUtility();
-    //*********CRUD
 //***** add connexion info
+    @Override
     public ConnexionInformation add(User user , HttpServletRequest request, String method)
     {
         GeolocationResponse geoData=getGeoInfo(request);
@@ -63,8 +63,8 @@ public class ConnexionInfoService implements IConnexionInfoService {
                 .longitude(geoData.getLongitude())
                 .latitude(geoData.getLatitude())
                 .timeZone(geoData.getTimezone())
-                .internetProvider(geoData.getAsn().getInternetProvider())
-                .isVpn(geoData.getPrivacy().isVpn())
+                .internetProvider(geoData.getInternetProvider())
+                .isVpn(geoData.getPrivacy().getVpn())
                 .deviceBrand(deviceData.getDeviceBrand())
                 .deviceName(deviceData.getDeviceName())
                 .deviceType(deviceData.getDeviceType())
@@ -83,24 +83,46 @@ public class ConnexionInfoService implements IConnexionInfoService {
         return   connexionInfo;
     }
     //*****Get all devices by user
+    @Override
     public List<ConnexionInformation> getAllCnxInfo(User user){
         List<ConnexionInformation> storedInfoList = connexionRepository.findByUser(user);
         return storedInfoList;
     }
 
-    public ConnexionInformation getCnxInfoById(Long id) {
-        return connexionRepository.findById(id).orElse(null);
+
+    @Override
+    public ConnexionInformation getCnxInfoById(Long id,User user) throws Exception {
+        Optional<ConnexionInformation> optionalConnexionInfo = connexionRepository.findById(id);
+        if (optionalConnexionInfo.isPresent()) {
+            ConnexionInformation connexionInfo= optionalConnexionInfo.get();
+            if (connexionInfo.getUser().getUserId().equals(user.getUserId())) {
+                return connexionInfo;
+            } else {
+                throw new Exception("Wrong Id");
+            }
+        } else {
+            throw new Exception("Id doesn't exist");
+        }
+
     }
     //***Delete a connexion info
-    public void deleteCnxInfoById(Long id) throws Exception {
-        if (connexionRepository.existsById(id)) {
-            connexionRepository.deleteById(id);
+    @Override
+    public void deleteCnxInfoById(Long id,User user) throws Exception {
+        Optional<ConnexionInformation> optionalConnexionInfo = connexionRepository.findById(id);
+        if (optionalConnexionInfo.isPresent()) {
+            ConnexionInformation connexionInfo= optionalConnexionInfo.get();
+            if (connexionInfo.getUser().getUserId().equals(user.getUserId())) {
+                connexionRepository.deleteById(id);
+            } else {
+                throw new Exception("Wrong id");
+            }
         } else {
             throw new Exception("Id doesn't exist");
         }
     }
     //***update a connexion info
-    public void update(Long id, Boolean value,User user) throws Exception {
+    @Override
+    public void updateApproval(Long id, Boolean value,User user) throws Exception {
         if (connexionRepository.existsById(id)) {
             Optional<ConnexionInformation> optcnxInfo = connexionRepository.findById(id);
             List<ConnexionInformation> storedInfoList = connexionRepository.findByUser(user);
@@ -121,6 +143,7 @@ public class ConnexionInfoService implements IConnexionInfoService {
 
 
     //***********Get the geolocationInfo
+    @Override
     public GeolocationResponse getGeoInfo(HttpServletRequest request)
     {
         if (request == null) {
@@ -138,10 +161,18 @@ public class ConnexionInfoService implements IConnexionInfoService {
         if (geoData == null) {
             throw new RuntimeException("Failed to retrieve geolocation data.");
         }
+        if (geoData.getPrivacy() == null) {
+            geoData.setPrivacy(new GeolocationResponse.Privacy());  // Initialize privacy if null
+        }
+
+        if (geoData.getPrivacy().getVpn() == null) {
+            geoData.getPrivacy().setVpn(false);  // Set default value for vpn if null
+        }
         return geoData;
     }
 
     //*********get the device info
+    @Override
     public DeviceResponse getDeviceInfo(HttpServletRequest request)
     {
         String userAgentString = request.getHeader("User-Agent");
@@ -171,6 +202,7 @@ public class ConnexionInfoService implements IConnexionInfoService {
 
 
     //******Verify connexion info
+    @Override
     public boolean verifyConnectionInfo(User user, HttpServletRequest request) throws Exception {
         List<ConnexionInformation> storedInfoList = connexionRepository.findByUser(user);
 
@@ -203,6 +235,7 @@ public class ConnexionInfoService implements IConnexionInfoService {
     }
 
     //*******Email Alert : login Attempt
+    @Override
     public void sendLogInAlertEmail(String email,ConnexionInformation cnxInfo) throws Exception {
 
         Optional<User> userOptional = userRepository.findByEmail(email);
@@ -212,7 +245,7 @@ public class ConnexionInfoService implements IConnexionInfoService {
         User user = userOptional.get();
 
 
-        long timestamp = Instant.now().getEpochSecond(); // Get current timestamp
+        long timestamp = Instant.now().getEpochSecond();
         String tokenData = email+":"+cnxInfo.getDeviceName() + ":" + timestamp;
 
 
@@ -238,8 +271,9 @@ public class ConnexionInfoService implements IConnexionInfoService {
     }
 
     //*******Validate the device via the email link
+    @Override
     public void validateConnexionInfo(String token) throws Exception {
-        String decryptedData = encryptor.decrypt(token); // Decrypt token to get "email:timestamp"
+        String decryptedData = encryptor.decrypt(token);
         String[] parts = decryptedData.split(":");
         if (parts.length != 3) {
             throw new Exception("Invalid token format");

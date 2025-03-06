@@ -39,9 +39,6 @@ public class AIService {
     @Value("${gemini.api.key}")
     private String apiKey;
 
-    @Value("${openai.api.key}")
-    private String apiKeyOpenAi;
-    private final String openAiUrl= "https://api.openai.com/v1/completions?api_key="+apiKeyOpenAi;
 
     private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
@@ -281,36 +278,5 @@ public class AIService {
             return "Unexpected error while processing AI response: " + e.getMessage();
         }
     }
-    public String getFinancialEducation(String userQuestion, FinancialKnowledgeLevel knowledgeLevel, Tone tonePreference) {
 
-        // Build the request body with the user's question and parameters (like tone and knowledge level)
-        String prompt = generatePrompt(userQuestion, knowledgeLevel, tonePreference);
-
-        String requestBody = "{\n" +
-                "  \"model\": \"text-davinci-003\",\n" + // Use the appropriate model, e.g., "text-davinci-003"
-                "  \"prompt\": \"" + prompt + "\",\n" +
-                "  \"max_tokens\": 150\n" +
-                "}";
-
-        // Make the POST request to OpenAI API
-        RestTemplate restTemplate = new RestTemplate();
-        org.springframework.http.HttpHeaders headers = new org.springframework.http.HttpHeaders();
-        headers.set("Content-Type", "application/json");
-
-        HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
-
-        // Send the request and return the response
-        ResponseEntity<String> response = restTemplate.exchange(openAiUrl, HttpMethod.POST, entity, String.class);
-
-        return response.getBody();
-    }
-    private String generatePrompt(String userQuestion, FinancialKnowledgeLevel knowledgeLevel, Tone tonePreference) {
-        // Customize the prompt based on financial knowledge level and tone preference
-        String prompt = "User's financial knowledge level: " + knowledgeLevel + "\n" +
-                "User's preferred tone: " + tonePreference + "\n" +
-                "Question: " + userQuestion + "\n" +
-                "Provide a response that is informative, concise, and appropriate based on the user's knowledge level.";
-
-        return prompt;
-    }
 }

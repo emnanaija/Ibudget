@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.controllers.User;
 
+import com.example.ibudgetproject.DTO.User.ChangeApprovalRequest;
 import com.example.ibudgetproject.entities.User.ConnexionInformation;
 import com.example.ibudgetproject.entities.User.User;
 import com.example.ibudgetproject.services.User.Interfaces.IConnexionInfoService;
@@ -22,15 +23,18 @@ public class ConnexionInfoController {
         return service.getAllCnxInfo(connectedUser);
     }
     @GetMapping("/getById")
-    public ConnexionInformation getCnxInfo(@RequestParam Long id)
-    {
-        return service.getCnxInfoById(id);
-    }
-
-    @DeleteMapping("/deleteById")
-    public ResponseEntity<String> getAllCnxInfo(@RequestParam Long id) throws Exception {
+    public ResponseEntity<?> getCnxInfo(@RequestParam Long id,@AuthenticationPrincipal User connectedUser) throws Exception {
         try {
-            service.deleteCnxInfoById(id);
+            ConnexionInformation connexionInformation=service.getCnxInfoById(id,connectedUser);
+            return ResponseEntity.ok(connexionInformation);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @DeleteMapping("/deleteById")
+    public ResponseEntity<String> getAllCnxInfo(@RequestParam Long id,@AuthenticationPrincipal User user) throws Exception {
+        try {
+            service.deleteCnxInfoById(id,user);
             return ResponseEntity.ok("Device Deleted with succcess");
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -38,15 +42,14 @@ public class ConnexionInfoController {
 
     }
     @PatchMapping("/changeApproval")
-    public  ResponseEntity<String> changeApproval(Long id, Boolean value,@AuthenticationPrincipal User user) throws Exception {
+    public  ResponseEntity<String> changeApproval(@RequestBody ChangeApprovalRequest request, @AuthenticationPrincipal User user) throws Exception {
         try{
-            service.update(id,value,user);
+            service.updateApproval(request.getId(),request.getValue(),user);
             return ResponseEntity.ok("Approval attribute changed with succcess");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
     @PostMapping("/approveLogIn")
     public ResponseEntity<String> validateConnexionInfo(@RequestParam String token) {
         try {
