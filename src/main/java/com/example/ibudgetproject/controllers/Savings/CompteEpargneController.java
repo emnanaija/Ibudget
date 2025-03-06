@@ -31,8 +31,8 @@ public class CompteEpargneController {
     }
 
     @PostMapping
-    public CompteEpargne createCompteEpargne(@RequestParam Long userId, @RequestBody CompteEpargne compteEpargne) {
-        return compteEpargneService.saveCompteEpargne(userId, compteEpargne);
+    public CompteEpargne createCompteEpargne(@RequestParam Long userId,@RequestBody CompteEpargne compteEpargne,@RequestParam Long simCardId) {
+        return compteEpargneService.saveCompteEpargne(userId,compteEpargne,simCardId);
     }
     @PutMapping("/{id}")
     public CompteEpargne updateCompteEpargne(@PathVariable Long id, @RequestBody CompteEpargne updatedCompteEpargne) {

@@ -1,11 +1,15 @@
 package com.example.ibudgetproject.services.Savings;
 import com.example.ibudgetproject.entities.Savings.CompteEpargne;
 import com.example.ibudgetproject.entities.Savings.TauxInteret;
+import com.example.ibudgetproject.entities.Transactions.SimCardAccount;
 import com.example.ibudgetproject.entities.User.User;
 import com.example.ibudgetproject.repositories.Savings.CompteEpargneRepository;
 import com.example.ibudgetproject.repositories.Savings.TauxInteretRepository;
+import com.example.ibudgetproject.repositories.Transactions.SimCardAccountRepository;
 import com.example.ibudgetproject.repositories.User.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.example.ibudgetproject.entities.User.TypeAccount;
 import java.math.BigDecimal;
@@ -21,6 +25,8 @@ public class CompteEpargneService {
     private TauxInteretRepository tauxInteretRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private SimCardAccountRepository simCardAccountRepository;
 
     public List<CompteEpargne> getAllCompteEpargnes() {
         return compteEpargneRepository.findAll();
@@ -30,18 +36,51 @@ public class CompteEpargneService {
         return compteEpargneRepository.findById(id).orElse(null);
     }
 
-    public CompteEpargne saveCompteEpargne(Long userId, CompteEpargne compteEpargne) {
+    public CompteEpargne saveCompteEpargne(Long userId,CompteEpargne compteEpargne,Long simCardId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
-
-        // Determine TauxInteret based on User's AccountType
-        Long tauxId = (user.getAccountType() == TypeAccount.Fremium) ? 1L : 2L;
-        TauxInteret tauxInteret = tauxInteretRepository.findById(tauxId)
-                .orElseThrow(() -> new RuntimeException("Taux d'intérêt introuvable"));
-
-        compteEpargne.setTauxInteret(tauxInteret);
-        compteEpargne.setUser(user); // Set the user object
+        // Vérifier si la carte SIM existe
+        SimCardAccount simCardAccount = simCardAccountRepository.findById(simCardId)
+                .orElseThrow(() -> new RuntimeException("Carte SIM introuvable"));
+        if (compteEpargne.getTauxInteret() != null && compteEpargne.getTauxInteret().getId() != null) {
+            TauxInteret tauxExistant = tauxInteretRepository.findById(compteEpargne.getTauxInteret().getId())
+                    .orElseThrow(() -> new RuntimeException("Taux introuvable"));
+            compteEpargne.setTauxInteret(tauxExistant);
+        }else {
+            // Déterminer le taux d'intérêt en fonction du TypeAccount si aucun taux n'a été fourni
+            Long tauxId = (user.getAccountType() == TypeAccount.Fremium) ? 1L : 2L;
+            TauxInteret tauxInteret = tauxInteretRepository.findById(tauxId)
+                    .orElseThrow(() -> new RuntimeException("Taux d'intérêt introuvable"));
+            compteEpargne.setTauxInteret(tauxInteret);
+        }
+        // Vérifier que le solde ne dépasse pas le balance de la carte SIM
+        if (compteEpargne.getSolde().doubleValue() > simCardAccount.getBalance()) {
+            throw new RuntimeException("Le solde du compte épargne ne peut pas dépasser le solde de la carte SIM.");
+        }
+        // Associer le compte à l'utilisateur
+        compteEpargne.setUser(user);
         return compteEpargneRepository.save(compteEpargne);
+    }
+    @Scheduled(fixedRate = 30000) // Toutes les 5 minutes (300 000 ms)
+    @Transactional
+    public void verifierEtMettreAJourTauxInteret() {
+        List<User> utilisateurs = userRepository.findAll(); // Récupérer tous les utilisateurs
+
+        for (User user : utilisateurs) {
+            Long tauxId = (user.getAccountType() == TypeAccount.Fremium) ? 1L : 2L;
+            TauxInteret nouveauTaux = tauxInteretRepository.findById(tauxId)
+                    .orElseThrow(() -> new RuntimeException("Taux introuvable"));
+
+            // Récupérer tous les comptes épargne de l'utilisateur
+            List<CompteEpargne> comptes = compteEpargneRepository.findByUser(user);
+
+            for (CompteEpargne compte : comptes) {
+                if (!compte.getTauxInteret().getId().equals(tauxId)) {
+                    compte.setTauxInteret(nouveauTaux);
+                    compteEpargneRepository.save(compte); // Mise à jour en base
+                }
+            }
+        }
     }
 
     public CompteEpargne updateCompteEpargne(Long id, CompteEpargne updatedCompteEpargne) {
