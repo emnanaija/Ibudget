@@ -1,10 +1,11 @@
 package com.example.ibudgetproject.services.Investment;
 
-import com.example.ibudgetproject.entities.Investment.Asset;
-import com.example.ibudgetproject.entities.Investment.Coin;
+import com.example.ibudgetproject.entities.Investment.*;
 import com.example.ibudgetproject.entities.User.User;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface AssetService {
 
@@ -23,6 +24,7 @@ public interface AssetService {
     double calculateRiskMonteCarlo(Long userId, int days);
     public double calculateAssetValue(Long assetId) throws Exception;
     public double computeLogReturn(double[] historicalPrices);
-    double[] optimizePortfolioMarkowitz(Long userId);
+    public ResponseEntity<Map<String, Object>> optimizePortfolioMarkowitz(Long userId);
+    public Map<String, Double> calculatePortfolioPerformance(Long userId, int days);
 
 }

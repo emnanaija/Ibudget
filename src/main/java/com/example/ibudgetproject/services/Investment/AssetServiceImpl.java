@@ -1,13 +1,11 @@
 package com.example.ibudgetproject.services.Investment;
 
-import com.example.ibudgetproject.entities.Investment.Asset;
-import com.example.ibudgetproject.entities.Investment.Coin;
-import com.example.ibudgetproject.entities.User.User;
 import com.example.ibudgetproject.repositories.Investment.AssetRepository;
 import com.example.ibudgetproject.repositories.Investment.CoinRepository;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.optim.InitialGuess;
@@ -17,23 +15,24 @@ import org.apache.commons.math3.optim.SimpleBounds;
 import org.apache.commons.math3.optim.nonlinear.scalar.GoalType;
 import org.apache.commons.math3.optim.nonlinear.scalar.ObjectiveFunction;
 import org.apache.commons.math3.optim.nonlinear.scalar.noderiv.CMAESOptimizer;
+import org.apache.commons.math3.optim.univariate.*;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.stat.correlation.Covariance;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
 import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.ibudgetproject.entities.Investment.*;
+import com.example.ibudgetproject.entities.User.User;
+import com.example.ibudgetproject.services.Investment.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class AssetServiceImpl implements AssetService {
@@ -175,74 +174,98 @@ public class AssetServiceImpl implements AssetService {
     }
 
     @Override
-    public double[] optimizePortfolioMarkowitz(Long userId) {
-        System.out.println("Optimisation du portefeuille pour userId: " + userId);
-        List<Asset> assets = assetRepository.findByUser_UserId(userId);
-        if (assets.isEmpty()) throw new RuntimeException("Aucun actif trouvé");
+    public ResponseEntity<Map<String, Object>> optimizePortfolioMarkowitz(Long userId) {
+        try {
+            System.out.println("Optimisation du portefeuille pour userId: " + userId);
 
-        int n = assets.size();
-        double[][] returns = new double[n][];
-        for (int i = 0; i < n; i++) {
-            returns[i] = fetchHistoricalReturns(assets.get(i).getCoin().getId());
-            System.out.println("Length of returns[" + i + "]: " + returns[i].length);
-        }
+            List<Asset> assets = assetRepository.findByUser_UserId(userId);
+            if (assets.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(Map.of("message", "Aucun actif trouvé pour cet utilisateur"));
+            }
 
-        // Ensure all returns arrays have the same length
-        int minLength = Arrays.stream(returns).mapToInt(r -> r.length).min().orElseThrow(() -> new RuntimeException("No returns data available"));
-        for (int i = 0; i < n; i++) {
-            if (returns[i].length != minLength) {
+            int n = assets.size();
+            if (n == 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("message", "Pas d'actifs à optimiser"));
+            }
+
+            double[][] returns = new double[n][];
+            for (int i = 0; i < n; i++) {
+                returns[i] = fetchHistoricalReturns(assets.get(i).getCoin().getId());
+                if (returns[i].length == 0) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                            .body(Map.of("message", "Pas assez de données pour " + assets.get(i).getCoin().getId()));
+                }
+            }
+
+            int minLength = Arrays.stream(returns).mapToInt(r -> r.length).min().orElse(0);
+            if (minLength == 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body(Map.of("message", "Données insuffisantes pour calculer les rendements"));
+            }
+
+            for (int i = 0; i < n; i++) {
                 returns[i] = Arrays.copyOf(returns[i], minLength);
             }
+
+            double[] meanReturns = Arrays.stream(returns)
+                    .mapToDouble(r -> new Mean().evaluate(r)).toArray();
+            RealMatrix covarianceMatrix = new Covariance(returns).getCovarianceMatrix();
+
+            // Ajout d'un bruit numérique sur la diagonale
+            for (int i = 0; i < covarianceMatrix.getRowDimension(); i++) {
+                covarianceMatrix.addToEntry(i, i, 1e-10);
+            }
+
+            // --- OPTIMISATION AVEC CMA-ES ---
+            CMAESOptimizer optimizer = new CMAESOptimizer(
+                    10000, 1e-9, true, 10, 0, new MersenneTwister(), false, null
+            );
+
+            ObjectiveFunction objectiveFunction = new ObjectiveFunction(weights ->
+                    -computeSharpeRatio(weights, meanReturns, covarianceMatrix)
+            );
+
+            // Définition des bornes valides (pas de zéro)
+            double[] lowerBound = new double[n];
+            double[] upperBound = new double[n];
+            double[] initialGuessArray = new double[n];
+
+            Arrays.fill(lowerBound, 0.01);  // Minimum 1% pour éviter les erreurs
+            Arrays.fill(upperBound, 1.0);
+            Arrays.fill(initialGuessArray, 1.0 / n);
+
+            SimpleBounds bounds = new SimpleBounds(lowerBound, upperBound);
+            InitialGuess initialGuess = new InitialGuess(initialGuessArray);
+
+            PointValuePair result = optimizer.optimize(
+                    new MaxEval(10000),
+                    objectiveFunction,
+                    GoalType.MAXIMIZE,
+                    bounds,
+                    initialGuess
+            );
+
+            // Normalisation des poids
+            double[] optimizedWeights = result.getPoint();
+            double sum = Arrays.stream(optimizedWeights).sum();
+            for (int i = 0; i < optimizedWeights.length; i++) {
+                optimizedWeights[i] /= sum;
+            }
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("userId", userId);
+            response.put("optimizedWeights", optimizedWeights);
+            response.put("sharpeRatio", -result.getValue());
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Map.of("error", e.getMessage()));
         }
-
-        // Calcul des rendements moyens
-        double[] meanReturns = Arrays.stream(returns)
-                .mapToDouble(r -> new Mean().evaluate(r)).toArray();
-
-        // Calcul de la matrice de covariance
-        RealMatrix covarianceMatrix = new Covariance(returns).getCovarianceMatrix();
-        for (int i = 0; i < covarianceMatrix.getRowDimension(); i++) {
-            covarianceMatrix.addToEntry(i, i, 1e-10); // Add a small value to the diagonal
-        }
-
-        // Debugging: Print mean returns and covariance matrix
-        System.out.println("Mean Returns: " + Arrays.toString(meanReturns));
-        System.out.println("Covariance Matrix: " + covarianceMatrix);
-
-        // Optimisation avec CMA-ES
-        CMAESOptimizer optimizer = new CMAESOptimizer(
-                10000, 1e-9, true, 10, 0, new MersenneTwister(), false, null
-        );
-
-        ObjectiveFunction objectiveFunction = new ObjectiveFunction(weights ->
-                -computeSharpeRatio(weights, meanReturns, covarianceMatrix)
-        );
-
-        double[] lowerBound = new double[n];
-        Arrays.fill(lowerBound, 0.01); // Set a small positive value
-        double[] upperBound = new double[n];
-        Arrays.fill(upperBound, 1.0); // Les poids doivent être entre 0 et 1
-
-        SimpleBounds bounds = new SimpleBounds(lowerBound, upperBound);
-        double[] initialGuessArray = new double[n];
-        Arrays.fill(initialGuessArray, 0.1); // Set a small positive value for initial guess
-        InitialGuess initialGuess = new InitialGuess(initialGuessArray);
-
-        // Debugging: Print bounds and initial guess
-        System.out.println("Lower Bound: " + Arrays.toString(lowerBound));
-        System.out.println("Upper Bound: " + Arrays.toString(upperBound));
-        System.out.println("Initial Guess: " + Arrays.toString(initialGuessArray));
-
-        PointValuePair result = optimizer.optimize(
-                new MaxEval(10000),
-                objectiveFunction,
-                GoalType.MAXIMIZE,
-                bounds,
-                initialGuess
-        );
-
-        return result.getPoint();
     }
+
 
     private double[] fetchHistoricalReturns(String coinId) {
         try {
@@ -272,4 +295,72 @@ public class AssetServiceImpl implements AssetService {
         double portfolioRisk = Math.sqrt(variance);
         return portfolioReturn / portfolioRisk;
     }
+    @Override
+    public Map<String, Double> calculatePortfolioPerformance(Long userId, int days) {
+
+        List<Asset> assets = assetRepository.findByUser_UserId(userId);
+
+        if (assets.isEmpty()) {
+            throw new RuntimeException("Aucun actif trouvé pour l'utilisateur.");
+        }
+
+        double[] portfolioReturns = assets.stream()
+                .mapToDouble(asset -> {
+                    try {
+                        double[] historicalPrices = fetchHistoricalPrices(asset.getCoin().getId(), days);
+                        return computeReturn(historicalPrices);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Erreur lors de la récupération des prix historiques", e);
+                    }
+                })
+                .toArray();
+
+        double meanReturn = new Mean().evaluate(portfolioReturns);
+        double volatility = new StandardDeviation().evaluate(portfolioReturns);
+
+        // Adjust for monthly data (not annualizing)
+        double monthlyMeanReturn = meanReturn * (30.0 / days);  // Approximate 30 days in a month
+        double monthlyVolatility = volatility * Math.sqrt(30.0 / days);  // Adjust for monthly volatility
+
+        Map<String, Double> performance = new HashMap<>();
+        performance.put("monthlyMeanReturn", monthlyMeanReturn);
+        performance.put("monthlyVolatility", monthlyVolatility);
+
+        return performance;
+    }
+
+    private double computeReturn(double[] historicalPrices) {
+        if (historicalPrices.length < 2) {
+            return 0; // Ou une autre valeur par défaut
+        }
+        double[] returns = new double[historicalPrices.length - 1];
+        for (int i = 1; i < historicalPrices.length; i++) {
+            returns[i - 1] = Math.log(historicalPrices[i] / historicalPrices[i - 1]);
+        }
+        return new Mean().evaluate(returns);
+    }
+
+    private double[] fetchHistoricalPrices(String coinId, int days) throws Exception {
+        String url = "https://api.coingecko.com/api/v3/coins/" + coinId + "/market_chart?vs_currency=usd&days=" + days;
+        RestTemplate restTemplate = new RestTemplate();
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+            ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+
+            JsonNode pricesArray = jsonNode.get("prices");
+            double[] historicalPrices = new double[pricesArray.size()];
+
+            for (int i = 0; i < pricesArray.size(); i++) {
+                historicalPrices[i] = pricesArray.get(i).get(1).asDouble();
+            }
+
+            return historicalPrices;
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
 }
