@@ -30,6 +30,24 @@
         <java.version>17</java.version>
     </properties>
     <dependencies>
+
+
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20240303</version>
+
+
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.retry</groupId>
+            <artifactId>spring-retry</artifactId>
+            <version>1.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
        <!--______________________rihab/user________________________________________-->
 
         <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-oauth2-client -->
