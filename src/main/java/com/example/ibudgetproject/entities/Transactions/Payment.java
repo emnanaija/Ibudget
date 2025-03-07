@@ -109,9 +109,8 @@ public class Payment {
 
     //relations
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "transaction_id", nullable = false)
+    @JoinColumn(name = "transaction_id", nullable = true)
     private SimTransactions transaction;
-
     @ManyToOne
     @JoinColumn(name = "bill_id", nullable = true)
     private Bill bill;
