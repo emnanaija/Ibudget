@@ -1,0 +1,122 @@
+.balance-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 300px;
+  }
+  
+  .banking-card {
+    width: 320px;
+    height: 200px;
+    background: linear-gradient(135deg, #222, #333);
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 25px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1; /* Ensure card is above money flow */
+  }
+  
+  .banking-card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 255, 255, 0.8);
+  }
+  
+  .banking-card::before { /* Holographic effect */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(174, 166, 166, 0));
+    opacity: 0.5;
+    z-index: 1;
+  }
+  
+  .banking-card::after { /* Subtle texture */
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml,%3Csvg width=\'6\' height=\'6\' viewBox=\'0 0 6 6\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0L6 6M6 0L0 6\' stroke=\'rgba(255, 255, 255, 0.05)\' stroke-width=\'1\'/%3E%3C/svg%3E');
+    opacity: 0.3;
+    z-index: 0;
+  }
+  
+  .card-content {
+    color: #EEE;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .card-balance {
+    text-align: left;
+  }
+  
+  .card-balance h2 {
+    font-size: 1.3em;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  
+  .balance-amount {
+    font-size: 2em;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+  
+  .balance-date {
+    font-size: 0.9em;
+    color: #AAA;
+  }
+  
+  .card-chip {
+    width: 45px;
+    height: 35px;
+    background: linear-gradient(135deg, #CCC, #EEE);
+    border-radius: 6px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+  }
+  
+  .card-number {
+    font-size: 1.3em;
+    letter-spacing: 2px;
+    font-weight: 500;
+  }
+  
+  .card-name,
+  .card-expiry {
+    font-size: 1em;
+    font-weight: 400;
+  }
+
+  .money-flow {
+    position: absolute;
+    bottom: -100px; /* Start further down */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px; /* Wider money flow */
+    height: 200px; /* Taller money flow */
+    background: linear-gradient(to top, #000000, #333, #929292); /* Multi-color gradient */
+    border-radius: 30px 30px 0 0; /* More rounded corners */
+    opacity: 0;
+    transition: bottom 0.5s ease, opacity 0.5s ease; /* Slower transition */
+    z-index: -1; /* Place behind the card */
+  }
+  
+  .banking-card:hover .money-flow {
+    bottom: 0;
+    opacity: 0.8; /* Slightly visible when flowing */
+  }
