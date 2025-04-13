@@ -1,0 +1,71 @@
+<div class="dashboard-container">
+  <!-- Animated Background with liquid effect -->
+  <div class="animated-background">
+    <div class="liquid-bg">
+      <div class="liquid-blob blob1"></div>
+      <div class="liquid-blob blob2"></div>
+      <div class="liquid-blob blob3"></div>
+    </div>
+    <div class="particles-container"></div>
+    <div class="coin-container">
+      <div class="coin gsap-coin1"></div>
+      <div class="coin gsap-coin2"></div>
+      <div class="coin gsap-coin3"></div>
+      <div class="coin gsap-coin4"></div>
+      <div class="coin gsap-coin5"></div>
+      <div class="coin gsap-coin6"></div>
+    </div>
+  </div>
+
+  <!-- Sidebar Toggle Button -->
+  <button class="sidebar-toggle" [class.collapsed]="isSidebarCollapsed" (click)="toggleSidebar()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+
+  <!-- Sidebar component -->
+  <app-sidebar 
+    [isCollapsed]="isSidebarCollapsed"
+    (toggleSidebar)="toggleSidebar()"
+  ></app-sidebar>
+
+  <div class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed">
+    <!-- Header Component -->
+    <app-header [isSidebarCollapsed]="isSidebarCollapsed"></app-header>
+    
+    <!-- Content Area with adjusted layout -->
+    <div class="content-area">
+      <!-- Top row with balance and transactions moved to the left -->
+      <div class="top-row">
+        <app-balance></app-balance>
+        <div class="transactions-wrapper">
+          <app-transactions></app-transactions>
+        </div>
+      </div>
+      
+      <!-- Middle row with stats and savings -->
+      <div class="middle-row">
+        <app-stats></app-stats>
+        <app-savings></app-savings>
+        <app-alerts></app-alerts>
+      </div>
+      
+      <!-- Adjusted position for card container -->
+      <div class="card-container-wrapper">
+        <app-card-container></app-card-container>
+      </div>
+      
+      <!-- Bottom row with additional components -->
+      <div class="bottom-row">
+        <app-money-go></app-money-go>
+        <app-save-more></app-save-more>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3D card canvas -->
+<div #card3d class="card-3d-container"></div>
