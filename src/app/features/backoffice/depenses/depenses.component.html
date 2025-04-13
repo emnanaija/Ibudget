@@ -37,7 +37,6 @@
           <span *ngIf="depense.category && !isCategoryObject(depense.category)">
             ID: {{ depense.category }}
           </span>
-          
         </div>
         <div class="depense-detail">
           <span class="label">Wallet:</span>
@@ -45,7 +44,7 @@
         </div>
         <div class="depense-detail" *ngIf="depense.photoUrl">
           <span class="label">Photo:</span>
-          <img [src]="depense.photoUrl" alt="Photo de la dépense" class="depense-photo" />
+          <img *ngIf="depense.photoUrl" [src]="'http://localhost:8090' + depense.photoUrl" alt="Image de la dépense" class="depense-photo" />
         </div>
       </div>
     </div>

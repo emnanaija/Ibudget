@@ -127,10 +127,10 @@
 }
 
 .depense-photo {
-  max-width: 150px;
-  max-height: 150px;
+  max-width: 70px;
+  max-height: 70px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 6px;
   margin-top: 0.75rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
