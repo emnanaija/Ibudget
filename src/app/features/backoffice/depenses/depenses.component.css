@@ -1,0 +1,61 @@
+.depenses-container {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 20px;
+  font-size: 1.2em;
+  color: #666;
+}
+
+.error-message {
+  background-color: #ffe6e6;
+  color: #d32f2f;
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #888;
+}
+
+.depenses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.depense-item {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.depense-detail {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+.depense-detail .label {
+  font-weight: bold;
+  color: #333;
+}
+
+.depense-photo {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-top: 10px;
+}

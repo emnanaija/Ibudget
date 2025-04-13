@@ -1,0 +1,52 @@
+<div class="depenses-container">
+  <!-- Indicateur de chargement -->
+  <div *ngIf="isLoading()" class="loading-spinner">
+    <span>Chargement des dépenses...</span>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage()" class="error-message">
+    {{ errorMessage() }}
+  </div>
+
+  <!-- Liste des dépenses -->
+  <ng-container *ngIf="depenses$ | async as depenses">
+    <div *ngIf="depenses.length === 0" class="no-data">
+      Aucune dépense trouvée.
+    </div>
+
+    <div class="depenses-list">
+      <div *ngFor="let depense of depenses" class="depense-item">
+        <div class="depense-detail">
+          <span class="label">Montant:</span>
+          <span>{{ depense.montant | currency:'EUR' }}</span>
+        </div>
+        <div class="depense-detail">
+          <span class="label">Date:</span>
+          <span>{{ depense.date | date:'mediumDate' }}</span>
+        </div>
+        <div class="depense-detail">
+          <span class="label">État:</span>
+          <span>{{ depense.etat }}</span>
+        </div>
+        <div class="depense-detail">
+          <span class="label">Catégorie:</span>
+          <span *ngIf="isCategoryObject(depense.category)">
+            {{ depense.category.nom }}
+          </span>
+          <span *ngIf="!isCategoryObject(depense.category)">
+            ID: {{ depense.category }}
+          </span>
+        </div>
+        <div class="depense-detail">
+          <span class="label">Wallet:</span>
+          <span>{{ depense.wallet.solde | currency:'EUR' }} ({{ depense.wallet.statut }})</span>
+        </div>
+        <div class="depense-detail" *ngIf="depense.photoUrl">
+          <span class="label">Photo:</span>
+          <img [src]="depense.photoUrl" alt="Photo de la dépense" class="depense-photo" />
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>
