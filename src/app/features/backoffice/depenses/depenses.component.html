@@ -19,7 +19,7 @@
       <div *ngFor="let depense of depenses" class="depense-item">
         <div class="depense-detail">
           <span class="label">Montant:</span>
-          <span>{{ depense.montant | currency:'EUR' }}</span>
+          <span>{{ depense.montant | currency:'TND' }}</span>
         </div>
         <div class="depense-detail">
           <span class="label">Date:</span>
@@ -40,7 +40,7 @@
         </div>
         <div class="depense-detail">
           <span class="label">Wallet:</span>
-          <span>{{ depense.wallet.solde | currency:'EUR' }} ({{ depense.wallet.statut }})</span>
+          <span>{{ depense.wallet.solde | currency:'TND' }} ({{ depense.wallet.statut }})</span>
         </div>
         <div class="depense-detail" *ngIf="depense.photoUrl">
           <span class="label">Photo:</span>
