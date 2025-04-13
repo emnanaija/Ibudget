@@ -31,16 +31,17 @@
         </div>
         <div class="depense-detail">
           <span class="label">Catégorie:</span>
-          <span *ngIf="isCategoryObject(depense.category)">
+          <span *ngIf="depense.category && isCategoryObject(depense.category)">
             {{ depense.category.nom }}
           </span>
-          <span *ngIf="!isCategoryObject(depense.category)">
+          <span *ngIf="depense.category && !isCategoryObject(depense.category)">
             ID: {{ depense.category }}
           </span>
+          
         </div>
         <div class="depense-detail">
           <span class="label">Wallet:</span>
-          <span>{{ depense.wallet.solde | currency:'TND' }} ({{ depense.wallet.statut }})</span>
+          <span>{{ depense.wallet?.solde | currency:'TND' }} ({{ depense.wallet?.statut }})</span>
         </div>
         <div class="depense-detail" *ngIf="depense.photoUrl">
           <span class="label">Photo:</span>

@@ -31,7 +31,8 @@ export class DepensesComponent implements OnInit {
     );
   }
 
-  isCategoryObject(category: Category | number): category is Category {
-    return typeof category !== 'number';
+  // Mise à jour de la méthode de vérification de la catégorie
+  isCategoryObject(category: Category | number | undefined): category is Category {
+    return category !== undefined && typeof category !== 'number' && 'nom' in category;
   }
 }
