@@ -14,9 +14,7 @@ import { HeaderComponent } from '../../../FrontOffice/header/header.component'; 
     NgIf,
     AsyncPipe,
     CurrencyPipe,
-    DatePipe,
-    SidebarComponent,
-    HeaderComponent,], // ✅ CommonModule suffit en général car il contient currency et date pipes
+    DatePipe], // ✅ CommonModule suffit en général car il contient currency et date pipes
 
   standalone: true
 
@@ -53,7 +51,5 @@ export class DepensesComponent implements OnInit {
     // TODO: Implémenter la logique de modification de l'état
     console.log('Modification de l\'état pour la dépense:', depense);
   }
-  toggleSidebar() {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed; // Inverse la valeur de isSidebarCollapsed
-  }
+
 }
