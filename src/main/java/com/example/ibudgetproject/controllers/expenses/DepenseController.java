@@ -75,21 +75,37 @@ public class DepenseController {
             return ResponseEntity.badRequest().body("Le fichier est vide.");
         }
 
-        // Sauvegarde temporaire du fichier
-        String filePath = System.getProperty("java.io.tmpdir") + "/" + file.getOriginalFilename();
-        File imageFile = new File(filePath);
-        try {
-            file.transferTo(imageFile);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'enregistrement du fichier.");
+        // Utilisation d'un répertoire d'upload dans le dossier utilisateur
+        String uploadDir = "C:/uploads/"; // Change ce chemin en fonction de l'endroit où tu veux stocker les fichiers
+        File uploadDirectory = new File(uploadDir);
+
+        // Créer le répertoire si nécessaire
+        if (!uploadDirectory.exists()) {
+            uploadDirectory.mkdirs();
         }
 
-        // Extraction des informations et création de l'objet Depense
-        Depense depense = depenseService.saveDepenseFromImage(imageFile, imageFile.getAbsolutePath());
+        // Création du nom de fichier avec un identifiant unique
+        String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        File imageFile = new File(uploadDirectory, fileName);
 
+        try {
+            // Sauvegarder le fichier dans le répertoire spécifié
+            file.transferTo(imageFile);
 
-        return ResponseEntity.ok("Fichier reçu et dépense enregistrée avec succès : " + file.getOriginalFilename());
+            // URL de l'image pour l'utiliser dans le front
+            String imageUrl = "/uploads/" + fileName;
+
+            // Enregistrer la dépense avec l'URL de l'image
+            Depense depense = depenseService.saveDepenseFromImage(imageFile, imageUrl);
+
+            return ResponseEntity.ok("Fichier reçu et dépense enregistrée avec succès : " + fileName);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors de l'enregistrement du fichier.");
+        }
     }
+
 
 
     @GetMapping("/wallet/{walletId}/mois/{mois}/annee/{annee}")

@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers("user/register","user/login","user/activateAccount","user/resendActivationCode"
                                 ,"user/sendResetEmail","user/resetPassword","connexionInfo/approveLogIn","/oauth2/**","/user/completeProfile","user/sendResetPasswordRequest")
                         .permitAll()
-                        .anyRequest().authenticated()))
+                        .anyRequest().permitAll()))
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2Handler))
                 .httpBasic(Customizer.withDefaults())

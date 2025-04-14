@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.example.ibudgetproject.services.expenses.GeminiService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,14 +36,14 @@ public class FeteService {
     // Méthode pour récupérer les fêtes du mois
     public List<String> getFetesDuMois(int year, int month) {
         String url = API_URL + "?api_key=" + apiKey + "&country=" + country + "&year=" + year;
-        logger.info("🔎 Envoi de la requête à Calendarific : {}", url);
+        logger.info("Envoi de la requête à Calendarific : {}", url);
 
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
         if (response != null && response.containsKey("response")) {
             List<Map<String, Object>> holidays = (List<Map<String, Object>>) ((Map<String, Object>) response.get("response")).get("holidays");
 
-            logger.info("📆 {} fêtes trouvées dans la réponse API.", holidays.size());
+            logger.info(" {} fêtes trouvées dans la réponse API.", holidays.size());
 
             // Filtrer les fêtes du mois donné
             List<String> fetesMois = holidays.stream()
@@ -55,7 +56,7 @@ public class FeteService {
                     .map(h -> h.get("name").toString())
                     .collect(Collectors.toList());
 
-            logger.info("✅ {} fêtes correspondent au mois {}.", fetesMois.size(), month);
+            logger.info(" {} fêtes correspondent au mois {}.", fetesMois.size(), month);
             return fetesMois;
         }
 
@@ -64,7 +65,12 @@ public class FeteService {
     }
 
     // Nouvelle méthode pour obtenir les recommandations pour les fêtes
-    public String getRecommandationsFetes(int year, int month) {
+    public String getRecommandationsFetes() {
+        // Obtenir la date actuelle
+        LocalDate today = LocalDate.now();
+        int year = today.getYear();
+        int month = today.getMonthValue();
+
         // Récupérer toutes les fêtes du mois
         List<String> fetes = getFetesDuMois(year, month);
 
@@ -75,7 +81,7 @@ public class FeteService {
                 // Créer les prompts pour Gemini pour chaque fête
                 String budgetPrompt = "Propose-moi un budget pour la fête de " + fete +
                         " en dinars tunisien (une estimation approximative pour une famille de 5 personnes). Réponds-moi avec les montants et la description seulement.";
-                String cadeauxPrompt = "Quels sont des cadeaux populaires pour " + fete + "? Propose-moi des idées avec les prix en dinars.";
+                String cadeauxPrompt = "Quels sont des cadeaux populaires pour " + fete + "? Propose-moi des idées avec les prix en dinars tunisien.";
 
                 // Demander des suggestions à Gemini
                 String budgetSuggestions = geminiService.getSuggestions(budgetPrompt);
@@ -92,4 +98,5 @@ public class FeteService {
             return "Aucune fête trouvée pour " + month + "/" + year;
         }
     }
+
 }

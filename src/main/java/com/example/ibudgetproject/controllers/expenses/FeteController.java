@@ -46,12 +46,10 @@ public class FeteController {
 
         return fetes;
     }*/
-
-    @GetMapping("/{year}/{month}")
-    public String getFetes(@PathVariable int year, @PathVariable int month) {
+    @GetMapping("/current")
+    public String getFetes() {
         // Appeler le service pour obtenir les suggestions
-        return feteService.getRecommandationsFetes(year, month);
+        return feteService.getRecommandationsFetes();
     }
-
 
 }
