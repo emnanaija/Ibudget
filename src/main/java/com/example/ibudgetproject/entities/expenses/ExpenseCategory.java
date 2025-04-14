@@ -2,6 +2,7 @@ package com.example.ibudgetproject.entities.expenses;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,7 @@ public class ExpenseCategory {
     private double montantDepensé = 0.0;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
 
     private List<Depense> depenses;
     public double getSoldeRestant() {

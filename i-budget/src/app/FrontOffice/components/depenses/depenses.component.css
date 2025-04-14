@@ -1,0 +1,174 @@
+.depenses-container {
+  padding: 2rem;
+  max-width: 650px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.loading-spinner {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2em;
+  color: #4a5568;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+.error-message {
+  background-color: #fff5f5;
+  color: #e53e3e;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  border-left: 4px solid #e53e3e;
+  box-shadow: 0 2px 4px rgba(229, 62, 62, 0.1);
+  transition: all 0.3s ease;
+}
+
+.error-message:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(229, 62, 62, 0.15);
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+  color: #718096;
+  background-color: #f7fafc;
+  border-radius: 8px;
+  border: 1px dashed #cbd5e0;
+  transition: all 0.3s ease;
+}
+
+.no-data:hover {
+  background-color: #edf2f7;
+  transform: translateY(-2px);
+}
+
+.depenses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.depense-item {
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.depense-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e0;
+}
+
+.depense-detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: all 0.3s ease;
+}
+
+.depense-detail:last-child {
+  border-bottom: none;
+}
+
+.depense-detail:hover {
+  background-color: #f8fafc;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+}
+
+.depense-detail .label {
+  font-weight: 600;
+  color: #2d3748;
+  min-width: 120px;
+  font-size: 0.95rem;
+}
+
+.depense-detail span:not(.label) {
+  color: #4a5568;
+  font-size: 0.95rem;
+}
+
+/* Style pour les montants */
+.depense-detail:first-child span:not(.label) {
+  font-weight: 600;
+  color: #2b6cb0;
+  font-size: 1.1rem;
+}
+
+/* Style pour les états */
+.depense-detail:nth-child(3) span:not(.label) {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background-color: #ebf8ff;
+  color: #2c5282;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.depense-detail:nth-child(3) span:not(.label):hover {
+  transform: scale(1.05);
+}
+
+.depense-photo {
+  max-width: 70px;
+  max-height: 70px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-top: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.depense-photo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+/* Animation pour le chargement */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.depense-item {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.etat-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-icon {
+  color: #4299e1;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.edit-icon:hover {
+  color: #2b6cb0;
+  background-color: #ebf8ff;
+  transform: scale(1.1);
+}
