@@ -1,171 +1,174 @@
 /* Container du formulaire */
 .form-container {
   position: relative;
-  margin-left: 650px; /* Décale pour laisser la place à la sidebar */
-  max-width: 400px; /* Plus large pour remplir la zone libre */
+  margin-left: 300px; /* identique à la liste */
+  max-width: 500px;
   padding: 2rem;
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(25, 25, 45, 0.9));
   min-height: 60vh;
   border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease;
-  margin-bottom: 1.5rem;
-
+  color: var(--text-primary);
 }
 
-  
-  
-  .form-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Titre du formulaire */
-  .form-container h2 {
-    font-size: 1.75rem;
-    color: #495057;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Style des labels */
-  .form-container label {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #495057;
-    margin-bottom: 0.5rem;
-    display: block;
-  }
-  
-  /* Style des champs de formulaire */
-  .form-container input,
-  .form-container select,
-  .form-container textarea {
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
-    color: #495057;
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    margin-bottom: 1.25rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .form-container input:focus,
-  .form-container select:focus,
-  .form-container textarea:focus {
-    border-color: #20c997;
-    outline: none;
-    box-shadow: 0 0 10px rgba(32, 201, 151, 0.3);
-  }
-  
-  /* Style des boutons */
-  .form-container button {
-    width: 100%;
-    padding: 1rem;
-    background: linear-gradient(135deg, #20c997 0%, #198754 100%);
-    color: #ffffff;
-    border: none;
-    border-radius: 8px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-  }
-  
-  .form-container button:hover {
-    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
-    transform: scale(1.05);
-  }
-  
-  .form-container button:active {
-    transform: scale(1);
-  }
-  
-  /* Style des erreurs */
+/* Hover */
+.form-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
 
-  
-  .error-message:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(229, 62, 62, 0.15);
-  }
-  
-  /* Styles pour les messages de succès */
-  .success-message {
-    background-color: #e9f7ef;
-    color: #38a169;
-    padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1.5rem;
-    text-align: center;
-    border-left: 4px solid #38a169;
-    box-shadow: 0 2px 4px rgba(56, 161, 105, 0.1);
-    transition: all 0.3s ease;
-  }
-  
-  .success-message:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(56, 161, 105, 0.15);
-  }
-  
-  /* Animation pour les champs de formulaire */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .form-container input,
-  .form-container select,
-  .form-container textarea,
-  .form-container button {
-    animation: fadeIn 0.5s ease-out;
-  }
-  
-  /* Style du bouton désactivé */
+/* Titre du formulaire avec effet dynamique */
+.form-container h2 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    0 0 12px rgba(138, 43, 226, 0.9),
+    0 0 20px rgba(138, 43, 226, 0.6),
+    0 0 30px rgba(138, 43, 226, 0.4);
+  position: relative;
+}
+
+.form-container h2::after {
+  content: "";
+  position: absolute;
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(to right, #7f00ff, #e100ff);
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
+  border-radius: 5px;
+  animation: underlineGrow 2s infinite ease-in-out;
+}
+
+@keyframes underlineGrow {
+  0%, 100% { width: 60%; }
+  50% { width: 80%; }
+}
+
+/* Labels */
+.form-container label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* Champs (inputs, selects, textarea) avec effet "glass" */
+.form-container input,
+.form-container select,
+.form-container textarea {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.05); /* plus clair mais translucide */
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Focus */
+.form-container input:focus,
+.form-container select:focus,
+.form-container textarea:focus {
+  border-color: #20c997;
+  outline: none;
+  box-shadow: 0 0 12px rgba(32, 201, 151, 0.4);
+}
+
+/* Bouton */
+.form-container button {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+.form-container button:hover {
+  background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+  transform: scale(1.05);
+}
+
+.form-container button:active {
+  transform: scale(1);
+}
+
+/* Bouton désactivé */
 .form-container button:disabled {
-    background: #e0e0e0;
-    color: #b0b0b0;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-  }
-  
+  background: #999;
+  color: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
 
 /* Message d'erreur */
 .error-message {
-    color: #dc3545; /* Rouge */
-    font-weight: bold;
-    margin-top: 1rem;
-    text-align: center;
-  }
-  
-  /* Message de succès */
-  .success-message {
-    color: #28a745; /* Vert */
-    font-weight: bold;
-    margin-top: 1rem;
-    text-align: center;
-  }
-  
-  /* Classe générique pour les messages */
-  .message {
-    font-size: 14px;
-  }
-  
-  
-  .list-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 1.5rem;
-    margin-top:3.8rem;
-    margin-left: 350px; /* décaler à droite pour éviter la sidebar */
-    width: calc(100% - 270px); /* prendre toute la zone à droite */
-    text-align: center; /* centrer le texte dans cette zone */
-  }
-  
+  color: #ff6b6b;
+  font-weight: bold;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Message de succès */
+.success-message {
+  color: #51d88a;
+  font-weight: bold;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Animation fade-in */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.form-container input,
+.form-container select,
+.form-container textarea,
+.form-container button {
+  animation: fadeIn 0.5s ease-out;
+}
+.list-title {
+  position: relative; /* ✅ Ajouté pour positionner ::after correctement */
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.6),
+    0 0 12px rgba(138, 43, 226, 0.9),
+    0 0 20px rgba(138, 43, 226, 0.6),
+    0 0 30px rgba(138, 43, 226, 0.4);
+}
+.list-title::after {
+  content: "";
+  position: absolute;
+  width: 60%;
+  height: 4px;
+  background: linear-gradient(to right, #7f00ff, #e100ff);
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: -10px;
+  border-radius: 5px;
+  animation: underlineGrow 2s infinite ease-in-out;
+}
