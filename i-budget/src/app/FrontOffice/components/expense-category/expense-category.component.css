@@ -163,6 +163,7 @@
     font-weight: bold;
     color: #333;
     margin-bottom: 1.5rem;
+    margin-top:3.8rem;
     margin-left: 350px; /* décaler à droite pour éviter la sidebar */
     width: calc(100% - 270px); /* prendre toute la zone à droite */
     text-align: center; /* centrer le texte dans cette zone */

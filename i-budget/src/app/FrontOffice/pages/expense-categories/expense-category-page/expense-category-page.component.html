@@ -1,3 +1,4 @@
+
 <div class="dashboard-container">
     <!-- Animated Background with liquid effect -->
     <div class="animated-background">
@@ -31,6 +32,8 @@
       [isCollapsed]="isSidebarCollapsed"
       (toggleSidebar)="toggleSidebar()"
     ></app-sidebar>
+    <app-header [isSidebarCollapsed]="isSidebarCollapsed"></app-header>
+
  <!-- Formulaire pour ajouter une nouvelle catégorie -->
  <app-expense-category></app-expense-category>  <!-- Le formulaire -->
 
