@@ -4,6 +4,7 @@ export interface ExpenseCategory {
     nom: string;
     description: string;
     budgetAlloue: number;
-    montantDepense?: number; // modifiable par le système seulement
+    montantDepense?: number;
+    soldeRestant?: number;    // modifiable par le système seulement
 }
   

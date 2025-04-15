@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../header/header.component';
+import { CategoryListComponent } from '../../../components/category-list/category-list.component';  // Importer le composant de la liste
 
 import { gsap } from 'gsap';
 @Component({
@@ -12,7 +13,7 @@ import { gsap } from 'gsap';
   templateUrl: './expense-category-page.component.html',
   styleUrls: ['./expense-category-page.component.css'],
   standalone: true,
-  imports: [CommonModule, ExpenseCategoryComponent, SidebarComponent]  // Import de ton composant standalone
+  imports: [CommonModule, ExpenseCategoryComponent, SidebarComponent, CategoryListComponent]  // Import de ton composant standalone
 })
 export class ExpenseCategoryPageComponent {
   isSidebarCollapsed = false;

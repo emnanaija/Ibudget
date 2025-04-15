@@ -1,0 +1,19 @@
+<div class="category-list-container">
+    <h2 class="list-title">Liste des catégories de dépenses</h2>
+    
+    <div *ngIf="loading" class="loading-message">
+      Chargement des catégories...
+    </div>
+    
+    <div *ngIf="!loading && categories.length === 0" class="no-categories">
+      Aucune catégorie trouvée.
+    </div>
+    <div *ngIf="!loading && categories.length > 0" class="category-cards">
+      <div *ngFor="let category of categories" class="category-card">
+        <h3 class="category-name">{{ category.nom }}</h3>
+        <p class="category-description">{{ category.description }}</p>
+        <p class="category-budget">{{ category.budgetAlloue | currency:'TND'  }}</p>
+      </div>
+    </div>
+  </div>
+  

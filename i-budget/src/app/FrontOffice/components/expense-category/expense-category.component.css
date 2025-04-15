@@ -1,15 +1,18 @@
 /* Container du formulaire */
 .form-container {
-    padding: 2rem;
-    max-width: 300px;
-    margin: 0 auto;
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    min-height: 80vh;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
-  }
+  position: relative;
+  margin-left: 650px; /* Décale pour laisser la place à la sidebar */
+  max-width: 400px; /* Plus large pour remplir la zone libre */
+  padding: 2rem;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 80vh;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+  
   
   .form-container:hover {
     transform: translateY(-5px);
@@ -152,4 +155,14 @@
     font-size: 14px;
   }
   
+  
+  .list-title {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1.5rem;
+    margin-left: 350px; /* décaler à droite pour éviter la sidebar */
+    width: calc(100% - 270px); /* prendre toute la zone à droite */
+    text-align: center; /* centrer le texte dans cette zone */
+  }
   
