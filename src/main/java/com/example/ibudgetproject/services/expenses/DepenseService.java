@@ -65,12 +65,12 @@ public class DepenseService {
 
         // Mettre à jour le montant dépensé de la catégorie
         ExpenseCategory category = depense.getCategory();
-        category.setMontantDepensé(category.getMontantDepensé() + depense.getMontant());
+        category.setMontantDepense(category.getMontantDepense() + depense.getMontant());
 
         // Sauvegarder les mises à jour
         walletRepository.save(wallet);
         logger.info("Avant sauvegarde - ID: {}, Nom: {}, Budget: {}, Montant Dépensé: {}",
-                category.getId(), category.getNom(), category.getBudgetAlloué(), category.getMontantDepensé());
+                category.getId(), category.getNom(), category.getBudgetAlloue(), category.getMontantDepense());
 
         categoryRepository.save(category);
 

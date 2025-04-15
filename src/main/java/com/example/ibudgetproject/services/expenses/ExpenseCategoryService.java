@@ -21,7 +21,7 @@ public class ExpenseCategoryService {
         if (categoryRepository.existsByNom(category.getNom())) {
             throw new RuntimeException("Une catégorie avec ce nom existe déjà !");
         }
-        category.setMontantDepensé(0.0); // Assurer que ce champ est toujours 0
+        category.setMontantDepense(0.0); // Assurer que ce champ est toujours 0
         return categoryRepository.save(category);
     }
 
@@ -33,7 +33,7 @@ public class ExpenseCategoryService {
             ExpenseCategory category = existingCategory.get();
             category.setNom(categoryDetails.getNom());
             category.setDescription(categoryDetails.getDescription());
-            category.setBudgetAlloué(categoryDetails.getBudgetAlloué());
+            category.setBudgetAlloue(categoryDetails.getBudgetAlloue());
             // ❌ Ne pas modifier montantDepensé ici
             return categoryRepository.save(category);
         } else {
@@ -70,8 +70,8 @@ public class ExpenseCategoryService {
             Map<String, Object> categorieData = new HashMap<>();
             categorieData.put("id", categorie.getId());
             categorieData.put("nom", categorie.getNom());
-            categorieData.put("budget_alloué", categorie.getBudgetAlloué());
-            categorieData.put("montant_dépensé", categorie.getMontantDepensé());
+            categorieData.put("budget_alloué", categorie.getBudgetAlloue());
+            categorieData.put("montant_dépensé", categorie.getMontantDepense());
             categorieData.put("solde_restant", categorie.getSoldeRestant()); // Calcul automatique
 
             resultat.add(categorieData);
@@ -83,8 +83,8 @@ public class ExpenseCategoryService {
         List<Map<String, Object>> alertes = new ArrayList<>();
 
         for (ExpenseCategory categorie : categories) {
-            double budgetAlloue = categorie.getBudgetAlloué();
-            double montantDepense = categorie.getMontantDepensé();
+            double budgetAlloue = categorie.getBudgetAlloue();
+            double montantDepense = categorie.getMontantDepense();
 
             // Vérifier si 70% du budget est dépassé
             if (montantDepense >= 0.7 * budgetAlloue) {

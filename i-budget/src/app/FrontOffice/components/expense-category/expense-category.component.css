@@ -131,20 +131,25 @@
   }
   
 
-  /* Style des messages d'erreur */
-.form-container p {
-    color: #e53e3e; /* Rouge pour l'erreur */
-    font-size: 0.875rem;
-    margin-top: -0.75rem;
-    margin-bottom: 1rem;
+/* Message d'erreur */
+.error-message {
+    color: #dc3545; /* Rouge */
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
   }
   
-  .form-container p.ng-invalid {
-    color: #e53e3e;
+  /* Message de succès */
+  .success-message {
+    color: #28a745; /* Vert */
     font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
   }
- .error-message {
-  color: red;
-  font-size: 0.9rem;
-  margin-top: 4px;
-}
+  
+  /* Classe générique pour les messages */
+  .message {
+    font-size: 14px;
+  }
+  
+  
