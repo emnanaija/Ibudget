@@ -12,9 +12,7 @@
   <div *ngIf="!loading && categories.length > 0" class="category-cards">
     <div *ngFor="let category of categories" class="category-card">
       <!-- ✅ Badge dynamique de dépassement -->
-      <div *ngIf="category && category.montantDepense && category.budgetAlloue && category.montantDepense > category.budgetAlloue">
-        ⚠️ Dépassement
-      </div>
+     
 
       <!-- Titre, description, budget -->
       <h3 class="category-name">{{ category.nom }}</h3>

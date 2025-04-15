@@ -1,6 +1,6 @@
 /* Container principal pour la liste des catégories avec la sidebar */
 .category-list-container {
-    margin-left: 350px;
+    margin-left: 190px;
     padding: 2rem;
     transition: margin-left 0.3s ease;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -18,13 +18,38 @@
 
 /* Titre de la liste */
 .list-title {
-    font-size: 2rem;
+    position: relative; /* ✅ Ajouté pour positionner ::after correctement */
+    font-size: 2.5rem;
     font-weight: bold;
-    color: var(--text-primary);
+    color: #ffffff;
     margin-bottom: 2rem;
     text-align: center;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.6),
+      0 0 12px rgba(138, 43, 226, 0.9),
+      0 0 20px rgba(138, 43, 226, 0.6),
+      0 0 30px rgba(138, 43, 226, 0.4);
 }
+
+
+.list-title::after {
+    content: "";
+    position: absolute;
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(to right, #7f00ff, #e100ff);
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    border-radius: 5px;
+    animation: underlineGrow 2s infinite ease-in-out;
+}
+
+@keyframes underlineGrow {
+    0%, 100% { width: 60%; }
+    50% { width: 80%; }
+}
+
 
 /* Message de chargement */
 .loading-message {
