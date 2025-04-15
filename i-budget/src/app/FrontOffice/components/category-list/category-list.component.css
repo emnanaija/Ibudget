@@ -4,199 +4,235 @@
     padding: 2rem;
     transition: margin-left 0.3s ease;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    background: linear-gradient(135deg, var(--purple-light) 0%, var(--bg-light) 100%);
     min-height: 100vh;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Si la sidebar est en mode "collapsed" */
-  .sidebar.collapsed + .category-list-container {
+    color: var(--text-primary);
+}
+
+/* Si la sidebar est en mode "collapsed" */
+.sidebar.collapsed + .category-list-container {
     margin-left: 80px;
-  }
-  
-  /* Titre de la liste */
-  .list-title {
+}
+
+/* Titre de la liste */
+.list-title {
     font-size: 2rem;
     font-weight: bold;
-    color: #343a40;
+    color: var(--text-primary);
     margin-bottom: 2rem;
     text-align: center;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  }
-  
-  /* Message de chargement */
-  .loading-message {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Message de chargement */
+.loading-message {
     text-align: center;
-    color: #4a5568;
+    color: var(--text-secondary);
     font-size: 1.2em;
     padding: 2rem;
     animation: pulse 2s infinite;
-  }
-  
-  @keyframes pulse {
+}
+
+/* Animation de pulsation */
+@keyframes pulse {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
     100% { opacity: 1; }
-  }
-  
-  /* Message quand aucune catégorie */
-  .no-categories {
+}
+
+/* Message quand aucune catégorie */
+.no-categories {
     text-align: center;
     padding: 2rem;
     font-style: italic;
-    color: #718096;
-    background-color: #f7fafc;
+    color: var(--text-secondary);
+    background-color: var(--bg-dark);
     border-radius: 8px;
-    border: 1px dashed #cbd5e0;
+    border: 1px dashed var(--border);
     transition: all 0.3s ease;
-  }
-  
-  .no-categories:hover {
-    background-color: #edf2f7;
+}
+
+.no-categories:hover {
+    background-color: var(--bg-darker);
     transform: translateY(-2px);
-  }
-  
-  /* Conteneur des cartes */
-  .category-cards {
+}
+
+/* Conteneur des cartes */
+.category-cards {
     display: grid;
     grid-template-columns: 1fr;
     gap: 1.5rem;
-  }
-  
-  @media screen and (min-width: 600px) {
+}
+
+@media screen and (min-width: 600px) {
     .category-cards {
-      grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
     }
-  }
-  
-  @media screen and (min-width: 900px) {
+}
+
+@media screen and (min-width: 900px) {
     .category-cards {
-      grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
     }
-  }
-  
-  /* Carte de catégorie */
-  .category-card {
+}
+
+/* Carte de catégorie */
+.category-card {
     position: relative;
-    background: linear-gradient(135deg, rgba(73, 80, 87, 0.9), rgba(52, 58, 64, 0.9));
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(32, 201, 151, 0.6));
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 15px;
     padding: 1.5rem;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     transition: all 0.3s ease;
     animation: fadeIn 0.5s ease-out;
     overflow: hidden;
-    color: #fff;
-  }
-  
-  .category-card::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent);
-    animation: rotate 20s linear infinite;
-    z-index: 0;
-  }
-  
-  @keyframes rotate {
-    0% { transform: rotate(0deg);}
-    100% { transform: rotate(360deg);}
-  }
-  
-  .category-card:hover {
+    color: var(--text-primary);
+}
+
+/* Animation de fade-in pour les cartes */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Carte au survol */
+.category-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
     border-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  /* Animation */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  /* Nom de la catégorie */
-  .category-name {
+}
+
+/* Nom de la catégorie */
+.category-name {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #ffffff;
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     position: relative;
     z-index: 1;
-  }
-  
-  /* Description */
-  .category-description {
+}
+
+/* Description */
+.category-description {
     font-size: 1rem;
-    color: #dee2e6;
+    color: var(--text-secondary);
     margin-bottom: 1rem;
     position: relative;
     z-index: 1;
-  }
-  
-  /* Budget */
-  .category-budget {
+}
+
+/* Budget */
+.category-budget {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #20c997;
+    color: var(--positive);
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
     position: relative;
     z-index: 1;
-  }
-  
-  /* Barre de progression */
-  .budget-bar-container {
-    background: #495057;
+}
+
+/* Barre de progression */
+/* Barre de progression */
+/* Conteneur de la barre de progression */
+.budget-bar-container {
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    height: 20px;
+    width: 100%;
     overflow: hidden;
-    height: 10px;
-    margin-top: 1rem;
-    z-index: 1;
-    position: relative;
-  }
-  
-  .budget-bar-fill {
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.budget-bar-fill {
     height: 100%;
-    background: linear-gradient(to right, #20c997, #0dcaf0);
-    width: 70%;
-    transition: width 0.3s ease-in-out;
-  }
-  
-  /* Badge dynamique */
-  .category-card .badge {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: #20c997;
-    color: white;
-    padding: 0.3rem 0.75rem;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    box-shadow: 0 0 8px rgba(32, 201, 151, 0.6);
-    animation: pulseBadge 2s infinite;
-    z-index: 2;
-  }
-  
-  @keyframes pulseBadge {
-    0% { box-shadow: 0 0 0 rgba(32, 201, 151, 0.5); }
-    50% { box-shadow: 0 0 12px rgba(32, 201, 151, 0.8); }
-    100% { box-shadow: 0 0 0 rgba(32, 201, 151, 0.5); }
-  }
-  
-  /* Icône décorative */
-  .decorative-icon {
+    border-radius: 10px;
+    transition: width 0.5s ease-in-out, background 0.5s ease;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Animation du gradient */
+@keyframes moveGradient {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+
+/* Optionnel : effet glow au survol */
+.budget-bar-fill:hover {
+    box-shadow: 0 0 10px 2px rgba(50, 205, 50, 0.8);
+}
+
+
+
+
+
+/* Icône décorative */
+.decorative-icon {
     position: absolute;
     bottom: 15px;
     right: 15px;
     font-size: 2.5rem;
     color: rgba(255, 255, 255, 0.05);
     z-index: 0;
+}
+
+/* Badge dynamique */
+.category-card .badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--accent);
+    color: var(--text-primary);
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(0, 201, 255, 0.6);
+    animation: pulseBadge 2s infinite;
+    z-index: 2;
+}
+
+/* Animation de pulsation du badge */
+@keyframes pulseBadge {
+    0% { box-shadow: 0 0 0 rgba(0, 201, 255, 0.5); }
+    50% { box-shadow: 0 0 12px rgba(0, 201, 255, 0.8); }
+    100% { box-shadow: 0 0 0 rgba(0, 201, 255, 0.5); }
+}
+
+/* Icône de monnaie */
+.category-card .money-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 2.5rem;
+    color: var(--text-primary);
+    z-index: 1;
+}
+/* ✅ Badge dynamique de dépassement */
+/* ✅ Badge dynamique de dépassement */
+.warning-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: linear-gradient(to right, #ff4d4d, #ff1a1a);
+    color: white;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.6);
+    animation: warningPulse 1.5s infinite;
+    z-index: 3;
+  }
+  
+  @keyframes warningPulse {
+    0% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 0, 0, 0.3); }
+    50% { transform: scale(1.1); box-shadow: 0 0 15px rgba(255, 0, 0, 0.7); }
+    100% { transform: scale(1); box-shadow: 0 0 5px rgba(255, 0, 0, 0.3); }
   }
   
