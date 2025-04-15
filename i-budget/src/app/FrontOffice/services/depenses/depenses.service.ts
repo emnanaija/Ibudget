@@ -33,8 +33,10 @@ export class DepensesService {
 
   // ✅ POST: Créer une dépense manuellement
   createDepense(depense: Depense): Observable<Depense> {
+    console.log('Données reçues dans le service createDepense:', depense);  // Vérifie l'objet depense avant envoi
     return this.http.post<Depense>(`${this.apiUrl}/ajoutManuel`, depense);
   }
+  
 
   // ✅ PUT: Mettre à jour une dépense
   updateDepense(id: number, depense: Depense): Observable<Depense> {

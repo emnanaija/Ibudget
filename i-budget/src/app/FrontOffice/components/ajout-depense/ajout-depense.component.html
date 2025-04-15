@@ -25,8 +25,25 @@
       <option value="PREVUE">Prévue</option>
     </select>
   
+    <label>Catégorie:</label>
+    <select formControlName="category">
+        <option *ngFor="let category of categories" [value]="category.id">{{ category.nom }}</option>
+      </select>
+      
+      
+  
     <button type="submit">Ajouter</button>
   </form>
+  
+  <!-- Message de succès -->
+<div *ngIf="successMessage" class="success-message">
+    {{ successMessage }}
+  </div>
+  
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
   
   <!-- Formulaire Image -->
   <div *ngIf="mode === 'image'" class="form-section">
@@ -35,5 +52,8 @@
     <button (click)="submitImage()">Envoyer</button>
   
     <p *ngIf="uploadResult">Texte extrait : {{ uploadResult }}</p>
+  
+    <!-- Affichage du message de succès -->
+    <p *ngIf="successMessage" class="success-message">{{ successMessage }}</p>
   </div>
   
