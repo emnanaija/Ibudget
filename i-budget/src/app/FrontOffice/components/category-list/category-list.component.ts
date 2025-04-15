@@ -40,4 +40,10 @@ export class CategoryListComponent implements OnInit {
       }
     });
   }
+  getBudgetProgress(category: any): number {
+    if (!category.budgetAlloue || category.budgetAlloue === 0) return 0;
+    const progress = (category.montantDepense || 0) / category.budgetAlloue * 100;
+    return Math.min(progress, 100); // Ne dépasse pas 100%
+  }
+  
 }

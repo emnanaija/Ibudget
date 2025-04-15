@@ -6,10 +6,12 @@
   padding: 2rem;
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  min-height: 80vh;
+  min-height: 60vh;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  margin-bottom: 1.5rem;
+
 }
 
   

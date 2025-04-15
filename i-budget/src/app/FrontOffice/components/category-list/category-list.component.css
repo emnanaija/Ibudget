@@ -1,91 +1,202 @@
 /* Container principal pour la liste des catégories avec la sidebar */
 .category-list-container {
-    margin-left: 350px; /* Ajoute un espace pour la sidebar */
+    margin-left: 350px;
     padding: 2rem;
     transition: margin-left 0.3s ease;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 100vh;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   }
   
-  /* Si la sidebar est en mode "collapsed", on réduit la marge de la liste */
+  /* Si la sidebar est en mode "collapsed" */
   .sidebar.collapsed + .category-list-container {
-    margin-left: 80px; /* Réduit la largeur lorsque la sidebar est réduite */
+    margin-left: 80px;
   }
   
   /* Titre de la liste */
   .list-title {
     font-size: 2rem;
     font-weight: bold;
-    color: #333;
-    margin-bottom: 1.5rem;
+    color: #343a40;
+    margin-bottom: 2rem;
     text-align: center;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.05);
   }
   
   /* Message de chargement */
   .loading-message {
     text-align: center;
-    color: #999;
-    font-size: 1rem;
+    color: #4a5568;
+    font-size: 1.2em;
     padding: 2rem;
+    animation: pulse 2s infinite;
   }
   
-  /* Message lorsque aucune catégorie n'est trouvée */
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+  
+  /* Message quand aucune catégorie */
   .no-categories {
     text-align: center;
-    color: #999;
-    font-size: 1rem;
     padding: 2rem;
+    font-style: italic;
+    color: #718096;
+    background-color: #f7fafc;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e0;
+    transition: all 0.3s ease;
   }
   
-  /* Conteneur des cartes de catégories */
+  .no-categories:hover {
+    background-color: #edf2f7;
+    transform: translateY(-2px);
+  }
+  
+  /* Conteneur des cartes */
   .category-cards {
     display: grid;
-    grid-template-columns: 1fr; /* Par défaut, une seule colonne */
+    grid-template-columns: 1fr;
     gap: 1.5rem;
   }
   
   @media screen and (min-width: 600px) {
     .category-cards {
-      grid-template-columns: 1fr 1fr; /* Deux colonnes pour les écrans plus larges */
+      grid-template-columns: 1fr 1fr;
     }
   }
   
   @media screen and (min-width: 900px) {
     .category-cards {
-      grid-template-columns: 1fr 1fr 1fr; /* Trois colonnes pour les grands écrans */
+      grid-template-columns: 1fr 1fr 1fr;
     }
   }
   
   /* Carte de catégorie */
   .category-card {
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    background: linear-gradient(135deg, rgba(73, 80, 87, 0.9), rgba(52, 58, 64, 0.9));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
     padding: 1.5rem;
-    transition: box-shadow 0.3s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    animation: fadeIn 0.5s ease-out;
+    overflow: hidden;
+    color: #fff;
+  }
+  
+  .category-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.05), transparent);
+    animation: rotate 20s linear infinite;
+    z-index: 0;
+  }
+  
+  @keyframes rotate {
+    0% { transform: rotate(0deg);}
+    100% { transform: rotate(360deg);}
   }
   
   .category-card:hover {
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
   }
   
   /* Nom de la catégorie */
   .category-name {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
+    color: #ffffff;
     margin-bottom: 0.5rem;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
   }
   
-  /* Description de la catégorie */
+  /* Description */
   .category-description {
     font-size: 1rem;
-    color: #555;
+    color: #dee2e6;
     margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
   }
   
-  /* Budget de la catégorie */
+  /* Budget */
   .category-budget {
     font-size: 1.25rem;
     font-weight: bold;
-    color: #2d6cdf; /* Couleur bleue */
+    color: #20c997;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Barre de progression */
+  .budget-bar-container {
+    background: #495057;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 10px;
+    margin-top: 1rem;
+    z-index: 1;
+    position: relative;
+  }
+  
+  .budget-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, #20c997, #0dcaf0);
+    width: 70%;
+    transition: width 0.3s ease-in-out;
+  }
+  
+  /* Badge dynamique */
+  .category-card .badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #20c997;
+    color: white;
+    padding: 0.3rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    box-shadow: 0 0 8px rgba(32, 201, 151, 0.6);
+    animation: pulseBadge 2s infinite;
+    z-index: 2;
+  }
+  
+  @keyframes pulseBadge {
+    0% { box-shadow: 0 0 0 rgba(32, 201, 151, 0.5); }
+    50% { box-shadow: 0 0 12px rgba(32, 201, 151, 0.8); }
+    100% { box-shadow: 0 0 0 rgba(32, 201, 151, 0.5); }
+  }
+  
+  /* Icône décorative */
+  .decorative-icon {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    font-size: 2.5rem;
+    color: rgba(255, 255, 255, 0.05);
+    z-index: 0;
   }
   
