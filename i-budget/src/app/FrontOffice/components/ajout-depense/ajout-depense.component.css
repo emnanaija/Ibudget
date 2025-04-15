@@ -1,0 +1,212 @@
+/* Conteneur pour le formulaire avec le même style que la "form-container" */
+.form-section {
+    position: relative;
+    max-width: 500px;
+    padding: 2rem;
+    background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(25, 25, 45, 0.9));
+    min-height: 60vh;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    color: var(--text-primary);
+    margin-left: 20rem; /* Déplacer le formulaire plus à droite */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  /* Effet hover */
+  .form-section:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Titre du formulaire */
+  .form-section h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 2.5rem; /* Réduire l'espacement du titre */
+    text-align: center;
+    text-shadow:
+      0 2px 4px rgba(0, 0, 0, 0.6),
+      0 0 12px rgba(138, 43, 226, 0.9),
+      0 0 20px rgba(138, 43, 226, 0.6),
+      0 0 30px rgba(138, 43, 226, 0.4);
+    position: relative;
+  }
+  
+  /* Effet de soulignement animé */
+  .form-section h2::after {
+    content: "";
+    position: absolute;
+    width: 60%;
+    height: 4px;
+    background: linear-gradient(to right, #7f00ff, #e100ff);
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -10px;
+    border-radius: 5px;
+    animation: underlineGrow 2s infinite ease-in-out;
+  }
+  
+  @keyframes underlineGrow {
+    0%, 100% { width: 60%; }
+    50% { width: 80%; }
+  }
+  
+  /* Labels */
+  .form-section label {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  /* Champs de saisie avec effet "glass" */
+  .form-section input,
+  .form-section select,
+  .form-section button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.05); /* effet translucide */
+    color: var(--text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    margin-bottom: 1.25rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(8px);
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* Focus sur les champs */
+  .form-section input:focus,
+  .form-section select:focus,
+  .form-section button:focus {
+    border-color: #20c997;
+    outline: none;
+    box-shadow: 0 0 12px rgba(32, 201, 151, 0.4);
+  }
+  
+  /* Bouton principal */
+  .form-section button {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, #20c997 0%, #198754 100%);
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+  }
+  
+  .form-section button:hover {
+    background: linear-gradient(135deg, #198754 0%, #20c997 100%);
+    transform: scale(1.05);
+  }
+  
+  /* Effet pour le bouton désactivé */
+  .form-section button:disabled {
+    background: #999;
+    color: #ccc;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  
+  /* Message d'erreur */
+  .error-message {
+    color: #ff6b6b;
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
+  /* Message de succès */
+  .success-message {
+    color: #51d88a;
+    font-weight: bold;
+    margin-top: 1rem;
+    text-align: center;
+  }
+  
+  /* Animation fade-in pour les éléments */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Application de l'animation fade-in */
+  .form-section input,
+  .form-section select,
+  .form-section button {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  /* Conteneur des boutons de changement de mode */
+  .mode-toggle {
+    display: flex;
+    justify-content: flex-start;
+    gap: 1.5rem;
+    margin-top: 5rem; /* Positionner les boutons plus bas */
+    margin-left: 25rem; 
+    margin-bottom: 1rem; /* Réduire l'espacement sous les boutons */
+  }
+  
+  /* Boutons de changement de mode */
+  .mode-toggle button {
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #ffffff; /* Changer la couleur du texte */
+    font-family: 'Arial', sans-serif; /* Choisir une nouvelle police */
+    font-weight: 300;
+    cursor: pointer;
+    font-size: 1em; /* Modifier la taille de la police */
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+  
+.mode-toggle button.active {
+    background: linear-gradient(135deg, #005f73 0%, #0a9396 100%); /* Dégradé bleu plus profond */
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 95, 115, 0.4);
+    transform: translateY(-3px); /* Légère élévation */
+}
+
+/* Effet hover */
+.mode-toggle button:hover {
+    background: linear-gradient(135deg, #006d77 0%, #0d6d6d 100%); /* Dégradé bleu-gris plus subtil */
+    color: white;
+    box-shadow: 0 6px 15px rgba(0, 109, 119, 0.5); /* Ombre plus marquée au survol */
+    transform: translateY(-5px); /* Légère élévation au survol */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Transition fluide */
+}
+
+  
+  /* Animation de zoom lors de l'activation du bouton */
+  @keyframes buttonGrow {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.05); }
+  }
+  
+  .mode-toggle button.active {
+    animation: buttonGrow 0.3s ease-in-out;
+  }
+  
+  /* Ajouter un effet de transition fluide au passage de l'état normal à actif */
+  .mode-toggle button:focus {
+    outline: none;
+    border: 2px solid #20c997; /* Ajout d'une bordure verte au focus */
+  }
+  

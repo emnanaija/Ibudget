@@ -1,0 +1,39 @@
+<div class="mode-toggle">
+    <button 
+      [class.active]="mode === 'manuel'" 
+      (click)="mode = 'manuel'">
+      Ajout Manuel
+    </button>
+    <button 
+      [class.active]="mode === 'image'" 
+      (click)="mode = 'image'">
+      Ajout Image
+    </button>
+  </div>
+  
+  <!-- Formulaire Manuel -->
+  <form *ngIf="mode === 'manuel'" [formGroup]="depenseForm" (ngSubmit)="submitManuel()" class="form-section">
+    <label>Montant:</label>
+    <input formControlName="montant" type="number" required>
+  
+    <label>Date:</label>
+    <input formControlName="date" type="date" required>
+  
+    <label>État:</label>
+    <select formControlName="etat">
+      <option value="REALISEE">Réalisée</option>
+      <option value="PREVUE">Prévue</option>
+    </select>
+  
+    <button type="submit">Ajouter</button>
+  </form>
+  
+  <!-- Formulaire Image -->
+  <div *ngIf="mode === 'image'" class="form-section">
+    <label for="fileUpload">Choisir une image:</label>
+    <input type="file" (change)="onFileSelected($event)">
+    <button (click)="submitImage()">Envoyer</button>
+  
+    <p *ngIf="uploadResult">Texte extrait : {{ uploadResult }}</p>
+  </div>
+  

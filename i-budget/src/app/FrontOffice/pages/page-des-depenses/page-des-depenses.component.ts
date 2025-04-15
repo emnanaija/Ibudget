@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { DepensesComponent } from '../../components/depenses/depenses.component'; // adapte le chemin selon ton projet
 import { SidebarComponent } from '../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../header/header.component';
+import {AjoutDepenseComponent } from '../../components/ajout-depense/ajout-depense.component'; // adapte le chemin selon ton projet
+
 @Component({
   selector: 'app-page-desDepenses',
   standalone: true,
-  imports: [CommonModule, DepensesComponent,SidebarComponent,HeaderComponent
+  imports: [CommonModule, DepensesComponent,SidebarComponent,HeaderComponent,AjoutDepenseComponent
       ],
   templateUrl: './page-des-Depenses.component.html',
   styleUrls: ['./page-des-Depenses.component.css']
