@@ -1,6 +1,7 @@
 <div class="form-container">
     <form (ngSubmit)="onSubmit()" #categoryForm="ngForm">
       
+      <!-- Champ Nom -->
       <div class="depense-detail">
         <label class="label" for="nom">Nom :</label>
         <input
@@ -11,9 +12,13 @@
           required
           class="form-input"
           placeholder="Nom de la catégorie"
-        />
+          #nom="ngModel" />
+        <p *ngIf="nom.invalid && nom.touched" class="error-message">
+          Le nom est requis.
+        </p>
       </div>
   
+      <!-- Champ Description -->
       <div class="depense-detail">
         <label class="label" for="description">Description :</label>
         <input
@@ -22,10 +27,10 @@
           name="description"
           [(ngModel)]="newCategory.description"
           class="form-input"
-          placeholder="Description (facultatif)"
-        />
+          placeholder="Description (facultatif)" />
       </div>
   
+      <!-- Champ Budget alloué -->
       <div class="depense-detail">
         <label class="label" for="budgetAlloue">Budget alloué :</label>
         <input
@@ -34,18 +39,22 @@
           name="budgetAlloue"
           [(ngModel)]="newCategory.budgetAlloue"
           required
-          min="0"
           class="form-input"
           placeholder="Ex: 100.00"
-        />
+          #budgetAlloue="ngModel" />
+          <p *ngIf="budgetErreur && budgetAlloue.touched" class="error-message">
+            Le budget doit être supérieur ou égal à 10.
+          </p>
+          
       </div>
   
+      <!-- Bouton de soumission -->
       <div class="etat-container" style="justify-content: flex-end;">
-        <button type="submit" class="submit-btn" [disabled]="categoryForm.invalid">
+        <button type="submit" class="submit-btn" [disabled]="nom.invalid">
           Ajouter Catégorie
         </button>
       </div>
-      
+  
     </form>
   </div>
   

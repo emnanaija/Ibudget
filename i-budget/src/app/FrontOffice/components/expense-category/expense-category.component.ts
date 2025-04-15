@@ -18,22 +18,33 @@ export class ExpenseCategoryComponent {
     budgetAlloue: 0
   };
 
+  budgetErreur: boolean = false;
+
   constructor(private categoryService: ExpenseCategoryService) {}
 
   onSubmit() {
+    this.budgetErreur = false;
+
+    if (this.newCategory.budgetAlloue < 10) {
+      this.budgetErreur = true;
+      return;
+    }
+
     this.categoryService.createCategory(this.newCategory).subscribe({
       next: (res) => {
         console.log('Catégorie ajoutée avec succès', res);
-        this.newCategory = { nom: '', description: '', budgetAlloue: 0 }; // reset form
+        this.newCategory = { nom: '', description: '', budgetAlloue: 0 };
       },
       error: (err) => {
         console.error('Erreur lors de l\'ajout', err);
       }
     });
   }
-  isSidebarCollapsed = false; // Propriété définie, initialisée à false par défaut
+
+  isSidebarCollapsed = false;
 
   toggleSidebar() {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed; // Inverse la valeur de isSidebarCollapsed
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
 }
+
