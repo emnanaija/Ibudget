@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import com.example.ibudgetproject.services.expenses.GeminiService;
+import java.util.LinkedHashSet;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,22 +44,24 @@ public class FeteService {
         Map<String, Object> response = restTemplate.getForObject(url, Map.class);
 
         if (response != null && response.containsKey("response")) {
-            List<Map<String, Object>> holidays = (List<Map<String, Object>>) ((Map<String, Object>) response.get("response")).get("holidays");
+            List<Map<String, Object>> holidays = (List<Map<String, Object>>)
+                    ((Map<String, Object>) response.get("response")).get("holidays");
 
             logger.info(" {} fêtes trouvées dans la réponse API.", holidays.size());
 
-            // Filtrer les fêtes du mois donné
             List<String> fetesMois = holidays.stream()
                     .filter(h -> {
                         Map<String, Object> dateInfo = (Map<String, Object>) h.get("date");
                         String dateIso = (String) dateInfo.get("iso"); // Format "2025-02-14"
-                        int monthInDate = Integer.parseInt(dateIso.substring(5, 7)); // Extraire "02"
+                        int monthInDate = Integer.parseInt(dateIso.substring(5, 7));
                         return monthInDate == month;
                     })
                     .map(h -> h.get("name").toString())
+                    .collect(Collectors.toCollection(LinkedHashSet::new)) // Élimine les doublons tout en gardant l'ordre
+                    .stream()
                     .collect(Collectors.toList());
 
-            logger.info(" {} fêtes correspondent au mois {}.", fetesMois.size(), month);
+            logger.info(" {} fêtes uniques correspondent au mois {}.", fetesMois.size(), month);
             return fetesMois;
         }
 
