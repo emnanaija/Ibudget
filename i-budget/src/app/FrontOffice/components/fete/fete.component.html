@@ -1,0 +1,19 @@
+<h2>Fêtes du mois</h2>
+<div *ngFor="let r of recommandations">
+  <h3>{{ r.fete }}</h3>
+
+  <h4>Budget proposé :</h4>
+  <ul>
+    <li *ngFor="let item of r.budget?.budgetEid || r.budget?.budget?.categories">
+      {{ item.name }} : {{ item.montant }} DT
+    </li>
+  </ul>
+  <p *ngIf="r.budget?.total">Total estimé : {{ r.budget.total }} DT</p>
+
+  <h4>Cadeaux recommandés :</h4>
+  <ul>
+    <li *ngFor="let gift of r.cadeaux?.gifts">
+      {{ gift.name }} – {{ gift.price?.min ? (gift.price.min + ' DT - ' + gift.price.max + ' DT') : gift.price }}
+    </li>
+  </ul>
+</div>

@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*")  // Front-end Angular
+
 @RequestMapping("/api/categories")
 public class ExpenseCategoryController {
 

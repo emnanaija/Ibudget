@@ -16,6 +16,6 @@ export interface Category {
     date: string;
     etat: string;
     category: Category ;
-    wallet?: Wallet;  // Si tu veux utiliser wallet, il faut le définir ici
+    wallet: Wallet;  // Si tu veux utiliser wallet, il faut le définir ici
     photoUrl?: string;
   }

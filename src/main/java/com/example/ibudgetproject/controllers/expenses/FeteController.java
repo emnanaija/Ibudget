@@ -5,15 +5,17 @@ import com.example.ibudgetproject.services.expenses.GeminiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import com.example.ibudgetproject.entities.expenses.feteRecommendation;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/api/fetes")
 public class FeteController {
     private static final Logger logger = LoggerFactory.getLogger(FeteController.class);
@@ -47,9 +49,15 @@ public class FeteController {
         return fetes;
     }*/
     @GetMapping("/current")
-    public String getFetes() {
-        // Appeler le service pour obtenir les suggestions
-        return feteService.getRecommandationsFetes();
+    public List<feteRecommendation> getFetes() {
+        // Appeler le service pour obtenir les recommandations sous forme d'une liste
+        List<feteRecommendation> fetes = feteService.getRecommandationsFetes();
+
+        // Retirer les doublons si nécessaire
+        Set<feteRecommendation> uniqueFetes = new HashSet<>(fetes);
+        return new ArrayList<>(uniqueFetes);
     }
+
+
 
 }

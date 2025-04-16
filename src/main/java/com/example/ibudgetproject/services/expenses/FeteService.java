@@ -8,9 +8,11 @@ import org.springframework.web.client.RestTemplate;
 import com.example.ibudgetproject.services.expenses.GeminiService;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.example.ibudgetproject.entities.expenses.feteRecommendation;
 
 @Service
 public class FeteService {
@@ -65,7 +67,7 @@ public class FeteService {
     }
 
     // Nouvelle méthode pour obtenir les recommandations pour les fêtes
-    public String getRecommandationsFetes() {
+    public List<feteRecommendation> getRecommandationsFetes() {
         // Obtenir la date actuelle
         LocalDate today = LocalDate.now();
         int year = today.getYear();
@@ -74,29 +76,28 @@ public class FeteService {
         // Récupérer toutes les fêtes du mois
         List<String> fetes = getFetesDuMois(year, month);
 
-        if (!fetes.isEmpty()) {
-            StringBuilder recommendations = new StringBuilder(); // Utilisation de StringBuilder pour concaténer les résultats
+        List<feteRecommendation> recommandations = new ArrayList<>();
 
+        if (!fetes.isEmpty()) {
             for (String fete : fetes) {
                 // Créer les prompts pour Gemini pour chaque fête
                 String budgetPrompt = "Propose-moi un budget pour la fête de " + fete +
-                        " en dinars tunisien (une estimation approximative pour une famille de 5 personnes). Réponds-moi avec les montants et la description seulement.";
-                String cadeauxPrompt = "Quels sont des cadeaux populaires pour " + fete + "? Propose-moi des idées avec les prix en dinars tunisien.";
+                        " en dinars tunisien (une estimation approximative pour une famille de 5 personnes). " +
+                        "Retourne-moi la réponse sous forme d'un objet JSON avec des catégories, chaque catégorie ayant un 'name' et un 'montant'.";
+
+                String cadeauxPrompt = "Quels sont des cadeaux populaires pour " + fete + "? Propose-moi des idées avec les prix en dinars tunisien. " +
+                        "Retourne-moi la réponse sous forme d'un objet JSON avec des cadeaux, chaque cadeau ayant un 'name' et un 'price'.";
 
                 // Demander des suggestions à Gemini
                 String budgetSuggestions = geminiService.getSuggestions(budgetPrompt);
                 String cadeauxSuggestions = geminiService.getSuggestions(cadeauxPrompt);
 
-                // Ajouter les suggestions à la réponse
-                recommendations.append("Suggestions pour la fête de ").append(fete).append(" :\n")
-                        .append("Budget : ").append(budgetSuggestions).append("\n")
-                        .append("Cadeaux : ").append(cadeauxSuggestions).append("\n\n");
+                // Ajouter les suggestions à la liste des recommandations
+                recommandations.add(new feteRecommendation(fete, budgetSuggestions, cadeauxSuggestions));
             }
-
-            return recommendations.toString(); // Retourner toutes les suggestions
-        } else {
-            return "Aucune fête trouvée pour " + month + "/" + year;
         }
+
+        return recommandations; // Retourner une liste d'objets JSON
     }
 
 }

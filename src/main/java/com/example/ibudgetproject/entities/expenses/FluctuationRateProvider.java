@@ -9,17 +9,20 @@ public class FluctuationRateProvider {
     public static final Map<String, Double> fluctuationRates = new HashMap<>();
 
     static {
-        // Initialisation des taux de fluctuation pour chaque catégorie
-        fluctuationRates.put("Alimentation", 0.05);   // 5% de fluctuation
-        fluctuationRates.put("Transport", 0.03);      // 3% de fluctuation
-        fluctuationRates.put("Loisirs", 0.02);        // 2% de fluctuation
-        fluctuationRates.put("Logement", 0.02);       // 2% de fluctuation
-        fluctuationRates.put("Santé", 0.01);          // 1% de fluctuation
-        fluctuationRates.put("Abonnements", 0.01);    // 1% de fluctuation
-        fluctuationRates.put("Assurance", 0.04);      // 4% de fluctuation
-        fluctuationRates.put("Education", 0.03);      // 3% de fluctuation
-        fluctuationRates.put("Télécommunications", 0.02); // 2% de fluctuation
-        fluctuationRates.put("Impôts", 0.01);         // 1% de fluctuation
+            fluctuationRates.put("Carburant", 0.3);     // 30%
+            fluctuationRates.put("Alimentation", 0.4);  // 40%
+
+
+
+        fluctuationRates.put("Transport", 0.15);      // 15%
+        fluctuationRates.put("Loisirs", 0.12);        // 12%
+        fluctuationRates.put("Logement", 0.10);       // 10%
+        fluctuationRates.put("Santé", 0.08);          // 8%
+        fluctuationRates.put("Abonnements", 0.10);    // 10%
+        fluctuationRates.put("Assurance", 0.15);      // 15%
+        fluctuationRates.put("Education", 0.12);      // 12%
+        fluctuationRates.put("Télécommunications", 0.08); // 8%
+        fluctuationRates.put("Impôts", 0.05);         // 5%
     }
 
     public static Double getFluctuationRate(String categoryName) {
