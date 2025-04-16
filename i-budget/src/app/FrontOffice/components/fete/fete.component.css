@@ -1,0 +1,76 @@
+
+css
+.title-section {
+text-align: center;
+font-size: 2rem;
+color: #333;
+margin: 20px 0;
+animation: fadeIn 1s ease-in;
+}
+.card-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+gap: 20px;
+padding: 20px;
+}
+.card-fete {
+background-color: #fff;
+border-radius: 10px;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+overflow: hidden;
+transition: transform 0.3s ease;
+}
+.card-fete:hover {
+transform: scale(1.05);
+}
+.fete-title {
+font-size: 1.5rem;
+color: #008cba;
+margin: 10px 0;
+}
+.section-subtitle {
+font-size: 1.2rem;
+color: #666;
+margin: 5px 0;
+}
+.budget-list, .gift-list {
+list-style-type: none;
+padding: 0;
+}
+.budget-item {
+padding: 8px 0;
+border-bottom: 1px solid #e0e0e0;
+}
+.highlight-amount {
+font-weight: bold;
+color: #e43b29;
+}
+.total-estime {
+font-size: 1.1rem;
+color: #333;
+}
+.gift-card {
+display: flex;
+justify-content: space-between;
+padding: 10px 0;
+border-bottom: 1px solid #e0e0e0;
+}
+@keyframes fadeIn {
+from {
+opacity: 0;
+}
+to {
+opacity: 1;
+}
+}
+@media (max-width: 600px) {
+.title-section {
+font-size: 1.5rem;
+}
+.fete-title {
+font-size: 1.2rem;
+}
+.section-subtitle {
+font-size: 1rem;
+}
+}

@@ -86,10 +86,10 @@ public class FeteService {
                 // Créer les prompts pour Gemini pour chaque fête
                 String budgetPrompt = "Propose-moi un budget pour la fête de " + fete +
                         " en dinars tunisien (une estimation approximative pour une famille de 5 personnes). " +
-                        "Retourne-moi la réponse sous forme d'un objet JSON avec des catégories, chaque catégorie ayant un 'name' et un 'montant'.";
+                        "Retourne-moi la réponse sous forme d'un objet JSON avec des catégories, chaque catégorie ayant un 'name' et un 'montant' et rajoute des emojis corepondants.";
 
                 String cadeauxPrompt = "Quels sont des cadeaux populaires pour " + fete + "? Propose-moi des idées avec les prix en dinars tunisien. " +
-                        "Retourne-moi la réponse sous forme d'un objet JSON avec des cadeaux, chaque cadeau ayant un 'name' et un 'price'.";
+                        "Retourne-moi la réponse sous forme d'un objet JSON avec des cadeaux, chaque cadeau ayant un 'name' et un 'price' et rajoute des emojis corepondants.";
 
                 // Demander des suggestions à Gemini
                 String budgetSuggestions = geminiService.getSuggestions(budgetPrompt);

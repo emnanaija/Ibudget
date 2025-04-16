@@ -35,36 +35,36 @@ export class FeteComponent implements OnInit {
     );
   }
   
-  extractJsonFromString(rawString: string): any {
-    try {
-      const parsed = JSON.parse(rawString);
-      const textContent = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
-  
-      if (textContent) {
-        return this.cleanAndParseJson(textContent);
-      }
-      return parsed;
-    } catch (error) {
-      console.error('Erreur lors du parsing principal:', error);
-      return null;
+ extractJsonFromString(rawString: string): any {
+  try {
+    const parsed = JSON.parse(rawString);
+    const textContent = parsed?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (textContent) {
+      return this.cleanAndParseJson(textContent);
     }
+    return parsed;
+  } catch (error) {
+    console.error('Erreur lors du parsing principal:', error);
+    return null;
   }
-  
-  private cleanAndParseJson(text: string): any {
-    try {
-      // Supprime les balises ```json et ```
-      const cleaned = text.replace(/```json|```/g, '').trim();
-  
-      // Trouve et isole la première accolade ouvrante jusqu'à la dernière fermante
-      const firstBrace = cleaned.indexOf('{');
-      const lastBrace = cleaned.lastIndexOf('}');
-      const jsonText = cleaned.substring(firstBrace, lastBrace + 1);
-  
-      return JSON.parse(jsonText);
-    } catch (error) {
-      console.error('Erreur de nettoyage ou parsing JSON brut:', error);
-      return null;
-    }
+}
+
+private cleanAndParseJson(text: string): any {
+  try {
+    // Supprime les balises ```json et ```
+    const cleaned = text.replace(/```json|```/g, '').trim();
+
+    // Trouve et isole la première accolade ouvrante jusqu'à la dernière fermante
+    const firstBrace = cleaned.indexOf('{');
+    const lastBrace = cleaned.lastIndexOf('}');
+    const jsonText = cleaned.substring(firstBrace, lastBrace + 1);
+
+    return JSON.parse(jsonText);
+  } catch (error) {
+    console.error('Erreur de nettoyage ou parsing JSON brut:', error);
+    return null;
   }
-  
+}
+
 }

@@ -1,19 +1,26 @@
-<h2>Fêtes du mois</h2>
-<div *ngFor="let r of recommandations">
-  <h3>{{ r.fete }}</h3>
+<h2 class="title-section">Fêtes du mois</h2>
 
-  <h4>Budget proposé :</h4>
-  <ul>
-    <li *ngFor="let item of r.budget?.budgetEid || r.budget?.budget?.categories">
-      {{ item.name }} : {{ item.montant }} DT
-    </li>
-  </ul>
-  <p *ngIf="r.budget?.total">Total estimé : {{ r.budget.total }} DT</p>
+<div class="card-grid">
+  <div *ngFor="let r of recommandations" class="card-fete">
+    <h3 class="fete-title">{{ r.fete }}</h3>
 
-  <h4>Cadeaux recommandés :</h4>
-  <ul>
-    <li *ngFor="let gift of r.cadeaux?.gifts">
-      {{ gift.name }} – {{ gift.price?.min ? (gift.price.min + ' DT - ' + gift.price.max + ' DT') : gift.price }}
-    </li>
-  </ul>
+    <h4 class="section-subtitle">📘 Budget proposé</h4>
+    <ul class="budget-list">
+      <li *ngFor="let item of r.budget?.budgetEid || r.budget?.budget?.categories" class="budget-item">
+        {{ item.name }} : <span class="highlight-amount">{{ item.montant }} DT</span>
+      </li>
+    </ul>
+
+    <p *ngIf="r.budget?.total" class="total-estime">Total estimé : {{ r.budget.total }} DT</p>
+
+    <h4 class="section-subtitle">🎁 Cadeaux recommandés</h4>
+    <ul class="gift-list">
+      <li *ngFor="let gift of r.cadeaux?.gifts" class="gift-card">
+        {{ gift.name }} – 
+        <span class="gift-price">
+          {{ gift.price?.min ? (gift.price.min + ' DT - ' + gift.price.max + ' DT') : gift.price }}
+        </span>
+      </li>
+    </ul>
+  </div>
 </div>
