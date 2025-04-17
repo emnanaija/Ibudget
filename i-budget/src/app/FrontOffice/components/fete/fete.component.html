@@ -1,26 +1,43 @@
-<h2 class="title-section">Fêtes du mois</h2>
+<div class="fetes-container">
+  <div *ngFor="let r of recommandations" class="accordion-item">
+    <div class="accordion-header" (click)="r.expanded = !r.expanded">
+      <h3>{{ r.fete }}</h3>
+      <span class="arrow" [class.open]="r.expanded">▼</span>
+    </div>
 
-<div class="card-grid">
-  <div *ngFor="let r of recommandations" class="card-fete">
-    <h3 class="fete-title">{{ r.fete }}</h3>
+    <div class="accordion-content" [class.expanded]="r.expanded">
+      
+      <!-- Budget en cartes stylées -->
+      <h4>📘 Budget proposé</h4>
+<div class="budget-card-container">
+  <div *ngFor="let item of r.budget?.budgetEid || r.budget?.budget?.categories" class="budget-card">
+    <div class="card-content">
+      <h5>{{ item.name }}</h5>
+      <div class="budget-amount">
+        <span>{{ item.montant }} DT</span>
+      </div>
+    </div>
+  </div>
+</div>
 
-    <h4 class="section-subtitle">📘 Budget proposé</h4>
-    <ul class="budget-list">
-      <li *ngFor="let item of r.budget?.budgetEid || r.budget?.budget?.categories" class="budget-item">
-        {{ item.name }} : <span class="highlight-amount">{{ item.montant }} DT</span>
-      </li>
-    </ul>
-
-    <p *ngIf="r.budget?.total" class="total-estime">Total estimé : {{ r.budget.total }} DT</p>
-
-    <h4 class="section-subtitle">🎁 Cadeaux recommandés</h4>
-    <ul class="gift-list">
-      <li *ngFor="let gift of r.cadeaux?.gifts" class="gift-card">
-        {{ gift.name }} – 
-        <span class="gift-price">
+      <!-- Cadeaux en flip cards -->
+      <h4>🎁 Cadeaux recommandés</h4>
+<div class="gift-grid">
+  <div class="gift-card" *ngFor="let gift of r.cadeaux?.gifts">
+    <div class="gift-inner">
+      <div class="gift-front">
+        <p>{{ gift.name }}</p>
+      </div>
+      <div class="gift-back">
+        <p>
           {{ gift.price?.min ? (gift.price.min + ' DT - ' + gift.price.max + ' DT') : gift.price }}
-        </span>
-      </li>
-    </ul>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    </div>
   </div>
 </div>
