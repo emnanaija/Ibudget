@@ -8,7 +8,7 @@
     <div class="accordion-content" [class.expanded]="r.expanded">
       
       <!-- Budget en cartes stylées -->
-      <h4>📘 Budget proposé</h4>
+      <h4>  💵 Budget proposé 💵</h4>
 <div class="budget-card-container">
   <div *ngFor="let item of r.budget?.budgetEid || r.budget?.budget?.categories" class="budget-card">
     <div class="card-content">
@@ -21,21 +21,23 @@
 </div>
 
       <!-- Cadeaux en flip cards -->
-      <h4>🎁 Cadeaux recommandés</h4>
-<div class="gift-grid">
-  <div class="gift-card" *ngFor="let gift of r.cadeaux?.gifts">
-    <div class="gift-inner">
-      <div class="gift-front">
-        <p>{{ gift.name }}</p>
+      <h4>🎁 Cadeaux recommandés 🎁</h4>
+      <div class="gift-grid">
+        <div class="gift-card" *ngFor="let gift of r.cadeaux?.gifts">
+          <div class="gift-inner">
+            <!-- Recto de la carte -->
+            <div class="gift-front">
+              <h5>{{ gift.name }}</h5>
+            </div>
+            <!-- Verso de la carte -->
+            <div class="gift-back">
+              <p>{{ gift.price?.min ? (gift.price.min + ' DT - ' + gift.price.max + ' DT') : gift.price }}</p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="gift-back">
-        <p>
-          {{ gift.price?.min ? (gift.price.min + ' DT - ' + gift.price.max + ' DT') : gift.price }}
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
+      
+      
 
 
     </div>
