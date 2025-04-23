@@ -1,0 +1,41 @@
+/* recharge-account.component.css */
+/* You can add styles here to arrange the child components on the page */
+.recharge-account-page {
+  background-color: var(--bg-light);
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: var(--text-primary);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+h2 {
+  color: var(--primary-light);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+hr {
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+.success-message {
+  color: var(--positive);
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--positive);
+  border-radius: 0.5rem;
+  background-color: rgba(16, 185, 129, 0.1);
+  white-space: pre-wrap;
+}
+
+.error-message {
+  color: var(--negative);
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--negative);
+  border-radius: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.1);
+}

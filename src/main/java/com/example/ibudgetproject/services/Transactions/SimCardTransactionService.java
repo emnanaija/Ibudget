@@ -93,16 +93,7 @@ public class SimCardTransactionService implements ISimCardTransactionService {
     @Override
     @Transactional
     public List<SimTransactions> batchTransactions(List<SimTransactions> transactions) {
-        List<SimTransactions> processedTransactions = new ArrayList<>();
-
-        for (SimTransactions transaction : transactions) {
-            double feeAmount = calculateFee(transaction.getAmount());
-            transaction.setFeeAmount(feeAmount);
-            SimTransactions processedTransaction = createTransaction(transaction);
-            processedTransactions.add(processedTransaction);
-        }
-
-        return processedTransactions;
+        return transactionRepository.saveAll(transactions);
     }
     //-----------------------------------------------------------------------------
 
@@ -119,6 +110,11 @@ public class SimCardTransactionService implements ISimCardTransactionService {
     @Override
     public Optional<SimTransactions> getTransactionById(Long id) {
         return transactionRepository.findById(id);
+    }
+
+    @Override
+    public List<SimTransactions> getTransactionsByUser(Long userId) {
+        return transactionRepository.findBySimCardAccount_User_UserId(userId);
     }
 
     @Override

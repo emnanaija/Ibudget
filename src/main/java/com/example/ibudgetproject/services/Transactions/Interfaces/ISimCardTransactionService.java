@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface ISimCardTransactionService {
     List<SimTransactions> getAllTransactions();
     Optional<SimTransactions> getTransactionById(Long id);
+    List<SimTransactions> getTransactionsByUser(Long userId);
     SimTransactions createTransaction(SimTransactions transaction);
     SimTransactions updateTransaction(Long id, SimTransactions updatedTransaction);
     void deleteTransaction(Long id);

@@ -1,0 +1,22 @@
+<div class="recharge-with-image-container">
+  <h3>Recharge Account with Image (OCR)</h3>
+
+  <div class="form-group">
+    <label for="image">Select Image:</label>
+    <input type="file" id="image" (change)="onFileSelected($event)">
+  </div>
+
+  <button (click)="rechargeClicked()" [disabled]="isRechargingWithImage || !selectedFile || !simCardId">
+    <span *ngIf="!isRechargingWithImage">Recharge with Image</span>
+    <span *ngIf="isRechargingWithImage">Processing Image...</span>
+  </button>
+
+  <div *ngIf="imageRechargeResult" class="success-message">
+    Recharge with Image Successful!
+    <pre>{{ imageRechargeResult | json }}</pre>
+  </div>
+
+  <div *ngIf="imageRechargeError" class="error-message">
+    Error: {{ imageRechargeError }}
+  </div>
+</div>

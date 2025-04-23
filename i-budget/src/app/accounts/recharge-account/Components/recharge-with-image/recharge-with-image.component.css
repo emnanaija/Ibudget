@@ -1,0 +1,76 @@
+/* recharge-with-image.component.css */
+.recharge-with-image-container {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background-color: white;
+}
+
+h3 {
+  color: var(--primary-dark);
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1rem;
+}
+
+.form-group label {
+  display: block;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.form-group input[type="file"] {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.8rem 1.5rem;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+button:hover {
+  background-color: var(--accent-dark);
+}
+
+button:disabled {
+  background-color: var(--border);
+  cursor: not-allowed;
+}
+
+.success-message {
+  color: var(--positive);
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  padding: 0.8rem;
+  border: 1px solid var(--positive);
+  border-radius: 0.5rem;
+  background-color: rgba(16, 185, 129, 0.1);
+  white-space: pre-wrap;
+}
+
+.error-message {
+  color: var(--negative);
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  padding: 0.8rem;
+  border: 1px solid var(--negative);
+  border-radius: 0.5rem;
+  background-color: rgba(239, 68, 68, 0.1);
+}

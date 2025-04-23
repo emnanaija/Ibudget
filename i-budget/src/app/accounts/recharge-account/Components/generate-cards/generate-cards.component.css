@@ -1,0 +1,147 @@
+/* generate-cards.component.css */
+.generate-cards-container {
+  margin-bottom: 2rem;
+  padding: 2rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, #222831, #474d67); /* Light grey background */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+h3 {
+  color: #ffffff; /* Dark grey heading */
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group label {
+  display: block;
+  color: #ffffff; /* Medium grey label */
+  margin-bottom: 0.6rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.form-group input[type="number"] {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd; /* Light grey border */
+  border-radius: 0.6rem;
+  box-sizing: border-box;
+  color: #474d67;
+  font-size: 1rem;
+}
+
+button {
+  background-color: #222831; /* Primary blue */
+  color: white;
+  border: none;
+  border-radius: 0.6rem;
+  padding: 1rem 2rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+}
+
+button:hover {
+  background-color: #474d67; /* Darker blue on hover */
+  transform: scale(1.02);
+}
+
+button:disabled {
+  background-color: #ccc; /* Grey when disabled */
+  cursor: not-allowed;
+}
+
+.error-message {
+  color: #dc3545; /* Error red */
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  padding: 0.8rem;
+  border: 1px solid #f8d7da;
+  border-radius: 0.5rem;
+  background-color: #fde2e6;
+}
+
+.recharge-cards-container {
+  margin-top: 2rem;
+}
+
+.recharge-cards-container h4 {
+  color: #fafafa;
+  margin-bottom: 1.2rem;
+}
+
+.recharge-card {
+  background: linear-gradient(135deg, #222831, #474d67); /* Light blue gradient */
+  border-radius: 0.8rem;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  align-items: flex-start;
+  transition: transform 0.2s ease-in-out;
+}
+
+.recharge-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.recharge-card .card-header {
+  color: #777; /* Medium grey header text */
+  font-size: 0.85rem;
+  margin-bottom: 0.6rem;
+}
+
+.recharge-card .amount {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #5e9b6f; /* Success green for amount */
+}
+
+.recharge-card .code-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  margin-top: 0.5rem;
+}
+
+.recharge-card .code-container .label {
+  color: #555;
+  font-weight: 500;
+}
+
+.recharge-card .code-container .code {
+  font-family: monospace;
+  color: #485b80; /* Primary blue for code */
+  background-color: #e9ecef; /* Light grey background for code */
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+}
+
+.recharge-card .status {
+  font-size: 0.9rem;
+  color: #6c757d; /* Light grey for status */
+}
+
+.recharge-card .status.used {
+  color: #dc3545; /* Error red for used status */
+  font-weight: bold;
+}
+
+/* Subtle animation for new cards */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.recharge-card {
+  animation: fadeIn 0.5s ease-out forwards;
+}

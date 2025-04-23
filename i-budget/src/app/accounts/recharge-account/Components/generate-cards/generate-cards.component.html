@@ -1,0 +1,39 @@
+<div class="generate-cards-container">
+  <h3>Generate Recharge Cards</h3>
+
+  <div class="form-group">
+    <label for="numberOfCards">Number of Cards:</label>
+    <input type="number" id="numberOfCards" [(ngModel)]="numberOfCards" placeholder="Enter Number of Cards">
+  </div>
+
+  <div class="form-group">
+    <label for="rechargeAmount">Amount per Card:</label>
+    <input type="number" id="rechargeAmount" [(ngModel)]="rechargeAmount" placeholder="Enter Amount per Card">
+  </div>
+
+  <button (click)="generateClicked()" [disabled]="isGenerating">
+    <span *ngIf="!isGenerating">Generate Cards</span>
+    <span *ngIf="isGenerating">Generating...</span>
+  </button>
+
+  <div *ngIf="generationError" class="error-message">
+    Error: {{ generationError }}
+  </div>
+
+  <div *ngIf="generationResult && generationResult.length > 0" class="recharge-cards-container">
+    <h4>Generated Recharge Cards:</h4>
+    <div *ngFor="let card of generationResult" class="recharge-card">
+      <div class="card-header">
+        <span>Recharge Card</span>
+      </div>
+      <div class="card-body">
+        <span class="amount">{{ card.amount | number:'1.0-0' }} TND</span>
+        <div class="code-container">
+          <span class="label">Code:</span>
+          <span class="code">{{ card.code }}</span>
+        </div>
+        <span class="status" [class.used]="card.used">Status: {{ card.used ? 'Used' : 'Unused' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

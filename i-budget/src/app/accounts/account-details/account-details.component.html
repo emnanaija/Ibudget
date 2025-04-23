@@ -1,0 +1,21 @@
+<div class="account-details-container">
+  <div class="account-details-header">
+    <h2>Account Details</h2>
+  </div>
+  <div *ngIf="account; else loadingOrError">
+    <div class="account-details-card">
+      <span class="detail-label">Account Number:</span>
+      <span class="detail-value">{{ account.accountNumber }}</span>
+      <span class="detail-label">Balance:</span>
+      <span class="detail-value">{{ account.balance | number:'1.2-2' }} TND</span>
+      <span class="detail-label">Creation Date:</span>
+      <span class="detail-value">{{ account.creationDate | date:'long' }}</span>
+    </div>
+    <a routerLink="/accounts/list" class="back-to-list">Back to List</a>
+  </div>
+  <ng-template #loadingOrError>
+    <p *ngIf="isLoading" class="loading-message">Loading account details...</p>
+    <p *ngIf="errorMessage" class="error-message">Error: {{ errorMessage }}</p>
+    <p *ngIf="!isLoading && !errorMessage" class="loading-message">No account details available.</p>
+  </ng-template>
+</div>+

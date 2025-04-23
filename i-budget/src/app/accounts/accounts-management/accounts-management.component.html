@@ -1,0 +1,23 @@
+<app-animated-background></app-animated-background>
+<div class="dashboard-container">
+  <div class="account-management-header">
+    <h2>
+      <span style="font-weight: bold;">Account</span> Management
+    </h2>
+    <nav class="account-management-nav" #nav>
+      <a routerLink="list" routerLinkActive="active" class="nav-link">Account List</a>
+      <span class="nav-separator">|</span>
+      <a routerLink="create" routerLinkActive="active" class="nav-link">Create Account</a>
+      <span class="nav-separator">|</span>
+      <a routerLink="recharge" routerLinkActive="active" class="nav-link">Recharge Account</a>
+      <span class="nav-separator">|</span>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Admin Dashboard</a>
+    </nav>
+  </div>
+  <div class="account-management-content" #content>
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<div #loadNextComponentTrigger></div>
+<div #nextComponentContainer></div>

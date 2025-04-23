@@ -1,0 +1,46 @@
+
+<div class="recharge-account-page">
+  <h2>Recharge Account</h2>
+
+  <app-recharge-form
+    (recharge)="handleRecharge($event)"
+    [errorMessage]="rechargeError"
+    [isLoading]="isRecharging"
+  ></app-recharge-form>
+  <div *ngIf="rechargeResult" class="success-message">
+    Recharge Successful!
+    <pre>{{ rechargeResult | json }}</pre>
+  </div>
+  <div *ngIf="rechargeError" class="error-message">
+    Error: {{ rechargeError }}
+  </div>
+
+  <hr>
+
+  <app-generate-cards
+    (generateCards)="handleGenerateCards($event)"
+    [generationResult]="generationResult"
+    [generationError]="generationError"
+    [isGenerating]="isGenerating"
+  ></app-generate-cards>
+
+  <hr>
+
+  <app-recharge-with-image
+    (rechargeWithImage)="handleRechargeWithImage($event)"
+    [imageRechargeResult]="imageRechargeResult"
+    [imageRechargeError]="imageRechargeError"
+    [isRechargingWithImage]="isRechargingWithImage"
+    [simCardId]="simCardIdForImage"
+  ></app-recharge-with-image>
+
+  <hr>
+
+  <app-recharge-without-notification
+    (rechargeWithoutNotification)="handleRechargeWithoutNotification($event)"
+    [rechargeResult]="rechargeResultNoNotify"
+    [errorMessage]="errorMessageNoNotify"
+    [isLoading]="isLoadingNoNotify"
+    [previousBalance]="previousBalanceNoNotify"
+  ></app-recharge-without-notification>
+</div>

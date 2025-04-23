@@ -27,6 +27,10 @@ public class SimCardTransactionController {
         Optional<SimTransactions> transaction = transactionService.getTransactionById(id);
         return transaction.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+    @GetMapping("/user/{userId}")
+    public List<SimTransactions> getTransactionsByUserId(@PathVariable Long userId) {
+        return transactionService.getTransactionsByUser(userId);
+    }
     @PostMapping
     public ResponseEntity<?> createTransaction(@RequestBody SimTransactions transaction) {
         if (transaction.getReceiver() == null || transaction.getSender() == null) {

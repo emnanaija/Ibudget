@@ -1,5 +1,5 @@
 :root {
-  --primary: #B30000;
+  --primary: #8e0d3c;
   --primary-dark: #800000;
   --bg-dark: #121212;
   --bg-darker: #0D0D0D;
@@ -113,7 +113,7 @@
   height: 50px;
   border-radius: 50%;
   background: linear-gradient(145deg, #ffd700, #ffaa00);
-  box-shadow: 
+  box-shadow:
     0 0 15px rgba(255, 215, 0, 0.6),
     inset 0 0 8px rgba(255, 255, 255, 0.8);
   display: flex;
@@ -498,33 +498,33 @@
     width: 70px;
     padding: 15px 10px;
   }
-  
+
   .nav-text {
     display: none;
   }
-  
+
   .profile-image {
     width: 40px;
     height: 40px;
   }
-  
+
   .header {
     left: 70px;
   }
-  
+
   .main-content {
     margin-left: 70px;
   }
-  
+
   .sidebar.collapsed {
     transform: translateX(-70px);
   }
-  
+
   .content-area {
     padding: 0 15px 20px;
     gap: 20px;
   }
-  
+
   .dashboard-container {
     flex-direction: column;
   }
@@ -535,14 +535,14 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .profile {
     flex-direction: column;
     align-items: flex-start;
     margin-right: 0;
     margin-bottom: 15px;
   }
-  
+
   .card-container {
     height: 200px;
   }
