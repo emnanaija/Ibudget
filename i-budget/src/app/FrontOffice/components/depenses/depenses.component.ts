@@ -51,5 +51,27 @@ export class DepensesComponent implements OnInit {
     // TODO: Implémenter la logique de modification de l'état
     console.log('Modification de l\'état pour la dépense:', depense);
   }
+  
+  
+
+  imageSelectionnee: string | null = null;
+
+  ouvrirImage(photoUrl: string) {
+    this.imageSelectionnee = photoUrl;
+  }
+  
+  fermerImage() {
+    this.imageSelectionnee = null;
+  }
+
+toggleImage(photoUrl: string) {
+  // Si l'image est déjà agrandie, on la rétrécit, sinon on l'agrandit
+  if (this.imageSelectionnee === photoUrl) {
+    this.imageSelectionnee = null;
+  } else {
+    this.imageSelectionnee = photoUrl;
+  }
+}
+
 
 }

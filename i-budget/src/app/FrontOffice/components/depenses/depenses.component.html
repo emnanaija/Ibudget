@@ -56,11 +56,28 @@
                 <span class="label">Wallet:</span>
                 <span>{{ depense.wallet.solde | currency:'TND' }} ({{ depense.wallet.statut }})</span>
               </div>
+              <!-- Affichage de la photo miniature -->
               <div class="depense-detail" *ngIf="depense.photoUrl">
                 <span class="label">Photo:</span>
-                <img *ngIf="depense.photoUrl" [src]="'http://localhost:8090' + depense.photoUrl"
-                  alt="Image de la dépense" class="depense-photo" />
+                <div class="photo-wrapper">
+                  <img
+                    *ngIf="depense.photoUrl"
+                    [src]="'http://localhost:8090' + depense.photoUrl"
+                    alt="Image de la dépense"
+                    class="depense-photo"
+                    (click)="toggleImage(depense.photoUrl)"
+                  />
+                </div>
               </div>
+              
+              <!-- Modale pour l’image agrandie -->
+              <div *ngIf="imageSelectionnee" class="photo-modal" (click)="toggleImage(imageSelectionnee)">
+                <div class="photo-modal-box">
+                  <img [src]="'http://localhost:8090' + imageSelectionnee" alt="Photo en grand" />
+                </div>
+              </div>
+              
+
             </div>
           </div>
         </ng-container>
