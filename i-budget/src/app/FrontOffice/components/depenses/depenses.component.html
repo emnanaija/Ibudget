@@ -73,9 +73,11 @@
               <!-- Modale pour l’image agrandie -->
               <div *ngIf="imageSelectionnee" class="photo-modal" (click)="toggleImage(imageSelectionnee)">
                 <div class="photo-modal-box">
+                  <button class="close-btn" (click)="toggleImage(imageSelectionnee)">X</button>
                   <img [src]="'http://localhost:8090' + imageSelectionnee" alt="Photo en grand" />
                 </div>
               </div>
+              
               
 
             </div>

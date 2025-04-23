@@ -56,13 +56,7 @@ export class DepensesComponent implements OnInit {
 
   imageSelectionnee: string | null = null;
 
-  ouvrirImage(photoUrl: string) {
-    this.imageSelectionnee = photoUrl;
-  }
-  
-  fermerImage() {
-    this.imageSelectionnee = null;
-  }
+ 
 
 toggleImage(photoUrl: string) {
   // Si l'image est déjà agrandie, on la rétrécit, sinon on l'agrandit
