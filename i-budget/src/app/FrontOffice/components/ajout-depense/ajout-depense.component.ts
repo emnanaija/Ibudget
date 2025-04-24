@@ -44,7 +44,7 @@ export class AjoutDepenseComponent implements OnInit {
     this.categoryService.getAllCategories().subscribe({
       next: (data) => {
         this.categories = data;
-        console.log('Catégories récupérées :', this.categories); // Vérifie les données des catégories
+      //  console.log('Catégories récupérées :', this.categories); // Vérifie les données des catégories
       },
       error: (err) => {
         console.error('Erreur lors du chargement des catégories', err);
@@ -70,11 +70,11 @@ export class AjoutDepenseComponent implements OnInit {
       // Vérifie que category est bien un ID et cherche l'objet correspondant
       const selectedCategory = this.categories.find(c => c.id === selectedCategoryId);
   
-      console.log('Catégorie trouvée :', selectedCategory); // Affiche la catégorie trouvée
+     // console.log('Catégorie trouvée :', selectedCategory); // Affiche la catégorie trouvée
   
       if (!selectedCategory) {
         this.errorMessage = 'Catégorie non valide';
-        console.error('Catégorie non trouvée dans la liste:', depenseData.category);
+      //  console.error('Catégorie non trouvée dans la liste:', depenseData.category);
         return;
       }
   

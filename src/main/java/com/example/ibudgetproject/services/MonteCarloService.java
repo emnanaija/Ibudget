@@ -192,7 +192,9 @@ public class MonteCarloService {
                 for (int mois = 1; mois <= MOIS; mois++) {
                     // Utiliser une fluctuation aléatoire, basée sur une distribution normale
 // double fluctuation = random.nextGaussian() * tauxFluctuation;
-                    double fluctuation = (random.nextDouble() * 2 * tauxFluctuation) - tauxFluctuation;
+                    double saisonnalite = Math.sin(2 * Math.PI * mois / 12.0); // valeur entre -1 et 1
+                    double fluctuation = (random.nextDouble() * 2 * tauxFluctuation) - tauxFluctuation + saisonnalite * 0.1;
+
 
                     // Si tu préfères une fluctuation uniforme, tu pourrais faire quelque chose comme ça :
                     // double fluctuation = (random.nextDouble() * 2 * tauxFluctuation) - tauxFluctuation;

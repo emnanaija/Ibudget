@@ -18,6 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/depenses-recurrentes")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class DepenseRecurrenteController {
 
     private final DepenseReccurenteService depenseRecurrenteService;
