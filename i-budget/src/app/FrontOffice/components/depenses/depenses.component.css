@@ -294,7 +294,7 @@
   max-width: 90%;
   max-height: 90%;
   border-radius: 10px;
-  border: 2px solid rgba(138, 43, 226, 0.4);
+  border: 2px solid rgba(204, 174, 233, 0.4);
   background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(31, 41, 55, 0.95));
   transition: transform 0.3s ease;
 }
@@ -338,8 +338,43 @@
 }
 
 .photo-modal {
-  background-color: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(15px);
+  background: rgba(94, 78, 110, 0.3);
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.photo-modal::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  background: radial-gradient(
+    circle at center,
+    rgba(80, 30, 150, 0.05) 0%,
+    rgba(30, 0, 80, 0.08) 50%,
+    rgba(10, 0, 25, 0.1) 100%
+  );
+  opacity: 0.5;
+  animation: pulseBackground 8s infinite alternate ease-in-out;
+}
+
+@keyframes pulseBackground {
+  0% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0.7;
+    transform: scale(1);
+  }
 }
 
 /* Améliorations pour la box de la photo agrandie */
@@ -347,111 +382,148 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 2rem;
-  border-radius: 16px;
-  background: linear-gradient(145deg, rgba(15,23,42,0.7), rgba(31,41,55,0.8));
-  box-shadow: 0 0 60px rgba(138, 43, 226, 0.3), inset 0 0 10px rgba(255,255,255,0.1);
+  padding: 2.5rem;
+  border-radius: 20px;
+  background: rgba(30, 0, 60, 0.05);
+  box-shadow: 
+    0 20px 80px rgba(0, 0, 0, 0.2),
+    0 0 40px rgba(166, 101, 199, 0.1);
   max-width: 95%;
   max-height: 90%;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  transform: translateY(0);
+  transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  backdrop-filter: blur(3px);
+}
+
+.photo-modal-box:hover {
+  transform: translateY(-5px);
+  box-shadow: 
+    0 25px 100px rgba(0, 0, 0, 0.25),
+    0 0 50px rgba(189, 138, 226, 0.15);
+  background: rgba(97, 77, 117, 0.267);
 }
 
 .photo-modal-box img {
   max-width: 100%;
   max-height: 80vh;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: contain;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-  animation: zoomInRotate 0.6s ease-out;
+  box-shadow: 0 15px 35px rgba(255, 255, 255, 0.6);
+  animation: zoomInRotate 0.8s ease-out;
   transform-origin: center center;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.4));
 }
 
 .photo-modal-box img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 0 40px rgba(138, 43, 226, 0.7),
-              0 0 20px rgba(255, 255, 255, 0.3);
+  transform: scale(1.03);
+  box-shadow: 
+    0 20px 50px rgba(0, 0, 0, 0.7),
+    0 0 60px rgba(255, 255, 255, 0.7),
+    0 0 30px rgba(230, 150, 255, 0.4);
+  filter: drop-shadow(0 0 25px rgba(180, 100, 255, 0.6));
 }
 
 .photo-modal-box::before {
   content: '';
   position: absolute;
-  top: -15px;
-  left: -15px;
-  right: -15px;
-  bottom: -15px;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  bottom: -50px;
   z-index: -1;
-  background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), transparent, rgba(138, 43, 226, 0.2));
-  border-radius: 20px;
-  filter: blur(10px);
-  animation: glowPulse 3s infinite alternate;
+  background: linear-gradient(135deg, 
+    rgba(180, 100, 255, 0.03),
+    rgba(100, 0, 200, 0.02),
+    rgba(180, 100, 255, 0.03)
+  );
+  border-radius: 30px;
+  filter: blur(20px);
+  animation: glowPulse 4s infinite alternate;
+  opacity: 0.4;
+}
+
+.photo-modal-box::after {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  top: -50%;
+  left: -50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.01) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  opacity: 0.3;
+  animation: rotateBg 30s infinite linear;
+}
+
+@keyframes rotateBg {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @keyframes glowPulse {
   0% {
-    opacity: 0.5;
+    opacity: 0.3;
+    filter: blur(15px);
   }
   100% {
-    opacity: 1;
+    opacity: 0.7;
+    filter: blur(25px);
   }
 }
 
 @keyframes zoomInRotate {
   0% {
     opacity: 0;
-    transform: scale(0.7) rotate(-3deg);
+    transform: scale(0.6) rotate(-2deg);
+    filter: brightness(0.7) blur(5px);
     box-shadow: 0 0 0 rgba(0, 0, 0, 0);
   }
   50% {
     opacity: 0.8;
-    transform: scale(1.05) rotate(2deg);
-    box-shadow: 0 0 40px rgba(138, 43, 226, 0.3);
+    transform: scale(1.05) rotate(1deg);
+    filter: brightness(1.1) blur(0);
+    box-shadow: 0 0 50px rgba(138, 43, 226, 0.3);
   }
   100% {
     opacity: 1;
     transform: scale(1) rotate(0deg);
-    box-shadow: 0 0 30px rgba(138, 43, 226, 0.6);
+    filter: brightness(1) blur(0);
+    box-shadow: 0 0 35px rgba(138, 43, 226, 0.5);
   }
 }
 
-/* Ajout des contrôles de zoom */
-.zoom-controls {
+.close-btn {
   position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 15px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 20px;
-  padding: 8px 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s ease;
-}
-
-.zoom-controls:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
-
-.zoom-btn {
-  background: none;
-  border: none;
+  top: 15px;
+  right: 15px;
+  background: rgba(20, 20, 40, 0.7);
   color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  border: none;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  transition: all 0.2s ease;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 10;
 }
 
-.zoom-btn:hover {
-  background: rgba(138, 43, 226, 0.5);
-  transform: scale(1.1);
+.close-btn:hover {
+  background: rgba(90, 30, 200, 0.6);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
 }
 
 /* Responsive pour la modal photo */
