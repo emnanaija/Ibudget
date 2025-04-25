@@ -1,4 +1,34 @@
-<p>depenses-simulation-graph works!</p>
-<div class="graph-container">
-  <canvas id="depensesChart"></canvas> <!-- Zone où Chart.js rendra le graphique -->
-</div>
+<div class="simulation-container">
+    <div class="simulation-header">
+      <h2 class="simulation-title">Simulation des Dépenses</h2>
+      <p class="simulation-description">Visualisez l'évolution prévisionnelle de vos dépenses par catégorie</p>
+    </div>
+  
+    <div class="simulation-card">
+      <!-- Header with instructions -->
+      <div class="card-header">
+        <h3 class="header-title">Prévision des Dépenses par Catégorie</h3>
+      </div>
+    
+      <!-- Main content -->
+      <div class="card-content">
+
+        <!-- Graph container with height constraint -->
+        <div class="graph-container">
+          <canvas id="depensesChart" height="300"></canvas>
+        </div>
+        
+        <!-- Legend explanation -->
+        <div class="legend-notes">
+          <p>* Les valeurs sont en Dinars Tunisiens (TND)</p>
+          <p>* La simulation est basée sur les tendances historiques de vos dépenses</p>
+        </div>
+      </div>
+      <div class="text-right mb-4">
+        <button (click)="resetZoom()" >
+          Réinitialiser le zoom
+        </button>
+      </div>
+    </div>
+  </div>
+  

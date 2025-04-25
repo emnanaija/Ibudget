@@ -1,30 +1,46 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
-import { DepenseReccurenteService } from '../../services/depenses-reccurentes/depenses-reccurentes.service'; // Ton service de simulation
+import { DepenseReccurenteService } from '../../services/depenses-reccurentes/depenses-reccurentes.service';
+import { FormsModule } from '@angular/forms';
 
-// Enregistrer les éléments nécessaires pour utiliser Chart.js
-Chart.register(...registerables);
+Chart.register(...registerables); // sans zoom pour éviter le SSR crash
 
 @Component({
   selector: 'app-depenses-simulation',
+  standalone: true,
   templateUrl: './depenses-simulation-graph.component.html',
   styleUrls: ['./depenses-simulation-graph.component.css'],
+  imports: [CommonModule, FormsModule]
 })
 export class DepensesSimulationComponent implements OnInit {
-  simulationData: any; // Données de simulation
+  simulationData: any;
+  chartInstance: any;
+
+  categoryLabels: { [key: string]: string } = {
+    'Alimentation': 'Alimentation & Épicerie',
+    'Carburant': 'Carburant & Transport',
+    'sportttttfv': 'Sports & Activités',
+    'other': 'Autres Dépenses',
+  };
 
   constructor(private depensesSimulationService: DepenseReccurenteService) {}
 
-  ngOnInit(): void {
-    this.getSimulationData(); // Appeler la méthode pour récupérer les données
+  async ngOnInit(): Promise<void> {
+    // Import dynamique de zoom uniquement si `window` existe
+    if (typeof window !== 'undefined') {
+      const zoomPlugin = (await import('chartjs-plugin-zoom')).default;
+      Chart.register(zoomPlugin);
+    }
+
+    this.getSimulationData();
   }
 
   getSimulationData() {
-    // Appeler le service pour récupérer les données de simulation
     this.depensesSimulationService.simulerDepensesParCategorie().subscribe(
       (data) => {
-        this.simulationData = data; // Stocker les données dans la propriété simulationData
-        this.createChart(); // Créer le graphique une fois les données récupérées
+        this.simulationData = data;
+        this.createChart();
       },
       (error) => {
         console.error('Erreur lors de la récupération des données de simulation', error);
@@ -33,57 +49,121 @@ export class DepensesSimulationComponent implements OnInit {
   }
 
   createChart() {
-    if (!this.simulationData) return; // Si aucune donnée n'est disponible, on ne fait rien
+    if (!this.simulationData) return;
 
-    const labels = Object.keys(this.simulationData.nn); // Les mois (1 à 12)
+    const labels = [
+      "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+      "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"
+    ];
 
-    // Créer un tableau de datasets vide
-    const datasets = [];
+    const datasets = Object.entries(this.simulationData).map(([category, monthlyData]: [string, any]) => ({
+      label: category,
+      data: Array.from({ length: 12 }, (_, i) => Number((monthlyData[i + 1] || 0).toFixed(2))),
+      borderColor: this.getCategoryColor(category),
+      backgroundColor: this.getCategoryColor(category, 0.3),
+      fill: true,
+      tension: 0.4,
+      borderWidth: 2
+    }));
 
-    // Itérer sur chaque catégorie dans les données de simulation
-    for (const category in this.simulationData) {
-      if (this.simulationData.hasOwnProperty(category)) {
-        if (category !== 'nn' && category !== 'nnb') { // Exclure les catégories 'nn' et 'nnb'
-          datasets.push({
-            label: category, // Nom de la catégorie
-            data: Object.values(this.simulationData[category]), // Valeurs des dépenses
-            borderColor: this.getCategoryColor(category), // Couleur de la courbe
-            backgroundColor: this.getCategoryColor(category, 0.3), // Couleur de fond de la courbe (transparente)
-            fill: true, // Remplir sous la courbe
-          });
-        }
-      }
+    if (this.chartInstance) {
+      this.chartInstance.destroy();
     }
 
-    // Créer le graphique avec Chart.js
-    new Chart('depensesChart', {
-      type: 'line', // Graphique en ligne
-      data: {
-        labels: labels, // Mois (1 à 12)
-        datasets: datasets, // Les datasets générés dynamiquement
-      },
+    this.chartInstance = new Chart('depensesChart', {
+      type: 'line',
+      data: { labels, datasets },
       options: {
         responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+            labels: {
+              color: '#fff',
+              usePointStyle: true,
+              pointStyle: 'circle',
+              font: {
+                size: 12,
+                weight: 'bold'
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleColor: '#fff',
+            bodyColor: '#fff',
+            callbacks: {
+              label: (context: any) => `${context.dataset.label}: ${context.raw?.toFixed(2) || '0.00'} TND`
+            }
+          },
+          zoom: {
+            pan: { enabled: true, mode: 'xy' },
+            zoom: {
+              wheel: { enabled: true },
+              pinch: { enabled: true },
+              mode: 'xy'
+            }
+          }
+        },
         scales: {
           x: {
-            beginAtZero: true,
+            ticks: { color: '#fff' },
+            title: {
+              display: true,
+              text: 'Mois',
+              color: '#fff',
+              font: { size: 14, weight: 'bold' }
+            }
           },
-        },
-      },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#fff',
+              callback: value => value + ' TND'
+            },
+            title: {
+              display: true,
+              text: 'Dépense (TND)',
+              color: '#fff',
+              font: { size: 14, weight: 'bold' }
+            }
+          }
+        }
+      }
     });
   }
 
-  // Fonction pour obtenir une couleur dynamique pour chaque catégorie
-  getCategoryColor(category: string, alpha: number = 1): string {
-    const colors: { [key: string]: string } = { // Index signature ajoutée ici
-      'Alimentation': 'rgba(255, 87, 51', // Rouge
-      'Carburant': 'rgba(76, 175, 80', // Vert
-      'sportttttfv': 'rgba(33, 150, 243', // Bleu
-      'other': 'rgba(255, 193, 7', // Jaune
-      // Ajoute d'autres catégories si nécessaire
+  getCategoryColor(category: string, alpha = 1): string {
+    const colors: { [key: string]: string } = {
+      'Alimentation': 'rgba(255, 99, 132',
+      'Carburant': 'rgba(54, 162, 235',
+      'sportttttfv': 'rgba(75, 192, 192',
+      'other': 'rgba(255, 206, 86',
+      'Loisirs': 'rgba(153, 102, 255',
+      'Transport': 'rgba(255, 159, 64',
+      'Logement': 'rgba(199, 199, 199',
+      'Santé': 'rgba(83, 230, 157',
     };
-  
-    const baseColor = colors[category] || 'rgba(0, 0, 0'; // Si la catégorie n'est pas trouvée, couleur par défaut
-    return `${baseColor}, ${alpha})`;
+
+    if (!colors[category]) {
+      let hash = 0;
+      for (let i = 0; i < category.length; i++) {
+        hash = category.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const r = Math.abs(hash % 255);
+      const g = Math.abs((hash * 7) % 255);
+      const b = Math.abs((hash * 13) % 255);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    return `${colors[category]}, ${alpha})`;
   }
+
+
+  resetZoom() {
+    if (this.chartInstance && this.chartInstance.resetZoom) {
+      this.chartInstance.resetZoom();
+    }
+  }
+  
 }
