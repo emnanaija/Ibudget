@@ -66,7 +66,7 @@
 }
 
 .depense-item {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.6), rgba(32, 201, 151, 0.6));
+  background: linear-gradient(135deg, rgba(25, 25, 35, 0.8), rgba(60, 50, 120, 0.6));
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
   padding: 1.5rem;
@@ -77,8 +77,8 @@
 
 .depense-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-  background: linear-gradient(135deg, #111827, #1f2937);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), 0 0 15px rgba(138, 43, 226, 0.15);
+  background: linear-gradient(135deg, rgba(30, 30, 50, 0.9), rgba(70, 60, 130, 0.7));
 }
 
 .list-title {
@@ -153,12 +153,12 @@
 
 .depense-detail:first-child span:not(.label) {
   font-weight: 600;
-  color: #38b2ac;
+  color: #a27dfc;
   font-size: 1.1rem;
 }
 
 .depense-detail:hover:first-child span:not(.label) {
-  color: #2dd4bf;
+  color: #b794f4;
 }
 
 .depense-detail:nth-child(3) span:not(.label) {

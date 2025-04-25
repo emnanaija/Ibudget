@@ -35,17 +35,13 @@
 <!-- Contenu principal (header + composants de contenu) -->
 <div class="main-content" [class.collapsed]="isSidebarCollapsed">
   <app-header [isSidebarCollapsed]="isSidebarCollapsed"></app-header>
-  <app-ajout-depense></app-ajout-depense>
-  <!-- Formulaire et liste -->
-  <div class="content-wrapper">
-    <div class="depenses-page">
-      <app-depenses></app-depenses>
-    </div>
-  <div>
+  
+  <!-- Tous les composants alignés en colonne -->
+  <div class="content-wrapper single-column">
+    <app-ajout-depense></app-ajout-depense>
+    <app-depenses></app-depenses>
     <app-depense-reccurente-ajout></app-depense-reccurente-ajout>
     <app-depenses-simulation></app-depenses-simulation>
-
-  </div>
   </div>
 </div>
 

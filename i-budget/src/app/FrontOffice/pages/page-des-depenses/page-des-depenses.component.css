@@ -651,6 +651,48 @@ app-balance {
   position: relative;
 }
 
+/* Nouvelle classe pour aligner les composants en une seule colonne */
+.single-column {
+  max-width: 900px;
+  margin: 80px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 0 20px;
+}
+
+.single-column > * {
+  width: 100%;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.single-column > *:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 0 15px rgba(138, 43, 226, 0.1);
+}
+
+/* Responsive adjustments for single column */
+@media (max-width: 1200px) {
+  .single-column {
+    max-width: 800px;
+  }
+}
+
+@media (max-width: 768px) {
+  .single-column {
+    max-width: 100%;
+    padding: 0 15px;
+    gap: 30px;
+  }
+  
+  .main-content {
+    padding: 15px;
+  }
+}
 
 /* Formulaire centré */
 .form-container {

@@ -1,12 +1,13 @@
 /* Container du formulaire */
 .form-container {
     position: relative;
-    margin-left: 300px; /* identique à la liste */
-    max-width: 500px;
+    max-width: 600px;
+    width: 100%;
+    margin: 0 auto; /* Centre le formulaire */
     padding: 2rem;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(25, 25, 45, 0.9));
-    min-height: 60vh;
+    min-height: auto;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
@@ -130,4 +131,31 @@
   .form-container button {
     animation: fadeIn 0.5s ease-out;
   }
+
+/* Styles pour les messages */
+.text-green-600 {
+  color: #51d88a;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.text-red-600 {
+  color: #ff6b6b;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Ajout de styles pour les groupes de formulaire pour une meilleure organisation */
+.form-group {
+  margin-bottom: 1.2rem;
+}
+
+.form-group small {
+  color: #ff6b6b;
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.85rem;
+}
   
