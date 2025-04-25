@@ -1,6 +1,6 @@
 /* Main container */
 .simulation-container {
-  max-width: 700px;
+  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -26,7 +26,7 @@
 
 /* Card container */
 .simulation-card {
-  background-color: #1a1a1a;
+    background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(25, 25, 45, 0.9));
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   overflow: hidden;
@@ -35,7 +35,7 @@
 /* Card header */
 .card-header {
   padding: 16px 20px;
-  background-color: #222222;
+  background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(25, 25, 45, 0.9));
   border-bottom: 1px solid #444444;
 }
 
@@ -104,7 +104,7 @@
 
 /* Graph container */
 .graph-container {
-  background-color: #2a2a2a;
+    background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(25, 25, 45, 0.9));
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 16px;
