@@ -27,59 +27,64 @@
           </div>
 
           <div class="depenses-list">
-            <div *ngFor="let depense of depenses" class="depense-item">
-              <div class="depense-detail">
-                <span class="label">Montant:</span>
-                <span>{{ depense.montant | currency:'TND' }}</span>
-              </div>
-              <div class="depense-detail">
-                <span class="label">Date:</span>
-                <span>{{ depense.date | date:'mediumDate' }}</span>
-              </div>
-              <div class="depense-detail">
-                <span class="label">État:</span>
-                <div class="etat-container">
-                  <span>{{ depense.etat }}</span>
-                  <i class="fas fa-edit edit-icon" (click)="modifierEtat(depense)"></i>
+            <div *ngFor="let depense of depenses; let i = index" class="depense-item">
+              <div class="depense-header" (click)="toggleDepense(i)">
+                <div class="depense-header-content">
+                  <h3 class="depense-title">Dépense du {{ depense.date | date:'mediumDate' }}</h3>
+                  <span class="depense-montant">{{ depense.montant | currency:'TND' }}</span>
                 </div>
-              </div>
-              <div class="depense-detail">
-                <span class="label">Catégorie:</span>
-                <span *ngIf="depense.category && isCategoryObject(depense.category)">
-                  {{ depense.category.nom }}
-                </span>
-                <span *ngIf="depense.category && !isCategoryObject(depense.category)">
-                  ID: {{ depense.category }}
-                </span>
-              </div>
-              <div class="depense-detail">
-                <span class="label">Wallet:</span>
-                <span>{{ depense.wallet.solde | currency:'TND' }} ({{ depense.wallet.statut }})</span>
-              </div>
-              <!-- Affichage de la photo miniature -->
-              <div class="depense-detail" *ngIf="depense.photoUrl">
-                <span class="label">Photo:</span>
-                <div class="photo-wrapper">
-                  <img
-                    *ngIf="depense.photoUrl"
-                    [src]="'http://localhost:8090' + depense.photoUrl"
-                    alt="Image de la dépense"
-                    class="depense-photo"
-                    (click)="toggleImage(depense.photoUrl)"
-                  />
-                </div>
+                <span class="depense-arrow" [class.open]="expandedIndex === i">▼</span>
               </div>
               
-              <!-- Modale pour l’image agrandie -->
-              <div *ngIf="imageSelectionnee" class="photo-modal" (click)="toggleImage(imageSelectionnee)">
-                <div class="photo-modal-box">
-                  <button class="close-btn" (click)="toggleImage(imageSelectionnee)">X</button>
-                  <img [src]="'http://localhost:8090' + imageSelectionnee" alt="Photo en grand" />
+              <div class="depense-content" [class.expanded]="expandedIndex === i">
+                <div class="depense-detail">
+                  <span class="label">Montant:</span>
+                  <span>{{ depense.montant | currency:'TND' }}</span>
+                </div>
+                <div class="depense-detail">
+                  <span class="label">Date:</span>
+                  <span>{{ depense.date | date:'mediumDate' }}</span>
+                </div>
+                <div class="depense-detail">
+                  <span class="label">État:</span>
+                  <div class="etat-container">
+                    <span>{{ depense.etat }}</span>
+                    <i class="fas fa-edit edit-icon" (click)="modifierEtat(depense)"></i>
+                  </div>
+                </div>
+                <div class="depense-detail">
+                  <span class="label">Catégorie:</span>
+                  <span *ngIf="depense.category && isCategoryObject(depense.category)">
+                    {{ depense.category.nom }}
+                  </span>
+                  <span *ngIf="depense.category && !isCategoryObject(depense.category)">
+                    ID: {{ depense.category }}
+                  </span>
+                </div>
+                <div class="depense-detail">
+                  <span class="label">Wallet:</span>
+                  <span>{{ depense.wallet.solde | currency:'TND' }} ({{ depense.wallet.statut }})</span>
+                </div>
+                <!-- Affichage de la photo miniature -->
+                <div class="depense-detail" *ngIf="depense.photoUrl">
+                  <span class="label">Photo:</span>
+                  <div class="photo-wrapper">
+                    <img
+                      *ngIf="depense.photoUrl"
+                      [src]="'http://localhost:8090' + depense.photoUrl"
+                      alt="Image de la dépense"
+                      class="depense-photo"
+                      (click)="toggleImage(depense.photoUrl)"
+                    />
+                    
+                    <!-- Affichage de l'image agrandie en-dessous de la miniature -->
+                    <div *ngIf="imageSelectionnee === depense.photoUrl" class="photo-display-inline">
+                      <img [src]="'http://localhost:8090' + depense.photoUrl" alt="Image agrandie" class="photo-full" />
+                      <button class="close-photo-btn" (click)="toggleImage(depense.photoUrl); $event.stopPropagation()">×</button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              
-              
-
             </div>
           </div>
         </ng-container>
@@ -88,5 +93,5 @@
   </div>
 </div>
 
-<!-- Optionnel : Canvas 3D si tu veux l’inclure -->
+<!-- Optionnel : Canvas 3D si tu veux l'inclure -->
 <div #card3d class="card-3d-container"></div>

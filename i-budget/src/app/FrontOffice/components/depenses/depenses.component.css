@@ -69,16 +69,231 @@
   background: linear-gradient(135deg, rgba(25, 25, 35, 0.8), rgba(60, 50, 120, 0.6));
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  padding: 1.5rem;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease;
   animation: fadeIn 0.5s ease-out;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  position: relative;
 }
 
 .depense-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35), 0 0 15px rgba(138, 43, 226, 0.15);
   background: linear-gradient(135deg, rgba(30, 30, 50, 0.9), rgba(70, 60, 130, 0.7));
+}
+
+.depense-header {
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: linear-gradient(135deg, rgba(9, 13, 46, 0.3), rgba(177, 128, 190, 0.2));
+  border-bottom: 1px solid rgba(177, 128, 190, 0.3);
+  box-shadow: inset 0 0 10px rgba(177, 128, 190, 0.1);
+  backdrop-filter: blur(6px);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.depense-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, #090d2e, #b180be);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.depense-header:hover::before, 
+.depense-item:has(.depense-content.expanded) .depense-header::before {
+  opacity: 1;
+}
+
+.depense-header:hover {
+  background: linear-gradient(135deg, rgba(9, 13, 46, 0.4), rgba(177, 128, 190, 0.3));
+  padding-left: 1.8rem;
+}
+
+.depense-header-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.depense-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.depense-item:hover .depense-title {
+  color: #d1b8e8;
+  transform: translateX(5px);
+}
+
+.depense-montant {
+  font-weight: 600;
+  color: #f8f9fa;
+  background: linear-gradient(135deg, #090d2e, #b180be);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.depense-item:hover .depense-montant {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3), 0 0 15px rgba(177, 128, 190, 0.4);
+}
+
+.depense-arrow {
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(177, 128, 190, 0.2);
+  border-radius: 50%;
+  padding: 4px;
+}
+
+.depense-arrow.open {
+  transform: rotate(180deg);
+  background: rgba(177, 128, 190, 0.4);
+  color: white;
+}
+
+.depense-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.23, 1, 0.32, 1), padding 0.3s ease;
+  background: rgba(15, 15, 25, 0.5);
+  position: relative;
+}
+
+.depense-content::before {
+  content: '';
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, rgba(177, 128, 190, 0.8), rgba(9, 13, 46, 0.3));
+  opacity: 0.5;
+}
+
+.depense-content.expanded {
+  max-height: 800px; /* Augmenté pour tenir compte de la photo */
+  padding: 1.5rem;
+  box-shadow: inset 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Styles pour la photo et son affichage agrandi */
+.photo-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.depense-photo {
+  max-width: 70px;
+  max-height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-top: 0.75rem;
+  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.depense-photo:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Conteneur pour l'affichage de la photo agrandie */
+.photo-display-inline {
+  position: relative;
+  margin-top: 1rem;
+  background: rgba(20, 20, 35, 0.7);
+  border-radius: 10px;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(177, 128, 190, 0.2);
+}
+
+/* Image agrandie */
+.photo-full {
+  max-width: 100%;
+  max-height: 300px;
+  object-fit: contain;
+  border-radius: 5px;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Bouton de fermeture pour l'image agrandie */
+.close-photo-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(20, 20, 40, 0.7);
+  color: white;
+  border: none;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.close-photo-btn:hover {
+  background: rgba(90, 30, 200, 0.6);
+  transform: scale(1.1) rotate(90deg);
+}
+
+/* Animation pour l'apparition de contenu */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Animation pour le dropdown */
+@keyframes expandDown {
+  0% {
+    max-height: 0;
+    opacity: 0;
+  }
+  100% {
+    max-height: 800px;
+    opacity: 1;
+  }
+}
+
+.depense-content.expanding {
+  animation: expandDown 0.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
 .list-title {
@@ -176,22 +391,6 @@
   transform: scale(1.05);
 }
 
-.depense-photo {
-  max-width: 70px;
-  max-height: 70px;
-  object-fit: cover;
-  border-radius: 8px;
-  margin-top: 0.75rem;
-  box-shadow: 0 2px 6px rgba(255, 255, 255, 0.05);
-  transition: all 0.3s ease;
-}
-
-.depense-photo:hover {
-  transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-}
-
 .etat-container {
   display: flex;
   align-items: center;
@@ -212,11 +411,6 @@
   color: #f8f9fa;
   background: linear-gradient(135deg, rgba(73, 80, 87, 0.3), rgba(73, 80, 87, 0.4));
   transform: scale(1.1);
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 @media (max-width: 600px) {
