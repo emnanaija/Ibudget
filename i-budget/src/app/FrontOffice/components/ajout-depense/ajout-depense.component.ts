@@ -5,6 +5,7 @@ import { DepensesService } from '../../services/depenses/depenses.service';
 import { HttpClientModule } from '@angular/common/http';
 import { ExpenseCategory } from '../../../models/depenses/expense-category.model';  
 import { ExpenseCategoryService } from '../../services/expense_category/expense-category.service';
+import { Depense, Category } from '../../../models/depenses/depense.model';
 
 @Component({
   selector: 'app-ajout-depense',
@@ -21,6 +22,10 @@ export class AjoutDepenseComponent implements OnInit {
   uploadResult: string = '';
   successMessage: string = ''; // Variable pour afficher un message de succès
   errorMessage: string = '';   // Variable pour afficher un message d'erreur
+  
+  // Propriétés pour la liste des dépenses
+  recentExpenses: Depense[] = [];
+  isLoading: boolean = false;
 
   constructor(
     private fb: FormBuilder, 
@@ -28,23 +33,22 @@ export class AjoutDepenseComponent implements OnInit {
     private categoryService: ExpenseCategoryService // Injection du service pour récupérer les catégories
   ) {
     this.depenseForm = this.fb.group({
-      montant: ['', Validators.required],
+      montant: ['', [Validators.required, Validators.min(10)]],
       date: ['', Validators.required],
       etat: ['REALISEE', Validators.required],
-      category: ['', Validators.required] // Ajout du champ category
+      category: ['', Validators.required]
     });
   }
 
   ngOnInit(): void {
     this.loadCategories();
+    this.loadRecentExpenses();
   }
 
-  // Charger les catégories via le service
   loadCategories(): void {
     this.categoryService.getAllCategories().subscribe({
       next: (data) => {
         this.categories = data;
-      //  console.log('Catégories récupérées :', this.categories); // Vérifie les données des catégories
       },
       error: (err) => {
         console.error('Erreur lors du chargement des catégories', err);
@@ -52,7 +56,40 @@ export class AjoutDepenseComponent implements OnInit {
       }
     });
   }
-  
+
+  // Charger les dépenses récentes
+  loadRecentExpenses(): void {
+    this.isLoading = true;
+    this.depenseService.getDepenses().subscribe({
+      next: (depenses) => {
+        // Trier les dépenses par date (les plus récentes d'abord)
+        this.recentExpenses = depenses
+          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+          .slice(0, 5); // Limiter à 5 dépenses
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des dépenses récentes', err);
+        this.isLoading = false;
+      }
+    });
+  }
+
+  // Obtenir le nom de la catégorie (pour gérer à la fois les objets et les IDs)
+  getCategoryName(category: any): string {
+    if (!category) return 'Non catégorisé';
+    
+    if (typeof category === 'object' && category.nom) {
+      return category.nom;
+    }
+    
+    if (typeof category === 'number' || typeof category === 'string') {
+      const foundCategory = this.categories.find(c => c.id === Number(category));
+      return foundCategory ? foundCategory.nom : `Catégorie #${category}`;
+    }
+    
+    return 'Non catégorisé';
+  }
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
@@ -91,6 +128,11 @@ export class AjoutDepenseComponent implements OnInit {
         next: (response) => {
           console.log('Réponse du serveur :', response); // Affiche la réponse du serveur
           this.successMessage = 'Dépense ajoutée avec succès 🎉';
+          this.depenseForm.reset({
+            etat: 'REALISEE'  // Réinitialiser le formulaire avec la valeur par défaut pour etat
+          });
+          // Recharger les dépenses récentes après un ajout réussi
+          this.loadRecentExpenses();
         },
         error: (err) => {
           this.errorMessage = 'Erreur lors de l\'ajout';
@@ -98,15 +140,15 @@ export class AjoutDepenseComponent implements OnInit {
         }
       });
     } else {
-      this.errorMessage = 'Formulaire invalide';
+      // Vérifier si l'erreur vient du montant
+      if (this.depenseForm.get('montant')?.hasError('min')) {
+        this.errorMessage = 'Le montant doit être d\'au moins 10';
+      } else {
+        this.errorMessage = 'Formulaire invalide';
+      }
       console.log('Le formulaire est invalide :', this.depenseForm.value);
     }
   }
-  
-  
-  
-  
-  
 
   submitImage() {
     if (this.selectedFile) {
@@ -115,6 +157,9 @@ export class AjoutDepenseComponent implements OnInit {
           this.uploadResult = result;
           this.successMessage = 'Image envoyée ✅, texte extrait : ' + result;
           setTimeout(() => this.successMessage = '', 3000); // Effacer le message après 3 secondes
+          
+          // Recharger les dépenses récentes après un ajout réussi via image
+          this.loadRecentExpenses();
         },
         error: (err) => {
           console.error("Erreur lors de l'envoi de l'image", err);

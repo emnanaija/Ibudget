@@ -8,16 +8,16 @@
   --border: #2E2E2E;
   --text-primary: #F0F0F0;
   --text-secondary: #A0A0A0;
-  --positive: #4CAF50;
+  --positive: #a27dfc;
   --negative: #F44336;
   --gold: #FFD700;
   --gold-light: #FFF5BA;
-  --accent: #00C9FF;
-  --accent-light: #80E4FF;
+  --accent: #9C27B0;
+  --accent-light: #CE93D8;
   --purple: #9C27B0;
   --purple-light: #CE93D8;
-  --green: #4CAF50;
-  --green-light: #A5D6A7;
+  --green: #7e57c2;
+  --green-light: #b39ddb;
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-shadow: rgba(0, 0, 0, 0.2);
@@ -271,25 +271,26 @@
 }
 
 .filter-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid transparent;
-  border-radius: 20px;
-  padding: 8px 15px;
+  background: rgba(156, 39, 176, 0.1);
+  border: 1px solid rgba(156, 39, 176, 0.2);
   color: var(--text-secondary);
-  font-size: 0.9rem;
+  padding: 6px 12px;
+  margin: 0 5px;
+  border-radius: 20px;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .filter-btn:hover {
-  background: rgba(156, 39, 176, 0.1);
+  background: rgba(156, 39, 176, 0.2);
   color: var(--text-primary);
 }
 
 .filter-btn.active {
-  background: rgba(156, 39, 176, 0.2);
-  color: var(--purple-light);
-  border-color: rgba(156, 39, 176, 0.3);
+  background: linear-gradient(135deg, rgba(156, 39, 176, 0.7), rgba(103, 58, 183, 0.7));
+  color: white;
+  box-shadow: 0 2px 10px rgba(156, 39, 176, 0.4);
 }
 
 /* Transaction Groups */
@@ -353,6 +354,7 @@
   background: rgba(156, 39, 176, 0.2);
   box-shadow: 0 0 10px rgba(156, 39, 176, 0.3);
   transition: all 0.3s ease;
+  border: 1px solid rgba(186, 104, 200, 0.2);
 }
 
 .transaction-icon svg {
@@ -401,30 +403,57 @@
 
 /* Category-specific styles */
 .category-grocery .transaction-icon {
-  background: rgba(76, 175, 80, 0.2);
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+  background: linear-gradient(135deg, rgba(156, 39, 176, 0.8), rgba(123, 31, 162, 0.9));
+  border-color: rgba(186, 104, 200, 0.4);
 }
 
 .category-grocery .transaction-icon svg {
-  fill: var(--green-light);
+  color: #f3e5f5;
 }
 
 .category-transportation .transaction-icon {
-  background: rgba(0, 201, 255, 0.2);
-  box-shadow: 0 0 10px rgba(0, 201, 255, 0.3);
+  background: linear-gradient(135deg, rgba(103, 58, 183, 0.8), rgba(81, 45, 168, 0.9));
+  border-color: rgba(149, 117, 205, 0.4);
 }
 
 .category-transportation .transaction-icon svg {
-  fill: var(--accent-light);
+  color: #ede7f6;
 }
 
 .category-housing .transaction-icon {
-  background: rgba(255, 215, 0, 0.2);
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, rgba(63, 81, 181, 0.8), rgba(48, 63, 159, 0.9));
+  border-color: rgba(121, 134, 203, 0.4);
 }
 
 .category-housing .transaction-icon svg {
-  fill: var(--gold-light);
+  color: #e8eaf6;
+}
+
+.category-food .transaction-icon {
+  background: linear-gradient(135deg, rgba(94, 53, 177, 0.8), rgba(69, 39, 160, 0.9));
+  border-color: rgba(149, 117, 205, 0.4);
+}
+
+.category-food .transaction-icon svg {
+  color: #ede7f6;
+}
+
+.category-entertainment .transaction-icon {
+  background: linear-gradient(135deg, rgba(123, 31, 162, 0.8), rgba(86, 5, 120, 0.9));
+  border-color: rgba(171, 71, 188, 0.4);
+}
+
+.category-entertainment .transaction-icon svg {
+  color: #f3e5f5;
+}
+
+.category-default .transaction-icon {
+  background: linear-gradient(135deg, rgba(136, 14, 79, 0.8), rgba(173, 20, 87, 0.9));
+  border-color: rgba(194, 24, 91, 0.4);
+}
+
+.category-default .transaction-icon svg {
+  color: #fce4ec;
 }
 
 /* Empty State */

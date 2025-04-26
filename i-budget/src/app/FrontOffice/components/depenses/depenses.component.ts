@@ -24,6 +24,7 @@ export class DepensesComponent implements OnInit {
   errorMessage = signal<string>('');
   isLoading = signal<boolean>(false);
   isSidebarCollapsed = false; // Propriété définie, initialisée à false par défaut
+  expandedIndex: number = -1; // Pour suivre l'élément déplié, -1 signifie aucun
 
   constructor(private depensesService: DepensesService) {}
 
@@ -52,20 +53,19 @@ export class DepensesComponent implements OnInit {
     console.log('Modification de l\'état pour la dépense:', depense);
   }
   
-  
+  toggleDepense(index: number): void {
+    // Si le même index est cliqué, on ferme le dropdown, sinon on l'ouvre
+    this.expandedIndex = this.expandedIndex === index ? -1 : index;
+  }
 
   imageSelectionnee: string | null = null;
 
- 
-
-toggleImage(photoUrl: string) {
-  // Si l'image est déjà agrandie, on la rétrécit, sinon on l'agrandit
-  if (this.imageSelectionnee === photoUrl) {
-    this.imageSelectionnee = null;
-  } else {
-    this.imageSelectionnee = photoUrl;
+  toggleImage(photoUrl: string) {
+    // Si l'image est déjà agrandie, on la rétrécit, sinon on l'agrandit
+    if (this.imageSelectionnee === photoUrl) {
+      this.imageSelectionnee = null;
+    } else {
+      this.imageSelectionnee = photoUrl;
+    }
   }
-}
-
-
 }
