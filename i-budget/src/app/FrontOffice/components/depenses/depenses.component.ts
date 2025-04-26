@@ -5,6 +5,8 @@ import { DepensesService } from '../../services/depenses/depenses.service';
 import { Depense, Category, Wallet } from '../../../models/depenses/depense.model';
 import { NgIf, AsyncPipe,CommonModule, CurrencyPipe, DatePipe } from '@angular/common'; // ✅ Ajout ici
 import { SidebarComponent } from '../../../FrontOffice/sidebar/sidebar.component'; // adapte le chemin selon ton projet
+import { saveAs } from 'file-saver';
+
 import { HeaderComponent } from '../../../FrontOffice/header/header.component'; // idem
 @Component({
   selector: 'app-depenses',
@@ -67,5 +69,17 @@ export class DepensesComponent implements OnInit {
     } else {
       this.imageSelectionnee = photoUrl;
     }
+  }
+
+  exporterDepenses() {
+    this.depensesService.exportDepensesExcel().subscribe(
+      (data: Blob) => {
+        const blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'depenses.xlsx');
+      },
+      (error) => {
+        console.error('Erreur lors de l’exportation :', error);
+      }
+    );
   }
 }

@@ -56,8 +56,8 @@ export class DepensesService {
   }
 
   // ✅ GET: Exporter les dépenses en Excel
-  exportDepensesExcel(): Observable<string> {
-    return this.http.get(`${this.apiUrl}/export-excel`, { responseType: 'text' });
+  exportDepensesExcel(): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/export-excel`, { responseType: 'blob' });
   }
   isCategoryObject(category: Category | number | undefined): category is Category {
     return category !== undefined && typeof category !== 'number' && 'nom' in category;

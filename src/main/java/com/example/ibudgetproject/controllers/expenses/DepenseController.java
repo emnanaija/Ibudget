@@ -5,6 +5,7 @@ import com.example.ibudgetproject.entities.expenses.ExpenseCategory;
 import com.example.ibudgetproject.services.expenses.DepenseService;
 import com.example.ibudgetproject.services.expenses.ExcelExportService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -117,13 +118,18 @@ public class DepenseController {
 
 
     @GetMapping("/export-excel")
-    public String exportExcel() {
+    public ResponseEntity<byte[]> exportDepensesExcel() {
         try {
-            excelExportService.generateExcelReport();
-            return "Le rapport Excel a été généré avec succès!";
+            byte[] excelFile = excelExportService.generateExcelReport();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=depenses.xlsx");
+
+            return new ResponseEntity<>(excelFile, headers, HttpStatus.OK);
         } catch (IOException e) {
-            e.printStackTrace();
-            return "Une erreur est survenue lors de la génération du rapport Excel.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(null);
         }
     }
 
