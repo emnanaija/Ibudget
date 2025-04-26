@@ -25,22 +25,21 @@
     font-size: 2.5rem;
     font-weight: bold;
     color: #ffffff;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem; /* Réduire l'espacement du titre */
     text-align: center;
     text-shadow:
       0 2px 4px rgba(0, 0, 0, 0.6),
-      0 0 12px rgba(138, 43, 226, 0.9),
-      0 0 20px rgba(138, 43, 226, 0.6),
-      0 0 30px rgba(138, 43, 226, 0.4);
+      0 0 12px rgba(255, 255, 255, 0.7),
+      0 0 20px rgba(255, 255, 255, 0.5),
+      0 0 30px rgba(255, 255, 255, 0.3);
     position: relative;
   }
-  
   .form-container h2::after {
     content: "";
     position: absolute;
     width: 60%;
     height: 4px;
-    background: linear-gradient(to right, #7f00ff, #e100ff);
+    background: linear-gradient(to right, #090d2e, #b180be);
     left: 50%;
     transform: translateX(-50%);
     bottom: -10px;
