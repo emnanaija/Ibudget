@@ -1,7 +1,7 @@
 /* Conteneur pour le formulaire avec le même style que la "form-container" */
 .form-section {
     position: relative;
-    max-width: 600px;
+    max-width: 100%;
     width: 100%;
     padding: 2rem;
     background: linear-gradient(135deg, rgba(40, 40, 60, 0.8), rgba(25, 25, 45, 0.9));
@@ -10,10 +10,12 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
     transition: all 0.3s ease;
     color: var(--text-primary);
-    margin: 0 auto; /* Centre le formulaire */
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   
   /* Effet hover */
@@ -348,6 +350,8 @@
     gap: 1.5rem;
     margin-bottom: 1.5rem;
     width: 100%;
+    box-sizing: border-box;
+    padding: 0 1rem;
   }
   
   /* Boutons de changement de mode */
@@ -405,7 +409,7 @@
   
   /* Section des dépenses récentes */
   .recent-expenses-section {
-    max-width: 600px;
+    max-width: 100%;
     margin: 2rem auto;
     padding: 1.5rem;
     background: linear-gradient(135deg, rgba(35, 35, 55, 0.9), rgba(20, 20, 40, 0.95));
@@ -414,6 +418,7 @@
     color: #fff;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
   }
 
   .recent-expenses-section::before {
@@ -592,6 +597,17 @@
     .expense-amount {
       width: 100%;
       margin-right: 0;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .mode-toggle {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .mode-toggle button {
+      max-width: 100%;
     }
   }
   

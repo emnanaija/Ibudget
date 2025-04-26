@@ -88,14 +88,15 @@
             </div>
           </div>
         </ng-container>
+        
+        <!-- Export button moved inside the container -->
+        <button (click)="exporterDepenses()" class="btn-export">
+          Exporter les Dépenses en Excel
+        </button>
       </div>
     </div>
   </div>
 </div>
-<button (click)="exporterDepenses()" class="btn-export">
-  Exporter les Dépenses en Excel
-</button>
-
 
 <!-- Optionnel : Canvas 3D si tu veux l'inclure -->
 <div #card3d class="card-3d-container"></div>

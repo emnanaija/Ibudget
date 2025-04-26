@@ -1,6 +1,3 @@
-
- 
-
 <!-- Fond animé -->
 <div class="animated-background">
   <div class="liquid-bg">
@@ -18,6 +15,8 @@
     <div class="coin gsap-coin6"></div>
   </div>
 </div>
+
+<!-- Bouton de basculement de sidebar -->
 <button class="sidebar-toggle" [class.collapsed]="isSidebarCollapsed" (click)="toggleSidebar()">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
     <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -36,11 +35,12 @@
 <div class="main-content" [class.collapsed]="isSidebarCollapsed">
   <app-header [isSidebarCollapsed]="isSidebarCollapsed"></app-header>
   
-  <!-- Tous les composants alignés en colonne -->
-  <div class="content-wrapper single-column">
-    <app-ajout-depense></app-ajout-depense>
-    <app-depenses></app-depenses>
-   
+  <!-- Container pour tous les composants alignés en colonne -->
+  <div class="content-wrapper">
+    <div class="single-column">
+      <app-ajout-depense></app-ajout-depense>
+      <app-depenses></app-depenses>
+    </div>
   </div>
 </div>
 
