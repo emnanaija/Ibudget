@@ -62,6 +62,5 @@ export class DepensesService {
   isCategoryObject(category: Category | number | undefined): category is Category {
     return category !== undefined && typeof category !== 'number' && 'nom' in category;
   }
-  
-  
+ 
 }

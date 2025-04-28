@@ -6,6 +6,7 @@ import { HeaderComponent } from '../../../header/header.component';
 import { AjoutDepenseComponent } from '../../../components/ajout-depense/ajout-depense.component'; // adapte le chemin selon ton projet
 import { DepenseReccurenteAjoutComponent } from '../../../components/ajout-depenses-reccurentes/depense-reccurente-ajout/depense-reccurente-ajout.component'; // adapte le chemin selon ton projet
 import { DepensesSimulationComponent } from '../../../components/depenses-simulation-graph/depenses-simulation-graph.component'; // Import du composant de simulation
+import { PichartdepenseComponent } from '../../../components/pichartdepense/pichartdepense.component'; // Import du composant de simulation
 
 @Component({
   selector: 'app-page-depenses-reccurentes',
@@ -16,7 +17,8 @@ import { DepensesSimulationComponent } from '../../../components/depenses-simula
     HeaderComponent,
  
     DepenseReccurenteAjoutComponent,
-    DepensesSimulationComponent 
+    DepensesSimulationComponent ,
+    PichartdepenseComponent
   ],
   templateUrl: './page-depenses-reccurentes.component.html',
   styleUrl: './page-depenses-reccurentes.component.css'

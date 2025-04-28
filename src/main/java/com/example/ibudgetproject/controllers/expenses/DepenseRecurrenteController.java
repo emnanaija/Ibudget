@@ -87,5 +87,10 @@ public class DepenseRecurrenteController {
         // Retourner les recommandations dans la réponse HTTP
         return ResponseEntity.ok(recommendations);
     }
+    @GetMapping("/totales-par-categorie")
+    public ResponseEntity<List<Map<String, Object>>> getDepenseTotalesParCategorie() {
+        List<Map<String, Object>> result = depenseRecurrenteService.getDepenseTotalesParCategorie();
+        return ResponseEntity.ok(result);
+    }
 
 }

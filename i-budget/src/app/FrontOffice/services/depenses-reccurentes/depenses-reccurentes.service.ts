@@ -66,4 +66,8 @@ export class DepenseReccurenteService {
   simulerEtObtenirRecommandations(): Observable<string> {
     return this.http.get<string>(`${this.apiUrl}/simulation-et-recommandations`);
   }
+  getDepenseTotalesParCategorie(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/totales-par-categorie`);
+  }
+  
 }

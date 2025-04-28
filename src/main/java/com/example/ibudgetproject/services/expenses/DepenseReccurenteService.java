@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -160,13 +161,39 @@ public class DepenseReccurenteService {
 
     //financal advice
 
+    // Récupérer les dépenses groupées par catégorie
     public Map<ExpenseCategory, List<DepenseReccurente>> getDepensesParCategorie() {
         List<DepenseReccurente> toutesLesDepenses = depenseRecurrenteRepository.findAll();
-
-        // Grouper les dépenses par catégorie
         return toutesLesDepenses.stream()
                 .collect(Collectors.groupingBy(DepenseReccurente::getCategorie));
     }
+
+    // Calculer le montant total des dépenses par catégorie
+    public List<Map<String, Object>> getDepenseTotalesParCategorie() {
+        Map<ExpenseCategory, List<DepenseReccurente>> groupedData = getDepensesParCategorie();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Map.Entry<ExpenseCategory, List<DepenseReccurente>> entry : groupedData.entrySet()) {
+            ExpenseCategory categorie = entry.getKey();
+            List<DepenseReccurente> depenses = entry.getValue();
+
+            // Calculer la somme des montants
+            double total = depenses.stream()
+                    .mapToDouble(depense -> depense.getMontant().doubleValue()) // Attention ici si montant est BigDecimal
+                    .sum();
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("categorie", categorie.getNom()); // ou getName(), selon ton modèle
+            map.put("montantTotal", total);
+            result.add(map);
+        }
+
+        return result;
+    }
+
+
+
 }
 
 
