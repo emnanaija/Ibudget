@@ -3,6 +3,7 @@
     "@types/three": "^0.175.0"
   },
   "dependencies": {
+    "chart.js": "^4.4.9",
     "gsap": "^3.12.7"
   }
 }

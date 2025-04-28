@@ -114,7 +114,7 @@ public class AIService {
         String prompt = "Analyze the following forecasted transaction volumes and provide insights. " +
                 "Explain it like I'm 5 years old and use emojis: " + GSON.toJson(forecastedVolumes) +
                 ". Based on trends, offer financial advice (make it short and simple): " + evaluation +
-                " Return a JSON object: {\"message\": \"Insights and advice\"}.";
+                " Your response must be a valid JSON object in this exact format: {\"message\": \"Insights and advice\"}.";
         String aiResponse = generateMessage(prompt);
 
         try {
@@ -264,7 +264,18 @@ public class AIService {
                             List<Map<String, Object>> parts = (List<Map<String, Object>>) content.get("parts");
 
                             if (!parts.isEmpty()) {
-                                return (String) parts.get(0).get("text");
+                                String text = (String) parts.get(0).get("text");
+                                
+                                // Try to extract JSON from the text if it contains JSON
+                                if (text.contains("{") && text.contains("}")) {
+                                    int textJsonStart = text.indexOf("{");
+                                    int textJsonEnd = text.lastIndexOf("}") + 1;
+                                    if (textJsonStart >= 0 && textJsonEnd > textJsonStart) {
+                                        return text.substring(textJsonStart, textJsonEnd);
+                                    }
+                                }
+                                
+                                return text;
                             }
                         }
                     }

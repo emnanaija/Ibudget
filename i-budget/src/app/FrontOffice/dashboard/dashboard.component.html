@@ -22,33 +22,56 @@
     <app-header [isSidebarCollapsed]="isSidebarCollapsed"></app-header>
 
     <!-- Content Area with adjusted layout -->
-    <div class="content-area">
-      <!-- Top row with balance and transactions moved to the left -->
-      <div class="top-row">
-        <app-balance></app-balance>
-        <div style="text-align: center; font-family: 'Century Gothic';">
-          <strong style="font-size: 10em; text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);">i-Budget</strong>
-          <div style="font-size: 2.2em; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);">crafting your financial harmony</div>
+    <div class="content-area" #contentArea>
+      <!-- Section 1: Top row -->
+      <div class="scroll-section" id="section1">
+        <div class="top-row">
+          <app-balance></app-balance>
+          <div style="text-align: center; font-family: 'Century Gothic';">
+            <strong style="font-size: 8em; text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);">i-Budget</strong>
+            <div style="font-size: 2.2em; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);">crafting your financial harmony</div>
+          </div>
+          <div class="dashboard-monte-carlo">
+            <div class="monte-carlo-header">
+              <h2>Financial Forecast</h2>
+              <p>Explore future transaction patterns with AI-driven Monte Carlo simulations</p>
+            </div>
+            <app-monte-carlo-simulation [simCardId]="1"></app-monte-carlo-simulation>
+          </div>
         </div>
       </div>
 
-      <!-- Middle row with stats and savings -->
-      <div class="middle-row">
-        <app-stats></app-stats>
-        <app-savings></app-savings>
-        <app-alerts></app-alerts>
+      <!-- Section 2: Middle row -->
+      <div class="scroll-section" id="section2">
+        <div class="middle-row">
+          <app-stats></app-stats>
+          <app-savings></app-savings>
+          <app-alerts></app-alerts>
+        </div>
       </div>
 
-      <!-- Adjusted position for card container -->
-      <div class="card-container-wrapper">
-        <app-card-container></app-card-container>
+      <!-- Section 3: Card container -->
+      <div class="scroll-section" id="section3">
+        <div class="card-container-wrapper">
+          <app-card-container></app-card-container>
+        </div>
       </div>
 
-      <!-- Bottom row with additional components -->
-      <div class="bottom-row">
-        <app-money-go></app-money-go>
-        <app-save-more></app-save-more>
+      <!-- Section 4: Bottom row -->
+      <div class="scroll-section" id="section4">
+        <div class="bottom-row">
+          <app-money-go></app-money-go>
+          <app-save-more></app-save-more>
+        </div>
       </div>
+    </div>
+
+    <!-- Scroll indicators -->
+    <div class="scroll-indicator">
+      <div class="scroll-dot active" (click)="scrollToSection('section1')"></div>
+      <div class="scroll-dot" (click)="scrollToSection('section2')"></div>
+      <div class="scroll-dot" (click)="scrollToSection('section3')"></div>
+      <div class="scroll-dot" (click)="scrollToSection('section4')"></div>
     </div>
   </div>
 </div>

@@ -4,9 +4,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UserSelectionComponent } from './FrontOffice/components/user-selection/user-selection.component';
-import {BalanceComponent} from './FrontOffice/components/balance/balance.component';
-import {TransactionsComponent} from './FrontOffice/components/transactions/transactions.component';
+import { UserSelectionComponent } from './FrontOffice/dashboard/components/user-selection/user-selection.component';
+import {BalanceComponent} from './FrontOffice/dashboard/components/balance/balance.component';
+import {TransactionsComponent} from './FrontOffice/dashboard/components/transactions/transactions.component';
 import {CommonModule} from '@angular/common';
 
 @NgModule({
@@ -14,13 +14,16 @@ import {CommonModule} from '@angular/common';
     AppComponent,
     UserSelectionComponent,
     BalanceComponent,
-    TransactionsComponent
-    ],
+    TransactionsComponent,    MonteCarloSimulationComponent
+
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+     // Add FormsModule to the imports array
+    CommonModule,
 
     ReactiveFormsModule
   ],

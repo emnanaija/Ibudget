@@ -22,6 +22,50 @@
   --glass-shadow: rgba(0, 0, 0, 0.2);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+.scroll-section {
+  scroll-snap-align: start;
+  height: 100vh; /* Changed from min-height to height */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding: 80px 20px 20px;
+  position: relative;
+  flex-direction: column;
+  justify-content: flex-start; /* Changed from center to flex-start */
+  box-sizing: border-box;
+}
+
+/* Scroll indicators */
+.scroll-indicator {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+
+.scroll-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: transform 0.3s, background 0.3s;
+}
+
+.scroll-dot.active {
+  background: var(--primary);
+  transform: scale(1.5);
+}
+
+
+
 /* Modern Animated Background with GSAP */
 /* Update the animated background to create a liquid moving effect */
 /* Update the animated background styles */
@@ -415,7 +459,7 @@
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  padding-top: 60px;
+  padding-top: 1px;
   transition: margin-left 0.3s ease;
   margin-left: 250px;
 }
@@ -449,12 +493,13 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
+  scroll-snap-type: y mandatory;
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-padding-top: 60px;
 }
 
-.top-row, .bottom-row {
-  display: flex;
-  gap: 25px;
-}
+
 
 .left-panel {
   flex: 1.8;
@@ -621,8 +666,9 @@ app-balance {
 }
 
 .card-container-wrapper {
-  margin-left: 200px; /* Reduced margin to move card further left */
-  margin-bottom: 20px; /* Move card down a bit */
+  width: 100%;
+  margin-left: 0; /* Reset margin */
+  margin-bottom: 20px;
   margin-top: 10px;
   position: relative;
 }
@@ -638,19 +684,57 @@ app-balance {
 /* Keep existing row styles but adjust for new positioning */
 .top-row, .middle-row, .bottom-row {
   display: flex;
-  gap: 20px;
+  gap: 10px;
   width: 100%;
 }
 
 .top-row {
+  width: 100%;
+  display: flex;
   justify-content: space-between;
+  margin-top: 0; /* Reset the top margin */
+  padding-top: 10px; /* Small padding at the top */
+  position: relative;
+  z-index: 5;
 }
 
 .middle-row {
   justify-content: space-between;
+  margin-top: 300px;
 }
 
 .bottom-row {
   justify-content: space-between;
   margin-top: 10px;
 }
+
+
+
+/* monte section */
+.monte-carlo-header {
+  text-align: left;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.monte-carlo-header h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-shadow: 0 2px 10px rgba(99, 102, 241, 0.3);
+}
+
+.monte-carlo-header p {
+  color: #94a3b8;
+  text-align: left;
+  font-size: 1.1em;
+  font-weight: 300;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
