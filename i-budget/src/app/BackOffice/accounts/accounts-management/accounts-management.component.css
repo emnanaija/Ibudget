@@ -58,13 +58,7 @@
   font-family: "Century Gothic", sans-serif; /* Make the text use Century Gothic and fallback to sans-serif */
   font-weight: bold;
   text-shadow: 2px 2px 4px rgb(72, 91, 128); /* Add a text shadow */
-  /*
-    Explanation of text-shadow:
-    - 2px: Horizontal offset of the shadow (positive moves it to the right)
-    - 2px: Vertical offset of the shadow (positive moves it downwards)
-    - 4px: Blur radius of the shadow (higher value means more blur)
-    - rgba(0, 0, 0, 0.5): Color of the shadow (black with 50% opacity)
-  */
+
 }
 
 .account-management-nav a {

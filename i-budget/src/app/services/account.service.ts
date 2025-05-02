@@ -5,10 +5,11 @@ import { environment } from '../../environments/environment';
 
 export interface SimCardAccount {
   simCardId: number;
-  accountNumber: string;
+  accountNumber?: string; // Added with optional marker
   balance: number;
-  creationDate: string;
+  creationDate?: string; // Added with optional marker
   userId: number;
+  createdAt?: string; // Map from backend
   // Add other properties as needed based on your backend SimCardAccount entity
 }
 
