@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AccountService, RechargeCard, SimCardAccount } from '../../../services/account.service';
 import { CommonModule } from '@angular/common';
 import {RechargeFormComponent} from './Components/recharge-form/recharge-form.component';
@@ -10,7 +10,7 @@ import {GenerateCardsComponent} from './Components/generate-cards/generate-cards
 
 @Component({
   selector: 'app-recharge-account',
-  standalone: true, // Make sure it's standalone if you're using standalone components
+  standalone: true,
   imports: [
     RechargeFormComponent,
     GenerateCardsComponent,
@@ -21,23 +21,42 @@ import {GenerateCardsComponent} from './Components/generate-cards/generate-cards
   templateUrl: './recharge-account.component.html',
   styleUrl: './recharge-account.component.css'
 })
-export class RechargeAccountComponent {
+export class RechargeAccountComponent implements OnInit {
+  // Active tab tracking
+  activeTab: 'standard' | 'image' | 'silent' | 'generate' = 'standard';
+  
+  // Standard recharge properties
   rechargeResult: any;
   rechargeError: string = '';
   isRecharging: boolean = false;
+  
+  // Generate cards properties
   generationResult: RechargeCard[] | null = null;
   generationError: string = '';
   isGenerating: boolean = false;
+  
+  // Image recharge properties
   imageRechargeResult: SimCardAccount | null = null;
   imageRechargeError: string = '';
   isRechargingWithImage: boolean = false;
   simCardIdForImage: number | null = null;
+  
+  // Silent recharge properties
   rechargeResultNoNotify: SimCardAccount | null = null;
   errorMessageNoNotify: string = '';
   isLoadingNoNotify: boolean = false;
   previousBalanceNoNotify: number = 0;
 
   constructor(private accountService: AccountService) {}
+
+  ngOnInit(): void {
+    // You could add initialization logic here if needed
+    // For example, checking URL parameters to set the active tab
+  }
+
+  setActiveTab(tab: 'standard' | 'image' | 'silent' | 'generate'): void {
+    this.activeTab = tab;
+  }
 
   handleRecharge(rechargeData: { simCardId: number | null, rechargeCode: string }): void {
     this.isRecharging = true;

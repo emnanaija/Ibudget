@@ -1,4 +1,4 @@
-/* transactions-management.component.css */
+/* transaction-management.component.css */
 :root {
   /* Dark Night Sky Color Palette */
   --night-sky-01: #0B132B; /* Deep Indigo */
@@ -23,7 +23,7 @@
   padding: 2rem;
   min-height: 100vh;
   margin-left: 100px;
-  background-color: var(--night-sky-bg);
+  background: radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
   color: var(--night-sky-text);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   position: relative;

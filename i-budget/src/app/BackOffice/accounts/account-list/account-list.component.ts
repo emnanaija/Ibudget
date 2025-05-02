@@ -119,12 +119,27 @@ export class AccountListComponent implements OnInit, OnDestroy {
       }))
       .subscribe({
         next: (accounts) => {
-          this.accounts = accounts;
-          this.filteredAccounts = accounts; // Initialize filtered accounts with all accounts
+          // Map createdAt to creationDate if needed
+          this.accounts = accounts.map(account => {
+            if (!account.creationDate && account.createdAt) {
+              account.creationDate = account.createdAt;
+            }
+            return account;
+          });
+          this.filteredAccounts = this.accounts;
         },
         error: (error) => {
           console.error('Error loading accounts:', error);
-          this.errorMessage = 'Unable to load accounts. Please try again later.';
+          // More descriptive error message based on the error type
+          if (error.status === 0) {
+            this.errorMessage = 'Unable to connect to the server. Please check if the backend service is running.';
+          } else {
+            this.errorMessage = `Unable to load accounts. Error: ${error.message || 'Unknown error'}`;
+          }
+          
+          // Initialize with empty arrays to prevent null reference errors
+          this.accounts = [];
+          this.filteredAccounts = [];
         }
       });
   }

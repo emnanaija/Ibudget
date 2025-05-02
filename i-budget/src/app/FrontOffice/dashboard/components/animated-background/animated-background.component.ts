@@ -43,60 +43,68 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private initLiquidBackground(): void {
-    const blobs = document.querySelectorAll('.liquid-blob');
-
-    // Set initial random positions
-    blobs.forEach((blob: any) => {
-      gsap.set(blob, {
-        x: gsap.utils.random(-100, 100),
-        y: gsap.utils.random(-100, 100),
-        scale: gsap.utils.random(0.3, 1.1)
-      });
-    });
-
-    // Create faster, more fluid animations for each blob
-    blobs.forEach((blob: any) => {
-      // Create a timeline for this blob
-      const tl = gsap.timeline({
-        repeat: -1,
-        yoyo: true,
-        repeatDelay: 0.2, // Reduced delay
-        defaults: {
-          duration: gsap.utils.random(2, 10), // Faster duration
-          ease: "sine.inOut"
-        }
-      });
-
-      // Add animations to the timeline with more dramatic movements
-      tl.to(blob, {
-        x: gsap.utils.random(-250, 250), // More movement
-        y: gsap.utils.random(-250, 250),
-        scale: gsap.utils.random(0.7, 1.8), // More scale variation
-        rotation: gsap.utils.random(-15, 15) // More rotation
-      })
-        .to(blob, {
-          x: gsap.utils.random(-250, 250),
-          y: gsap.utils.random(-250, 250),
-          scale: gsap.utils.random(0.7, 1.8),
-          rotation: gsap.utils.random(-15, 15)
-        })
-        .to(blob, {
-          x: gsap.utils.random(-250, 250),
-          y: gsap.utils.random(-250, 250),
-          scale: gsap.utils.random(0.7, 1.8),
-          rotation: gsap.utils.random(-15, 15)
+  initLiquidBackground(): void {
+    // Check if we're in a browser environment before accessing document
+    if (typeof document !== 'undefined') {
+      const blobs = document.querySelectorAll('.liquid-blob');
+  
+      // Set initial random positions
+      blobs.forEach((blob: any) => {
+        gsap.set(blob, {
+          x: gsap.utils.random(-100, 100),
+          y: gsap.utils.random(-100, 100),
+          scale: gsap.utils.random(0.3, 1.1)
         });
-
-      // Start the timeline at a random position
-      tl.progress(Math.random());
-    });
+      });
+  
+      // Create faster, more fluid animations for each blob
+      blobs.forEach((blob: any) => {
+        // Create a timeline for this blob
+        const tl = gsap.timeline({
+          repeat: -1,
+          yoyo: true,
+          repeatDelay: 0.2, // Reduced delay
+          defaults: {
+            duration: gsap.utils.random(2, 10), // Faster duration
+            ease: "sine.inOut"
+          }
+        });
+  
+        // Add animations to the timeline with more dramatic movements
+        tl.to(blob, {
+          x: gsap.utils.random(-250, 250), // More movement
+          y: gsap.utils.random(-250, 250),
+          scale: gsap.utils.random(0.7, 1.8), // More scale variation
+          rotation: gsap.utils.random(-15, 15) // More rotation
+        })
+          .to(blob, {
+            x: gsap.utils.random(-250, 250),
+            y: gsap.utils.random(-250, 250),
+            scale: gsap.utils.random(0.7, 1.8),
+            rotation: gsap.utils.random(-15, 15)
+          })
+          .to(blob, {
+            x: gsap.utils.random(-250, 250),
+            y: gsap.utils.random(-250, 250),
+            scale: gsap.utils.random(0.7, 1.8),
+            rotation: gsap.utils.random(-15, 15)
+          });
+  
+        // Start the timeline at a random position
+        tl.progress(Math.random());
+      });
+    }
   }
 
-  private initGsapAnimations(): void {
-    // Initialize the liquid background first
+  initGsapAnimations(): void {
+    // Check if we're in a browser environment
+    if (typeof document === 'undefined') {
+      return; // Skip animation initialization in SSR
+    }
+    
+    // Call initLiquidBackground only in browser environment
     this.initLiquidBackground();
-
+    
     // Create a timeline for background effects
     const bgTimeline = gsap.timeline({
       repeat: -1,
@@ -225,5 +233,15 @@ export class AnimatedBackgroundComponent implements AfterViewInit, OnDestroy {
         }
       });
     });
+  }
+
+  ngOnInit(): void {
+    // Check if we're in a browser environment
+    if (typeof window !== 'undefined') {
+      // Delay GSAP initialization to ensure DOM is ready
+      setTimeout(() => {
+        this.initGsapAnimations();
+      }, 0);
+    }
   }
 }

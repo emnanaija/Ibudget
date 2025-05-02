@@ -1,0 +1,38 @@
+<div class="transaction-list-container">
+  <h3>Transaction List</h3>
+  
+  <div *ngIf="isLoading" class="loading">Loading transactions...</div>
+  
+  <div *ngIf="!isLoading && transactions.length === 0" class="no-data">
+    No transactions found.
+  </div>
+  
+  <table *ngIf="!isLoading && transactions.length > 0" class="transaction-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Amount</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Reference</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let transaction of transactions">
+        <td>{{transaction.idTransaction}}</td>
+        <td>{{transaction.amount | currency}}</td>
+        <td>{{transaction.transactionType}}</td>
+        <td>{{transaction.status}}</td>
+        <td>{{transaction.refNum}}</td>
+        <td>{{transaction.transactionDate | date:'medium'}}</td>
+        <td>
+          <button (click)="viewDetails(transaction)">View</button>
+          <button (click)="editTransaction(transaction)">Edit</button>
+          <button (click)="deleteTransaction(transaction)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

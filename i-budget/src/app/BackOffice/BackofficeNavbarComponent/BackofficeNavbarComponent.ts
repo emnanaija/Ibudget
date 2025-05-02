@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-backoffice-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, CommonModule],
   template: `
     <nav class="backoffice-navbar">
       <div class="navbar-header">
         <div class="logo">
-          <span class="logo-icon">💼</span>
+          <i class="fa-solid fa-briefcase logo-icon"></i>
           <span class="logo-text">Admin</span>
         </div>
       </div>
@@ -18,34 +19,44 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         <a [routerLink]="['/dashboard']"
            routerLinkActive="active"
            class="nav-item">
-          <span class="nav-icon">📊</span>
+          <div class="icon-container">
+            <i class="fa-solid fa-chart-line nav-icon"></i>
+          </div>
           <span class="nav-text">Dashboard</span>
         </a>
 
         <a [routerLink]="['/accounts']"
            routerLinkActive="active"
            class="nav-item">
-          <span class="nav-icon">🏦</span>
+          <div class="icon-container">
+            <i class="fa-solid fa-landmark nav-icon"></i>
+          </div>
           <span class="nav-text">Accounts</span>
         </a>
 
         <a [routerLink]="['/transactions']"
            routerLinkActive="active"
            class="nav-item">
-          <span class="nav-icon">💸</span>
+          <div class="icon-container">
+            <i class="fa-solid fa-money-bill-transfer nav-icon"></i>
+          </div>
           <span class="nav-text">Transactions</span>
         </a>
       </div>
 
       <div class="navbar-footer">
         <a class="logout-btn">
-          <span class="logout-icon">🚪</span>
+          <div class="icon-container">
+            <i class="fa-solid fa-right-from-bracket logout-icon"></i>
+          </div>
           <span class="logout-text">Logout</span>
         </a>
       </div>
     </nav>
   `,
   styles: [`
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css');
+
     .backoffice-navbar {
       position: fixed;
       top: 0;
@@ -67,7 +78,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     }
 
     .backoffice-navbar:hover {
-      width: 200px;
+      width: 220px;
     }
 
     .navbar-header {
@@ -86,6 +97,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     .logo-icon {
       font-size: 24px;
       margin-right: 20px;
+      color: #60a5fa;
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .backoffice-navbar:hover .logo-icon {
+      transform: rotate(360deg);
     }
 
     .logo-text {
@@ -94,13 +111,15 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       font-size: 18px;
       white-space: nowrap;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transform: translateX(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
 
     .backoffice-navbar:hover .logo-text,
     .backoffice-navbar:hover .nav-text,
     .backoffice-navbar:hover .logout-text {
       opacity: 1;
+      transform: translateX(0);
     }
 
     .navbar-links {
@@ -115,7 +134,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       display: flex;
       align-items: center;
       padding: 15px;
-      margin: 5px 0;
+      margin: 8px 0;
       width: 90%;
       border-radius: 12px;
       font-family: "Century Gothic", sans-serif;
@@ -129,6 +148,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     .nav-item:hover {
       background-color: rgba(255, 255, 255, 0.08);
       color: white;
+      transform: translateX(5px);
     }
 
     .nav-item.active {
@@ -148,19 +168,72 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       border-radius: 0 2px 2px 0;
     }
 
-    .nav-icon, .logout-icon {
-      font-size: 20px;
-      margin-right: 15px;
+    .icon-container {
       display: flex;
       align-items: center;
       justify-content: center;
-      min-width: 24px;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      margin-right: 15px;
+      background: rgba(255, 255, 255, 0.08);
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .backoffice-navbar:not(:hover) .icon-container {
+      width: 45px;
+      height: 45px;
+      background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(139, 92, 246, 0.1));
+      border-radius: 12px;
+      margin: 0 auto;
+    }
+
+    .nav-item:hover .icon-container,
+    .logout-btn:hover .icon-container {
+      background: rgba(96, 165, 250, 0.2);
+      transform: rotate(5deg);
+    }
+
+    .nav-item.active .icon-container {
+      background: linear-gradient(135deg, #3b82f6, #60a5fa);
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .nav-icon, .logout-icon {
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #cbd5e1;
+      transition: all 0.3s ease;
+    }
+
+    .backoffice-navbar:not(:hover) .nav-icon,
+    .backoffice-navbar:not(:hover) .logout-icon {
+      font-size: 20px;
+      color: #60a5fa;
+    }
+
+    .backoffice-navbar:not(:hover) .nav-item.active .nav-icon {
+      color: white;
+    }
+
+    .nav-item:hover .nav-icon,
+    .logout-btn:hover .logout-icon {
+      color: #60a5fa;
+      transform: scale(1.1);
+    }
+
+    .nav-item.active .nav-icon {
+      color: white;
     }
 
     .nav-text, .logout-text {
       white-space: nowrap;
       opacity: 0;
-      transition: opacity 0.3s ease;
+      transform: translateX(-10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
       font-weight: 500;
     }
 
@@ -186,6 +259,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     .logout-btn:hover {
       color: #f87171;
       background-color: rgba(255, 255, 255, 0.05);
+      transform: translateX(5px);
+    }
+
+    .logout-btn:hover .logout-icon {
+      color: #f87171;
     }
   `]
 })

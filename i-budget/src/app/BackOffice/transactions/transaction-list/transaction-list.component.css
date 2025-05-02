@@ -1,0 +1,44 @@
+.transaction-list-container {
+  padding: 1rem;
+}
+
+.transaction-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.transaction-table th, .transaction-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.transaction-table th {
+  background-color: rgba(58, 80, 107, 0.3);
+  color: #E0F2F7;
+}
+
+.transaction-table tr:hover {
+  background-color: rgba(58, 80, 107, 0.2);
+}
+
+button {
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #3A506B;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #485b80;
+}
+
+.loading, .no-data {
+  padding: 2rem;
+  text-align: center;
+  color: #E0F2F7;
+}

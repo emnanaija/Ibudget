@@ -8,6 +8,12 @@ import {RechargeAccountComponent} from './BackOffice/accounts/recharge-account/r
 import {DashboardComponent} from './FrontOffice/dashboard/dashboard.component';
 import {TransactionManagementComponent} from './BackOffice/transactions/transaction-management.component';
 
+// Import transaction-related components
+import { TransactionListComponent } from './BackOffice/transactions/transaction-list/transaction-list.component';
+import { CreateTransactionComponent } from './BackOffice/transactions/create-transaction/create-transaction.component';
+import { ScheduledTransfersComponent } from './BackOffice/transactions/scheduled-transfers/scheduled-transfers.component';
+import { BatchTransactionsComponent } from './BackOffice/transactions/batch-transactions/batch-transactions.component';
+
 // Import other components as needed
 
 export const routes: Routes = [
@@ -26,7 +32,15 @@ export const routes: Routes = [
   },
   {
     path: 'transactions',
-    component: TransactionManagementComponent},
+    component: TransactionManagementComponent,
+    children: [
+      { path: 'list', component: TransactionListComponent },
+      { path: 'create', component: CreateTransactionComponent },
+      { path: 'scheduled', component: ScheduledTransfersComponent },
+      { path: 'batch', component: BatchTransactionsComponent },
+      { path: '', redirectTo: 'list', pathMatch: 'full' },
+    ],
+  },
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 
   // Other routes

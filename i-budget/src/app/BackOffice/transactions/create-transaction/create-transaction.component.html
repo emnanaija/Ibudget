@@ -1,0 +1,38 @@
+<div class="create-transaction-container">
+  <h3>Create New Transaction</h3>
+  
+  <form (ngSubmit)="createTransaction()" #transactionForm="ngForm">
+    <div class="form-group">
+      <label for="amount">Amount</label>
+      <input type="number" id="amount" name="amount" [(ngModel)]="transaction.amount" required>
+    </div>
+    
+    <div class="form-group">
+      <label for="transactionType">Transaction Type</label>
+      <select id="transactionType" name="transactionType" [(ngModel)]="transaction.transactionType" required>
+        <option value="">Select Type</option>
+        <option value="TRANSFER">Transfer</option>
+        <option value="PAYMENT">Payment</option>
+        <option value="DEPOSIT">Deposit</option>
+        <option value="WITHDRAWAL">Withdrawal</option>
+      </select>
+    </div>
+    
+    <div class="form-group">
+      <label for="refNum">Reference Number</label>
+      <input type="text" id="refNum" name="refNum" [(ngModel)]="transaction.refNum">
+    </div>
+    
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" [(ngModel)]="transaction.descreption"></textarea>
+    </div>
+    
+    <div class="form-group">
+      <label for="feeAmount">Fee Amount</label>
+      <input type="number" id="feeAmount" name="feeAmount" [(ngModel)]="transaction.feeAmount">
+    </div>
+    
+    <button type="submit" [disabled]="!transactionForm.form.valid">Create Transaction</button>
+  </form>
+</div>

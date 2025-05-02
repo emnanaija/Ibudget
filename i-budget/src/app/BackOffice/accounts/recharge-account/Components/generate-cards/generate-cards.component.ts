@@ -40,5 +40,15 @@ export class GenerateCardsComponent {
 
   setGenerationResult(result: RechargeCard[] | null): void {
     this.generationResult = result;
+    
+    // Add animation delay for each card
+    if (result) {
+      setTimeout(() => {
+        const cards = document.querySelectorAll('.recharge-card');
+        cards.forEach((card, index) => {
+          (card as HTMLElement).style.setProperty('--animation-order', index.toString());
+        });
+      }, 0);
+    }
   }
 }
