@@ -187,17 +187,17 @@ public class SimCardTransactionService implements ISimCardTransactionService {
         // Deduct the subscription fee from the sender's account
         senderAccount.setBalance(senderAccount.getBalance() - subscriptionFee);
 
-        // Validate the system user (receiver with id = 2)
-        User systemUser = userRepository.findById(2L)
+        // Validate the system user (receiver with id = 1)
+        User systemUser = userRepository.findById(1L)
                 .orElseThrow(() -> new RuntimeException("System user (receiver) not found"));
 
-        // Retrieve the SimCardAccount for the system user (id = 2)
+        // Retrieve the SimCardAccount for the system user (id = 1)
         SimCardAccount systemAccount = (SimCardAccount) simCardAccountRepository.findByUser(systemUser)
                 .orElseThrow(() -> new RuntimeException("System fee beneficiary account not found"));
 
-        // Ensure the system account belongs to the system user (id = 2)
-        if (!systemAccount.getUser().getUserId().equals(2L)) {
-            throw new RuntimeException("System account does not belong to the system user (id = 2)");
+        // Ensure the system account belongs to the system user (id = 1)
+        if (!systemAccount.getUser().getUserId().equals(1L)) {
+            throw new RuntimeException("System account does not belong to the system user (id = 1)");
         }
 
         // Add the subscription fee to the system account
@@ -214,7 +214,7 @@ public class SimCardTransactionService implements ISimCardTransactionService {
         subscriptionTransaction.setStatus("COMPLETED");
         subscriptionTransaction.setTransactionDate(LocalDateTime.now());
         subscriptionTransaction.setSender(sender);
-        subscriptionTransaction.setReceiver(systemUser); // Set receiver as the system user (id = 2)
+        subscriptionTransaction.setReceiver(systemUser); // Set receiver as the system user (id = 1)
         subscriptionTransaction.setSimCardAccount(senderAccount);
 
         return transactionRepository.save(subscriptionTransaction);

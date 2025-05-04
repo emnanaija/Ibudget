@@ -72,6 +72,12 @@ export class TransactionService {
     return this.http.post<SimTransaction>(`${this.apiUrl}/conditional`, transaction, { params });
   }
 
+  updateTransactionStatus(id: number, status: string): Observable<any> {
+    // Using PUT instead of PATCH as it might be better supported by your backend
+    // Also removing the /status suffix if your API doesn't support it
+    return this.http.put<SimTransaction>(`${this.apiUrl}/${id}`, { status });
+  }
+
   batchTransactions(transactions: SimTransaction[]): Observable<SimTransaction[]> {
     return this.http.post<SimTransaction[]>(`${this.apiUrl}/batch`, transactions);
   }

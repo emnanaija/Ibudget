@@ -43,7 +43,7 @@ export class TransactionManagementComponent implements OnInit, OnDestroy, AfterV
     if (this.userId > 0) {
       this.loadUserData();
     }
-    
+
     // Load all transactions by default if no specific user is provided
     if (this.userId === 0) {
       this.loadAllTransactions();
@@ -96,26 +96,27 @@ export class TransactionManagementComponent implements OnInit, OnDestroy, AfterV
   }
 
   ngAfterViewInit(): void {
-    if (this.headerRef && this.navRef && this.contentRef) {
+    // Check if we're running in a browser environment before animating
+    if (typeof window !== 'undefined') {
       this.animateElements();
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.routerEventsSubscription) {
-      this.routerEventsSubscription.unsubscribe();
-    }
-  }
-
   animateElements(): void {
+    // Your animation code here
+    // Make sure any references to window are guarded
+    if (typeof window === 'undefined') {
+      return; // Exit early if not in browser environment
+    }
+
     try {
       const header = this.headerRef.nativeElement;
-      
+
       // Add null checks and default to empty arrays if elements don't exist
       const navLinks = this.navRef?.nativeElement?.querySelectorAll('a') || [];
       const separator = this.navRef?.nativeElement?.querySelectorAll('.nav-separator') || [];
       const content = this.contentRef.nativeElement;
-      
+
       // Animate header
       gsap.fromTo(header, { y: -50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8, ease: 'power3.out' });
 
@@ -146,5 +147,8 @@ export class TransactionManagementComponent implements OnInit, OnDestroy, AfterV
     } catch (error) {
       console.error('Error in animateElements:', error);
     }
+  }
+
+  ngOnDestroy(): void {
   }
 }
