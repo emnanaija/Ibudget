@@ -13,10 +13,45 @@ import { TransactionListComponent } from './BackOffice/transactions/transaction-
 import { CreateTransactionComponent } from './BackOffice/transactions/create-transaction/create-transaction.component';
 import { ScheduledTransfersComponent } from './BackOffice/transactions/scheduled-transfers/scheduled-transfers.component';
 import { BatchTransactionsComponent } from './BackOffice/transactions/batch-transactions/batch-transactions.component';
+import {noAuthGuard} from './services/User/no-auth.guard';
+import {SignupRegisterComponent} from './Pages/signup-register/signup-register.component';
+import {CompleteProfileComponent} from './Pages/complete-profile/complete-profile.component';
+import {SocialLoginSuccessComponent} from './Pages/social-login-success/social-login-success.component';
+import {AuthGuard} from './services/User/auth.guard';
+import {ResetPasswordComponent} from './Pages/reset-password/reset-password.component';
+import {ApproveNewDeviceComponent} from './Pages/approve-new-device/approve-new-device.component';
+import {ActivateAccountComponent} from './Pages/activate-account/activate-account.component';
 
 // Import other components as needed
 
 export const routes: Routes = [
+  {
+    path: 'signupRegister',
+    component: SignupRegisterComponent,
+    canActivate:[noAuthGuard]
+  },
+  {
+    path: 'activateAccount',
+    component: ActivateAccountComponent
+  },
+  {
+    path: 'approveNewDevice',
+    component: ApproveNewDeviceComponent
+  },
+  {
+    path: 'resetPassword',
+    component: ResetPasswordComponent
+  },
+
+
+
+  {
+    path: 'social-login-success',
+    component: SocialLoginSuccessComponent
+  },{
+    path:'completeProfile',
+    component:CompleteProfileComponent
+  },
   { path: 'dashboard', component: DashboardAdminComponent },
   { path: 'dashboardfront', component: DashboardComponent },
   {
@@ -41,7 +76,7 @@ export const routes: Routes = [
       { path: '', redirectTo: 'list', pathMatch: 'full' },
     ],
   },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: '', redirectTo: '/signupRegister', pathMatch: 'full' },
 
   // Other routes
 ];

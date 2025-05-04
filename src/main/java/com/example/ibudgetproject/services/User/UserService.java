@@ -86,7 +86,7 @@ public class UserService implements IUserService {
     private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
     private static final long tokenExpirationInMinutes = 5;
 
-//**Get User
+    //**Get User
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
@@ -279,7 +279,7 @@ public class UserService implements IUserService {
     }
     @Override
     public void completProfile(CompleteProfileRequest request, HttpServletRequest req, String email) throws Exception {
-        var userRole = roleRepository.findByName("USER_FREMIUM")
+        var userRole = roleRepository.findByName("ROLE_USER_FREMIUM")
                 .orElseThrow(() -> new IllegalStateException("ROLE USER was not initiated"));
         try{
             var user = User.builder()
@@ -396,6 +396,9 @@ public class UserService implements IUserService {
                 return AuthenticationResponse.builder()
                         .accessToken(jwtService.generateToken(request.getEmail()))
                         .refreshToken(jwtService.generateRefreshToken(request.getEmail()))
+                        .role(user.getRole().getName())
+                        .email(user.getEmail())
+                        .id(user.getUserId())
                         .build();
             }
 
@@ -417,14 +420,19 @@ public class UserService implements IUserService {
     ///*****Refresh token
     @Override
     public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        final String header = request.getHeader("Refresh-Token");
+        //final String header = request.getHeader("Refresh-Token");
+        final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
         final String refreshToken;
         final String userEmail;
-        if (header == null ) {
+        /*if (header == null ) {
             return;
         }else {
             refreshToken = header;
+        }*/
+        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+            return;
         }
+        refreshToken = authHeader.substring(7);
         userEmail = jwtService.extractUserName(refreshToken);
         if (userEmail != null) {
             var user = this.userRepository.findByEmail(userEmail)
@@ -434,6 +442,7 @@ public class UserService implements IUserService {
                 var authResponse = AuthenticationResponse.builder()
                         .accessToken(accessToken)
                         .refreshToken(refreshToken)
+                        .role(user.getRole().getName())
                         .build();
                 new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
             }
@@ -448,7 +457,7 @@ public class UserService implements IUserService {
             throw new IllegalStateException("Wrong password");
         }
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
-            throw new IllegalStateException("Password are not the same");
+            throw new IllegalStateException("New password and confirmation new password are not the same");
         }
         user.setPassword(encoder.encode(request.getNewPassword()));
         userRepository.save(user);
@@ -565,7 +574,7 @@ public class UserService implements IUserService {
 
         String encryptedToken = encryptor.encrypt(tokenData);
 
-        String resetLink = "http://localhost:8080/user/reset-password?token=" + encryptedToken;
+        String resetLink = "http://localhost:4200/resetPassword?token=" + encryptedToken;
 
         emailService.sendEmail(
                 user.getEmail(),

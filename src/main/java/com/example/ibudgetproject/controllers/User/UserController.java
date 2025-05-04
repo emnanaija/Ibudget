@@ -20,7 +20,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -59,7 +61,9 @@ public class UserController {
             AuthenticationResponse response = service.authenticate(request,req);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.badRequest().body(errorResponse);
         }
     }
 
@@ -105,6 +109,7 @@ public class UserController {
             service.changePassword(request, connectedUser);
             return ResponseEntity.ok("Password changed successfully");
         }catch(IllegalStateException e){
+
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -140,7 +145,7 @@ public class UserController {
     }
 
     @GetMapping("/getUserByAdmin/{userId}")
-    @RolesAllowed("ROLE_ADMIN")
+    // @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<?> getUserById(@PathVariable Long userId) {
         try {
             User user = service.getUserById(userId);
@@ -150,7 +155,7 @@ public class UserController {
         }
     }
     @GetMapping("/getAllUsersByAdmin")
-    // @RolesAllowed("ROLE_ADMIN")  // Temporarily remove this for testing
+    @RolesAllowed("ROLE_ADMIN")
     public ResponseEntity<?> getAllUsers() {
         try {
             List<User> users = service.getAllUsers();
@@ -162,8 +167,8 @@ public class UserController {
 
     @PostMapping("/accountDeletionRequest")
     @RolesAllowed({"ROLE_USER_FREMIUM", "ROLE_USER_PREMIUM"})
-    public ResponseEntity<String> requestDeleteAccount(@AuthenticationPrincipal User connectedUser  , @RequestBody String password) {
-        if (!service.verifyPassword(connectedUser.getEmail(),password)) {
+    public ResponseEntity<String> requestDeleteAccount(@AuthenticationPrincipal User connectedUser  , @RequestBody DeletionRequest request) {
+        if (!service.verifyPassword(connectedUser.getEmail(),request.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Password does not match.");
         }
         boolean isRequested = service.requestDeleteAccount(connectedUser.getEmail());
@@ -240,11 +245,10 @@ public class UserController {
             String advice = chatService.generateFinancialAdvice(request.getQuestion(), connectedUser.getAiTonePreference(), connectedUser.getFinancialKnowledgeLevel());
             return ResponseEntity.ok(advice);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace(); // Log the exception properly in a real application
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Error generating financial advice.");
         }
 
     }
 
 }
-

@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.security;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,10 +19,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
+import java.util.Collections;
+
+import org.springframework.http.HttpHeaders;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -38,55 +44,40 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(cs->cs.disable())
-                .authorizeHttpRequests((req->req
-                        .requestMatchers(
-                            "/user/register",
-                            "/user/login",
-                            "/user/activateAccount",
-                            "/user/resendActivationCode",
-                            "/user/sendResetEmail",
-                            "/user/resetPassword",
-                            "/connexionInfo/approveLogIn",
-                            "/oauth2/**",
-                            "/user/completeProfile",
-                            "/user/sendResetPasswordRequest",
-                            "/user/getAllUsersByAdmin",
-                            "/user/{id}",
-                            "/transaction/**",
-                                "/account/**","/recharge/**"
-                        )
+
+
+
+        http    .cors(Customizer.withDefaults())
+                .csrf(cs -> cs.disable())
+                .authorizeHttpRequests((req -> req
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "user/register", "user/login", "user/activateAccount", "user/resendActivationCode"
+                                ,"user/completeProfile", "user/sendResetEmail"
+                                ,"user/refreshToken"
+                                ,"user/deleteUserByAdmin","user/getDeletionRequestsAdmin","user/getUpdateRequestsAdmin","user/getAllUsersByAdmin","user/resetPassword", "connexionInfo/approveLogIn", "/oauth2/**", "user/sendResetPasswordRequest","/transaction/**",
+                                "/account/**","/recharge/**")
                         .permitAll()
                         .anyRequest().authenticated()))
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                        })
+                )
                 .oauth2Login(oauth2 -> oauth2
                         .successHandler(oauth2Handler))
-                .httpBasic(Customizer.withDefaults())
-                .sessionManagement(session->
+                .httpBasic(withDefaults())
+                .sessionManagement(session ->
                         session.sessionCreationPolicy((SessionCreationPolicy.STATELESS)))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
+
         return http.build();
     }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
-        DaoAuthenticationProvider provider =new DaoAuthenticationProvider();
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         provider.setUserDetailsService(userDetailsService);
         return provider;
@@ -96,4 +87,23 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        final CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+        config.setAllowedHeaders(Arrays.asList(
+                HttpHeaders.ORIGIN,
+                HttpHeaders.CONTENT_TYPE,
+                HttpHeaders.ACCEPT,
+                HttpHeaders.AUTHORIZATION,
+                "No-Auth"
+        ));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT", "PATCH"));
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
+    }
+
 }
