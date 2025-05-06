@@ -278,6 +278,11 @@ export class DashboardAdminComponent implements OnInit, AfterViewInit, OnDestroy
   }
 
   getCategoryClass(category: string): string {
+    // Add null check before calling toLowerCase()
+    if (!category) {
+      return 'other'; // Return a default class when category is null
+    }
+    
     switch (category.toLowerCase()) {
       case 'income':
         return 'income';

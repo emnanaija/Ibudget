@@ -17,26 +17,27 @@
     (toggleSidebar)="toggleSidebar()"
   ></app-sidebar>
 
-  <div class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed">
+  <div class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed" [class.blurred]="!isSidebarCollapsed">
     <!-- Header Component -->
     <app-header [isSidebarCollapsed]="isSidebarCollapsed"></app-header>
 
     <!-- Content Area with adjusted layout -->
     <div class="content-area" #contentArea>
+      <router-outlet></router-outlet>
       <!-- Section 1: Top row -->
       <div class="scroll-section" id="section1">
         <div class="top-row">
-          <app-balance></app-balance>
-          <div style="text-align: center; font-family: 'Century Gothic';">
-            <strong style="font-size: 8em; text-shadow: 5px 5px 10px rgba(0, 0, 0, 0.8);">i-Budget</strong>
-            <div style="font-size: 2.2em; text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);">crafting your financial harmony</div>
-          </div>
-          <div class="dashboard-monte-carlo">
-            <div class="monte-carlo-header">
-              <h2>Financial Forecast</h2>
-              <p>Explore future transaction patterns with AI-driven Monte Carlo simulations</p>
+          <div class="balance-column">
+            <app-balance></app-balance>
+            <div class="crafting-text">
+              <span class="crafting-bold">Crafting, </span> <span class="crafting-regular">your financial harmony</span>
             </div>
-            <app-monte-carlo-simulation [simCardId]="1"></app-monte-carlo-simulation>
+          </div>
+          <div class="image-column" style="text-align: center; font-family: 'Century Gothic';">
+            <img src="/Capture_d_écran_2025-02-16_165806-removebg-preview.png" alt="i-Budget" style="max-height: 120px; filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.8));" />
+          </div>
+          <div class="dashboard-monte-carlo alerts-right">
+            <app-alerts></app-alerts>
           </div>
         </div>
       </div>
@@ -46,7 +47,13 @@
         <div class="middle-row">
           <app-stats></app-stats>
           <app-savings></app-savings>
-          <app-alerts></app-alerts>
+          <div class="dashboard-monte-carlo">
+            <div class="monte-carlo-header">
+              <h2>Financial Forecast</h2>
+              <p>Explore future transaction patterns with AI-driven Monte Carlo simulations</p>
+            </div>
+            <app-monte-carlo-simulation [simCardId]="1"></app-monte-carlo-simulation>
+          </div>
         </div>
       </div>
 

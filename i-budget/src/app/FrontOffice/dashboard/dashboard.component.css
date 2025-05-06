@@ -462,10 +462,34 @@ html {
   padding-top: 1px;
   transition: margin-left 0.3s ease;
   margin-left: 250px;
+  position: relative;
+  z-index: 100;
 }
 
 .main-content.sidebar-collapsed {
   margin-left: 0;
+}
+
+/* Blur effect when sidebar is open */
+.main-content.blurred {
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+  transition: filter 0.3s ease;
+  position: relative;
+}
+
+/* Optional: add a semi-transparent overlay to darken the blurred content */
+.main-content.blurred::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(236, 236, 236, 0);
+  pointer-events: none;
+  z-index: 101;
 }
 
 /* Header */
@@ -700,12 +724,58 @@ app-balance {
 
 .middle-row {
   justify-content: space-between;
-  margin-top: 300px;
+  margin-top: 20px;
+  flex-wrap: wrap; /* Allow wrapping */
+  gap: 15px;
 }
 
 .bottom-row {
   justify-content: space-between;
   margin-top: 10px;
+  flex-wrap: wrap; /* Allow wrapping */
+  gap: 15px;
+}
+
+/* Add flex-wrap to top-row as well for consistency */
+.top-row {
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  gap: 15px;
+}
+
+/* Set min and max widths for child components in rows */
+.top-row > * {
+  flex: 1 1 300px;
+  max-width: 33%;
+  min-width: 280px;
+}
+
+.middle-row > * {
+  flex: 1 1 280px;
+  max-width: 32%;
+  min-width: 260px;
+}
+
+.bottom-row > * {
+  flex: 1 1 280px;
+  max-width: 48%;
+  min-width: 260px;
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 1024px) {
+  .top-row > *, .middle-row > *, .bottom-row > * {
+    max-width: 48%;
+    min-width: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-row > *, .middle-row > *, .bottom-row > * {
+    max-width: 100%;
+    min-width: 100%;
+  }
 }
 
 
@@ -716,6 +786,37 @@ app-balance {
   margin-bottom: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.crafting-text {
+  margin-top: 30px;
+  font-family: 'Century Gothic', sans-serif;
+  font-size: 2.1rem;
+  text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+  max-width: 780px;
+}
+
+.crafting-bold {
+  font-weight: bold;
+  font-size: 2.5rem;
+}
+
+.crafting-regular {
+  font-weight: normal;
+  font-size: 2.2rem;
+}
+
+.alerts-extreme-right {
+  position: fixed;
+  top: 50%;
+  right: 1px;
+  transform: translateY(-50%);
+  z-index: 1500;
+  max-width: 400px;
+  width: auto;
 }
 
 .monte-carlo-header h2 {

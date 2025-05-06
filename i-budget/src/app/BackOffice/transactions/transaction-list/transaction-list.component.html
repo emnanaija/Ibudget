@@ -46,9 +46,9 @@
           >
             <div class="card-header">
               <span class="transaction-id">#{{transaction.idTransaction}}</span>
-              <span class="badge" [ngClass]="'type-' + (transaction.transactionType?.toLowerCase() || 'unknown')">
-                {{transaction.transactionType || 'Unknown'}}
-              </span>
+<span class="badge" [ngClass]="'type-' + (transaction.transactionType.toLowerCase() || 'unknown')">
+  {{transaction.transactionType || 'Unknown'}}
+</span>
             </div>
             <div class="card-body">
               <div class="amount">{{transaction.amount | currency}}</div>

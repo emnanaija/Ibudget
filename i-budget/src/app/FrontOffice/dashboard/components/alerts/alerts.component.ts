@@ -20,6 +20,7 @@ import { CommonModule } from '@angular/common';
       position: relative;
       max-width: 100%;
       overflow: hidden;
+      right:0;
       border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
       transition: all 0.3s ease;

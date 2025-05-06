@@ -50,7 +50,7 @@ public class SecurityConfig {
         http    .cors(Customizer.withDefaults())
                 .csrf(cs -> cs.disable())
                 .authorizeHttpRequests((req -> req
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "user/register", "user/login", "user/activateAccount", "user/resendActivationCode"
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/user/1", "user/register", "user/login", "user/activateAccount", "user/resendActivationCode"
                                 ,"user/completeProfile", "user/sendResetEmail"
                                 ,"user/refreshToken"
                                 ,"user/deleteUserByAdmin","user/getDeletionRequestsAdmin","user/getUpdateRequestsAdmin","user/getAllUsersByAdmin","user/resetPassword", "connexionInfo/approveLogIn", "/oauth2/**", "user/sendResetPasswordRequest","/transaction/**",

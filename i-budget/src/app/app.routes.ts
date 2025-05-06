@@ -21,6 +21,8 @@ import {AuthGuard} from './services/User/auth.guard';
 import {ResetPasswordComponent} from './Pages/reset-password/reset-password.component';
 import {ApproveNewDeviceComponent} from './Pages/approve-new-device/approve-new-device.component';
 import {ActivateAccountComponent} from './Pages/activate-account/activate-account.component';
+import {CreateTransactionFrontComponent} from './FrontOffice/TransactionsFront/create-transaction-front.component';
+import { AccountFrontComponent } from './FrontOffice/AccountsFront/account-front.component';
 
 // Import other components as needed
 
@@ -29,6 +31,20 @@ export const routes: Routes = [
     path: 'signupRegister',
     component: SignupRegisterComponent,
     canActivate:[noAuthGuard]
+  },
+  {
+    path: 'transactionsFront',
+    component: CreateTransactionFrontComponent
+  },
+ 
+  {
+    path: 'dashboardfront',
+    component: DashboardComponent,
+    
+  },
+  {
+    path: 'accountfront',
+    component: AccountFrontComponent
   },
   {
     path: 'activateAccount',

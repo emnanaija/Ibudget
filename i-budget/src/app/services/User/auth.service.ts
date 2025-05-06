@@ -6,18 +6,25 @@ import { firstValueFrom } from 'rxjs';
 export class AuthService {
   constructor(private http: HttpClient) {}
 
-
   getAccessToken(): string | null {
-    return localStorage.getItem('accessToken');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem('accessToken');
+    }
+    return null;
   }
 
   getRefreshToken(): string | null {
-    return localStorage.getItem('refreshToken');
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return localStorage.getItem('refreshToken');
+    }
+    return null;
   }
 
   saveTokens(accessToken: string, refreshToken: string) {
-    localStorage.setItem('accessToken', accessToken);
-    localStorage.setItem('refreshToken', refreshToken);
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+    }
   }
 
   async refreshToken(): Promise<boolean> {
@@ -39,6 +46,52 @@ export class AuthService {
       return true;
     } catch {
       return false;
+    }
+  }
+
+  getCurrentUserId(): number | null {
+    const token = this.getAccessToken();
+    if (!token) {
+      // fallback to localStorage userId
+      if (typeof window !== 'undefined' && window.localStorage) {
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+          const id = Number(storedUserId);
+          return isNaN(id) ? null : id;
+        }
+      }
+      return null;
+    }
+
+    try {
+      // JWT token format: header.payload.signature
+      const payloadBase64 = token.split('.')[1];
+      const payloadJson = atob(payloadBase64);
+      const payload = JSON.parse(payloadJson);
+
+      // Assuming user ID is stored in 'userId' claim or 'sub' claim
+      if (payload.userId) {
+        return Number(payload.userId);
+      } else if (payload.sub && !isNaN(Number(payload.sub))) {
+        return Number(payload.sub);
+      } else {
+        // fallback to localStorage userId
+        const storedUserId = localStorage.getItem('userId');
+        if (storedUserId) {
+          const id = Number(storedUserId);
+          return isNaN(id) ? null : id;
+        }
+        return null;
+      }
+    } catch (error) {
+      console.error('Error decoding JWT token:', error);
+      // fallback to localStorage userId
+      const storedUserId = localStorage.getItem('userId');
+      if (storedUserId) {
+        const id = Number(storedUserId);
+        return isNaN(id) ? null : id;
+      }
+      return null;
     }
   }
 }

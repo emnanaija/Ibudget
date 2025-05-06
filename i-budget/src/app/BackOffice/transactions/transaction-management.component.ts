@@ -32,6 +32,8 @@ export class TransactionManagementComponent implements OnInit, OnDestroy, AfterV
   isLoading: boolean = true;
 
   private routerEventsSubscription: Subscription | undefined;
+  isSidebarCollapsed = false;
+
 
   constructor(
     private userService: UserService,
@@ -150,5 +152,32 @@ export class TransactionManagementComponent implements OnInit, OnDestroy, AfterV
   }
 
   ngOnDestroy(): void {
+  }
+  toggleSidebar(): void {
+    console.log('Toggling sidebar, current state:', this.isSidebarCollapsed);
+    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    console.log('New sidebar state:', this.isSidebarCollapsed);
+
+    // Force change detection
+    setTimeout(() => {
+      const sidebar = document.querySelector('.sidebar');
+      const mainContent = document.querySelector('.main-content');
+
+      if (sidebar) {
+        if (this.isSidebarCollapsed) {
+          sidebar.classList.add('collapsed');
+        } else {
+          sidebar.classList.remove('collapsed');
+        }
+      }
+
+      if (mainContent) {
+        if (this.isSidebarCollapsed) {
+          mainContent.classList.add('sidebar-collapsed');
+        } else {
+          mainContent.classList.remove('sidebar-collapsed');
+        }
+      }
+    }, 0);
   }
 }

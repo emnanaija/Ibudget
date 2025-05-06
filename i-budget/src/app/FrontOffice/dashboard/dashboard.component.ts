@@ -15,12 +15,14 @@ import { MoneyGoComponent } from './components/money-go/money-go.component';
 import { SaveMoreComponent } from './components/save-more/save-more.component';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import {MonteCarloSimulationComponent} from '../../BackOffice/MonteCarloSim/monte-carlo-simulation.component';
+import { RouterModule } from '@angular/router';
 gsap.registerPlugin(ScrollToPlugin);
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    RouterModule,
     AnimatedBackgroundComponent, // Add the new background component
     StatsComponent,
     SavingsComponent,
