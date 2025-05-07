@@ -1,25 +1,30 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubscriptionService {
-  private baseUrl = environment.apiUrl + '/subscription';
+
+  private baseUrl = 'http://localhost:8090/subscription';
 
   constructor(private http: HttpClient) {}
 
-  paySubscription(payload: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/pay/${payload.sender.userId}`, payload);
-  }
-
+  // Update to expect a response as an object
   activatePremiumSubscription(userId: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/activate/${userId}`, {});
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<any>(`${this.baseUrl}/activate/${userId}`, {}, { headers });
   }
 
+  // You may need similar updates for other methods like cancelSubscription and paySubscription
   cancelPremiumSubscription(userId: number): Observable<any> {
-    return this.http.post(`${this.baseUrl}/cancel/${userId}`, {});
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<any>(`${this.baseUrl}/cancel/${userId}`, {}, { headers });
+  }
+
+  paySubscription(subscriptionPayload: any): Observable<any> {
+    const headers = new HttpHeaders().set('Content-Type', 'application/json');
+    return this.http.post<any>(`${this.baseUrl}/pay/${subscriptionPayload.sender.userId}`, subscriptionPayload, { headers });
   }
 }

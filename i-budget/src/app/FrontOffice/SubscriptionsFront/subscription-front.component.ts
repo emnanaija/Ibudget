@@ -18,6 +18,8 @@ export class SubscriptionFrontComponent implements OnInit {
   currentUserId: number | null = null;
   currentUserAccountType: string | null = null;
   currentUserRole: string | null = null;
+  isPremium = false;
+
   isLoading = false;
   message = '';
   errorMessage = '';
@@ -30,13 +32,30 @@ export class SubscriptionFrontComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.loadUserStatus();
+  }
+
+  loadUserStatus(): void {
+    this.errorMessage = '';
     const userId = this.authService.getCurrentUserId();
     if (userId) {
       this.currentUserId = userId;
-      this.userService.getUserById(userId).subscribe((user: any) => {
-        if (user) {
-          this.currentUserAccountType = user.accountType;
-          this.currentUserRole = user.role;
+      this.userService.getUserById(userId).subscribe({
+        next: (user: any) => {
+          if (user) {
+            this.currentUserAccountType = user.accountType;
+            this.currentUserRole = user.role;
+
+            this.isPremium = this.currentUserAccountType === 'Premium' ||
+              this.currentUserRole === 'ROLE_USER_PREMIUM' ||
+              this.currentUserRole === 'ROLE_USER_FREMIUM';
+
+            console.log('isPremiumUser:', this.isPremium, 'AccountType:', this.currentUserAccountType, 'Role:', this.currentUserRole);
+          }
+        },
+        error: (err) => {
+          console.error('Error fetching user data:', err);
+          this.errorMessage = 'Failed to load user data. Please refresh the page.';
         }
       });
     } else {
@@ -44,47 +63,8 @@ export class SubscriptionFrontComponent implements OnInit {
     }
   }
 
-  get isPremiumUser(): boolean {
-    const isPremium = this.currentUserAccountType === 'Premium' || this.currentUserRole === 'ROLE_USER_PREMIUM' || this.currentUserRole === 'ROLE_USER_FREMIUM';
-    console.log('isPremiumUser:', isPremium, 'AccountType:', this.currentUserAccountType, 'Role:', this.currentUserRole);
-    return isPremium;
-  }
-
   toggleSidebar(): void {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
-  }
-
-  paySubscription(): void {
-    if (!this.currentUserId) {
-      this.errorMessage = 'User session invalid. Please log in again.';
-      return;
-    }
-    this.isLoading = true;
-    this.message = '';
-    this.errorMessage = '';
-
-    const subscriptionPayload = {
-      amount: 10.0,
-      transactionType: 'SUBSCRIPTION',
-      status: 'PENDING',
-      refNum: 'SUB-' + new Date().getTime(),
-      descreption: 'Premium subscription payment',
-      feeAmount: 0,
-      sender: { userId: this.currentUserId },
-      receiver: { userId: 1 },
-      simCardAccount: { simCardId: this.currentUserId }
-    };
-
-    this.subscriptionService.paySubscription(subscriptionPayload).subscribe({
-      next: (res) => {
-        this.message = 'Subscription payment successful.';
-        this.isLoading = false;
-      },
-      error: (err) => {
-        this.errorMessage = 'Failed to pay subscription: ' + (err.error?.message || err.message || 'Unknown error');
-        this.isLoading = false;
-      }
-    });
   }
 
   activateSubscription(): void {
@@ -92,21 +72,36 @@ export class SubscriptionFrontComponent implements OnInit {
       this.errorMessage = 'User session invalid. Please log in again.';
       return;
     }
-    if (this.isPremiumUser) {
+    if (this.isPremium) {
       this.errorMessage = 'You already have a premium subscription.';
       return;
     }
+
     this.isLoading = true;
     this.message = '';
     this.errorMessage = '';
 
     this.subscriptionService.activatePremiumSubscription(this.currentUserId).subscribe({
       next: (res) => {
-        this.message = 'Premium subscription activated successfully.';
+        this.message = 'Premium subscription activated successfully!';
+        this.isPremium = true; // Update status
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Failed to activate subscription: ' + (err.error?.message || err.message || 'Unknown error');
+        console.error('Activation error:', err);
+
+        // Check if the error indicates user is already premium
+        if (err.error?.message?.includes('already on Premium') ||
+          err.message?.includes('already on Premium') ||
+          err.error?.includes('already on Premium')) {
+          // Update the UI to reflect premium status
+          this.message = 'You already have a premium subscription!';
+          this.isPremium = true;
+          // Refresh user data from server to ensure consistent state
+          this.loadUserStatus();
+        } else {
+          this.errorMessage = 'Failed to activate subscription: ' + (err.error?.message || err.message || 'Unknown error');
+        }
         this.isLoading = false;
       }
     });
@@ -117,6 +112,12 @@ export class SubscriptionFrontComponent implements OnInit {
       this.errorMessage = 'User session invalid. Please log in again.';
       return;
     }
+
+    if (!this.isPremium) {
+      this.errorMessage = 'You do not have an active premium subscription to cancel.';
+      return;
+    }
+
     this.isLoading = true;
     this.message = '';
     this.errorMessage = '';
@@ -124,13 +125,26 @@ export class SubscriptionFrontComponent implements OnInit {
     this.subscriptionService.cancelPremiumSubscription(this.currentUserId).subscribe({
       next: (res) => {
         this.message = 'Premium subscription canceled successfully.';
+        this.isPremium = false; // Update status
         this.isLoading = false;
       },
       error: (err) => {
-        this.errorMessage = 'Failed to cancel subscription: ' + (err.error?.message || err.message || 'Unknown error');
+        console.error('Cancellation error:', err);
+
+        // Check if the error indicates user is not premium
+        if (err.error?.message?.includes('not Premium') ||
+          err.message?.includes('not Premium') ||
+          err.error?.includes('not Premium')) {
+          // Update the UI to reflect non-premium status
+          this.message = 'Your account is already set to standard.';
+          this.isPremium = false;
+          // Refresh user data from server to ensure consistent state
+          this.loadUserStatus();
+        } else {
+          this.errorMessage = 'Failed to cancel subscription: ' + (err.error?.message || err.message || 'Unknown error');
+        }
         this.isLoading = false;
       }
     });
   }
-
 }
