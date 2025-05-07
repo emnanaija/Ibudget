@@ -1,0 +1,308 @@
+/* Updated subscription component styles for bigger, centered layout and responsive sidebar toggle matching create transaction component */
+
+.subscription-horizontal-card {
+  display: flex;
+  flex-direction: row;
+  background: linear-gradient(135deg, rgba(117, 87, 145, 0.5) 0%, rgba(148, 107, 173, 0.3) 20%, rgba(189, 160, 241, 0.1) 80%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(12px);
+  margin: 140px auto;
+  max-width: 1100px;
+  width: 95%;
+  transition: transform 0.3s ease-in-out;
+  justify-content: center;
+  align-items: center;
+}
+
+.card-image-container {
+  flex: 1;
+  background: linear-gradient(135deg, rgba(117, 87, 145, 0.2) 0%, rgba(148, 107, 173, 0.1) 20%, rgba(189, 160, 241, 0.1) 80%);
+  display: cover;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  width: 100%;
+  border-radius: 30px;
+  height: auto;
+  overflow: hidden;
+  min-height: auto;
+  box-shadow: 0 8px 20px rgba(101, 61, 255, 0.3);
+  transition: box-shadow 0.3s ease;
+}
+
+.card-image-container:hover {
+  box-shadow: 0 12px 30px rgba(101, 61, 255, 0.5);
+}
+
+.card-image-container img.side-image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  max-height: 450px;
+  border-radius: 20px;
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.6));
+  transition: transform 0.3s ease;
+}
+
+.card-image-container img.side-image:hover {
+  transform: scale(1.05);
+}
+
+.side-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  max-height: 620px;
+  border-radius: 20px;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+}
+
+.subscription-content {
+  flex: 2;
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.premium-badge {
+  font-size: 1.6rem;
+  color: gold;
+  margin-bottom: 1.5rem;
+}
+
+.actions-container {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+.primary-button, .secondary-button {
+  padding: 0.9rem 1.8rem;
+  font-size: 1.2rem;
+  border-radius: 18px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, mediumpurple, #5d53bf);
+  color: #001F2E;
+  border: none;
+}
+
+.primary-button:hover {
+  transform: scale(1.15);
+  box-shadow: 0 0 18px rebeccapurple;
+}
+
+.secondary-button {
+  background-color: transparent;
+  border: 2px solid #5d53bf;
+  color: mediumpurple;
+}
+
+.secondary-button:hover {
+  background-color: rgba(111, 255, 233, 0.2);
+  transform: scale(1.15);
+}
+
+.spinner {
+  display: inline-block;
+  width: 26px;
+  height: 26px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-right: 14px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.success-message {
+  background-color: rgba(40, 167, 69, 0.3);
+  border: 1px solid rgba(40, 167, 69, 0.6);
+  color: #a3e9b7;
+  padding: 18px 24px;
+  border-radius: 12px;
+  margin-bottom: 28px;
+  animation: fadeIn 0.5s ease;
+  font-family: 'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif;
+  font-size: 1.2rem;
+}
+
+.error-message {
+  background-color: rgba(220, 53, 69, 0.3);
+  border: 1px solid rgba(220, 53, 69, 0.6);
+  color: #f8a9b2;
+  padding: 18px 24px;
+  border-radius: 12px;
+  margin-bottom: 28px;
+  animation: fadeIn 0.5s ease;
+  font-family: 'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif;
+  font-size: 1.2rem;
+}
+
+.info-icon {
+  margin-right: 14px;
+  font-size: 1.6rem;
+}
+
+/* Sidebar toggle button styling like create-transaction */
+.sidebar-toggle {
+  position: fixed;
+  top: 15px;
+  left: 260px;
+  width: 50px;
+  height: 50px;
+  background: rgba(26, 31, 44, 0.9);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1200;
+  transition: all 0.3s ease;
+  color: var(--text-primary);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.sidebar-toggle:hover {
+  background: rgba(179, 0, 0, 0.35);
+  transform: scale(1.2);
+}
+
+.sidebar-toggle.collapsed {
+  left: 20px;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .subscription-horizontal-card {
+    flex-direction: column;
+    max-width: 92%;
+  }
+
+  .card-image-container {
+    padding: 1.2rem;
+    min-height: 360px;
+  }
+
+  .side-image {
+    max-height: 360px;
+  }
+
+  .subscription-content {
+    padding: 2.5rem 1.2rem;
+    text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .subscription-content {
+    padding: 1.8rem 1.2rem;
+  }
+
+  .actions-container {
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .primary-button, .secondary-button {
+    width: 100%;
+  }
+}
+
+/* Subscription title container and animations */
+.subscription-title-container {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.subscription-title {
+  font-family: 'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif;
+  font-weight: bold;
+  font-size: 3.2rem;
+  color: #5d53bf;
+  background: none;
+  background-clip: unset;
+  -webkit-background-clip: unset;
+  animation: none;
+  user-select: none;
+  text-transform: none;
+  letter-spacing: normal;
+  text-shadow: none;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes float-text {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.particles-container {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 10;
+}
+
+.particle {
+  font-size: 1.8rem;
+  opacity: 0.8;
+  animation: float-particle 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 3px rgba(101, 61, 255, 0.8));
+}
+
+.particle1 {
+  animation-delay: 0s;
+}
+
+.particle2 {
+  animation-delay: 0.8s;
+}
+
+.particle3 {
+  animation-delay: 1.6s;
+}
+
+.particle4 {
+  animation-delay: 2.4s;
+}
+
+.particle5 {
+  animation-delay: 3.2s;
+}
+
+@keyframes float-particle {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: translateY(-12px) scale(1.2);
+    opacity: 1;
+  }
+}

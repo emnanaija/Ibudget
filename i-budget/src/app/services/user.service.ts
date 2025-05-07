@@ -11,6 +11,8 @@ export interface User {
   lastName: string;
   email: string;
   simCardAccount: any;
+  accountType: string; // Added accountType
+  role: string; // Added role
   name?: string; // For backward compatibility
 }
 

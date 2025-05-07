@@ -9,7 +9,29 @@
         <circle cx="11" cy="11" r="8"></circle>
         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
       </svg>
-      <input type="text" class="search-input" placeholder="Search transactions, stats...">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search coins..."
+        (input)="onSearchInput($event)"
+        (blur)="onBlur()"
+      />
+      <div *ngIf="showSearchResultsDropdown && (searchResultsLocal ?? []).length > 0" class="search-results-dropdown">
+        <div *ngIf="searchResultsLocal">
+          <div *ngFor="let coin of searchResultsLocal" class="coin-card search-result-item" (click)="selectSearchResult(coin)">
+            <div class="coin-header">
+              <img [src]="coin?.image?.large || coin?.thumb || coin?.large || coin?.logo_url || coin?.small || coin?.imageUrl"
+                   [alt]="coin?.name"
+                   class="coin-image"
+                   *ngIf="coin?.image?.large || coin?.thumb || coin?.large || coin?.logo_url || coin?.small || coin?.imageUrl">
+              <div class="coin-titles">
+                <h3>{{ coin?.name }}</h3>
+                <span class="symbol">{{ coin?.symbol?.toUpperCase() }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="header-actions">
       <button class="notification-btn">

@@ -43,7 +43,7 @@ public class SubscriptionService {
         transaction.setStatus("COMPLETED");
         transaction.setTransactionDate(LocalDateTime.now());
         transaction.setSender(user);
-        transaction.setReceiver(userRepository.findById(2L).orElseThrow(() -> new RuntimeException("System user not found")));
+        transaction.setReceiver(userRepository.findById(1L).orElseThrow(() -> new RuntimeException("System user not found")));
         transaction.setSimCardAccount(senderAccount);
         transactionService.createSubscriptionTransaction(userId, PREMIUM_SUBSCRIPTION_FEE);
         user.setAccountType(TypeAccount.Premium);

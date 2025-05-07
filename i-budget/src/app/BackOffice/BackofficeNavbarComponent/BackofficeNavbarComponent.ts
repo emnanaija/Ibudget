@@ -42,6 +42,14 @@ import { CommonModule } from '@angular/common';
           </div>
           <span class="nav-text">Transactions</span>
         </a>
+
+        <a [routerLink]="['/investment']"
+           routerLinkActive="active"
+           class="nav-item">
+          <div class="icon-container">
+            <i class="fa-solid fa-coins nav-icon"></i> </div>
+          <span class="nav-text">Investissement</span>
+        </a>
       </div>
 
       <div class="navbar-footer">

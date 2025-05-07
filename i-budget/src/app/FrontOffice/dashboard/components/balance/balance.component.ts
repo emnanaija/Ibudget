@@ -37,7 +37,7 @@ export class BalanceComponent implements OnInit, AfterViewInit {
     simCardAccount: {
       balance: 10000
     }
-  };
+  } as User;
 
   constructor(private renderer: Renderer2, private userService: UserService) { }
 

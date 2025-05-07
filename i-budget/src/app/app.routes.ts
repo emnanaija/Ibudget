@@ -21,12 +21,33 @@ import {AuthGuard} from './services/User/auth.guard';
 import {ResetPasswordComponent} from './Pages/reset-password/reset-password.component';
 import {ApproveNewDeviceComponent} from './Pages/approve-new-device/approve-new-device.component';
 import {ActivateAccountComponent} from './Pages/activate-account/activate-account.component';
-import {CreateTransactionFrontComponent} from './FrontOffice/TransactionsFront/create-transaction-front.component';
+import { CreateTransactionFrontComponent } from './FrontOffice/TransactionsFront/create-transaction-front.component';
 import { AccountFrontComponent } from './FrontOffice/AccountsFront/account-front.component';
+import { SubscriptionFrontComponent } from './FrontOffice/SubscriptionsFront/subscription-front.component';
+import {CoinListComponent} from './FrontOffice/dashboard/components/investment/coin/coin-list/coin-list.component';
+import {
+  CoinDetailComponent
+} from './FrontOffice/dashboard/components/investment/coin/coin-detail/coin-detail.component';
+import {WalletComponent} from './FrontOffice/dashboard/components/investment/wallet/wallet.component';
+import {
+  PaymentSuccessComponent
+} from './FrontOffice/dashboard/components/investment/payment-success/payment-success.component';
+import {
+  InvestmentPortfolioComponent
+} from './FrontOffice/dashboard/components/investment/investment-portfolio/investment-portfolio.component';
+import {InvestmentComponent} from './BackOffice/investment/investment.component';
 
 // Import other components as needed
 
 export const routes: Routes = [
+  { path: 'investment', component: InvestmentComponent },
+  { path: 'coins', component: CoinListComponent },
+  { path: 'coins/details/:coinId', component: CoinDetailComponent },
+  { path: 'wallet', component: WalletComponent },
+  { path: 'payment-success', component: PaymentSuccessComponent },
+  { path: 'portfolio', component: InvestmentPortfolioComponent },
+
+  //----------------------------------------
   {
     path: 'signupRegister',
     component: SignupRegisterComponent,
@@ -36,11 +57,14 @@ export const routes: Routes = [
     path: 'transactionsFront',
     component: CreateTransactionFrontComponent
   },
- 
+  {
+    path: 'subscription',
+    component: SubscriptionFrontComponent
+  },
   {
     path: 'dashboardfront',
     component: DashboardComponent,
-    
+
   },
   {
     path: 'accountfront',

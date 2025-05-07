@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 ,"user/completeProfile", "user/sendResetEmail"
                                 ,"user/refreshToken"
                                 ,"user/deleteUserByAdmin","user/getDeletionRequestsAdmin","user/getUpdateRequestsAdmin","user/getAllUsersByAdmin","user/resetPassword", "connexionInfo/approveLogIn", "/oauth2/**", "user/sendResetPasswordRequest","/transaction/**",
-                                "/account/**","/recharge/**")
+                                "/account/**","/recharge/**","/subscription/**","/coins/**","/api/wallet/**","/order/**","/api/payment/**")
                         .permitAll()
                         .anyRequest().authenticated()))
                 .exceptionHandling(e -> e

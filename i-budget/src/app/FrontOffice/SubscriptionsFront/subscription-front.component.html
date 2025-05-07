@@ -1,0 +1,81 @@
+<div class="app-container">
+  <app-animated-background></app-animated-background>
+
+  <button class="sidebar-toggle" [class.collapsed]="isSidebarCollapsed" (click)="toggleSidebar()">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </button>
+
+  <app-sidebar
+    [isCollapsed]="isSidebarCollapsed"
+    (toggleSidebar)="toggleSidebar()"
+  ></app-sidebar>
+
+  <div class="main-content" [class.sidebar-collapsed]="isSidebarCollapsed">
+    <app-header [isSidebarCollapsed]="isSidebarCollapsed"></app-header>
+
+    <div class="subscription-horizontal-card">
+      <div class="card-image-container">
+        <img src="/Design_sans_titre__12_-removebg-preview.png" alt="Subscription Illustration" class="side-image" />
+      </div>
+
+      <div class="subscription-content">
+<div class="subscription-title-container">
+  <h2 class="subscription-title">Subscription Management</h2>
+<div class="particles-container">
+    <svg class="particle particle1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="24" height="24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3 10h1l1 2h13l1-2h1" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M5 10v10h14V10" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M9 10V6a3 3 0 016 0v4" />
+    </svg>
+    <svg class="particle particle2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="24" height="24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m8-9h1M3 12H2m15.364-6.364l.707.707M6.343 17.657l-.707.707m12.728 0l-.707.707M6.343 6.343l-.707-.707" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+    <svg class="particle particle3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="24" height="24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+    </svg>
+    <svg class="particle particle4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="24" height="24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 1.343-3 3 0 1.657 1.343 3 3 3s3-1.343 3-3c0-1.657-1.343-3-3-3z" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2m8-10h2M2 12H4m15.364-6.364l1.414 1.414M6.343 17.657l-1.414 1.414m12.728 0l-1.414-1.414M6.343 6.343L4.929 4.929" />
+    </svg>
+    <svg class="particle particle5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="24" height="24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+    </svg>
+  </div>
+</div>
+
+        <div *ngIf="isPremiumUser" class="premium-badge">
+          🌟 Premium User
+        </div>
+
+        <div *ngIf="message" class="success-message">
+          <span class="info-icon">✅</span> {{ message }}
+        </div>
+        <div *ngIf="errorMessage" class="error-message">
+          <span class="info-icon">❌</span> {{ errorMessage }}
+        </div>
+
+        <div class="actions-container">
+          <button class="primary-button" (click)="paySubscription()" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner"></span>
+            Pay Subscription
+          </button>
+
+          <button class="primary-button" (click)="activateSubscription()" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner"></span>
+            Activate Premium Subscription
+          </button>
+
+          <button class="secondary-button" (click)="cancelSubscription()" [disabled]="isLoading">
+            <span *ngIf="isLoading" class="spinner"></span>
+            Cancel Premium Subscription
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

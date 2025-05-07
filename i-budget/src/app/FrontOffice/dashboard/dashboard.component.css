@@ -685,8 +685,8 @@ app-transactions {
 
 /* Ensure app-balance has proper width */
 app-balance {
-  flex: 1.5;
-  min-width: 350px; /* Minimum width */
+  flex: 2.5;
+  min-width: 450px; /* Minimum width */
 }
 
 .card-container-wrapper {

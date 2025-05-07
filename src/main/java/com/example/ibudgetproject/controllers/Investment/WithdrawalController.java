@@ -26,19 +26,19 @@ public class WithdrawalController {
     @Autowired
     private WithdrawalService withdrawalService;
 
-   @PostMapping("/api/withdrawal/{amount}")
+    @PostMapping("/api/withdrawal/{amount}")
     public ResponseEntity<?> withdrawalRequest(
             @PathVariable Long amount,
             @RequestHeader("Authorization") String jwt) throws Exception {
 
-       User user = userService.findUserProfileByJwt(jwt);
-       Wallet userWallet = walletService.getUserWallet(user);
+        User user = userService.findUserProfileByJwt(jwt);
 
-       Withdrawal withdrawal = withdrawalService.requestWithdrawal(amount, user);
-       walletService.addBalance(userWallet, -withdrawal.getAmount());
 
-       return new ResponseEntity<>(withdrawal, HttpStatus.OK);
-   }
+        Withdrawal withdrawal = withdrawalService.requestWithdrawal(amount, user);
+
+
+        return new ResponseEntity<>(withdrawal, HttpStatus.OK);
+    }
 
 
     @PostMapping("/api/admin/withdrawal/{id}/proceed/{accept}")
@@ -47,20 +47,23 @@ public class WithdrawalController {
         Withdrawal withdrawal=withdrawalService.proceedWithWithdrawal(id,accept);
 
         Wallet userWallet=walletService.getUserWallet(user);
-        if (!accept){
-            walletService.addBalance(userWallet,withdrawal.getAmount());
+        if (accept){
+            walletService.addBalance(userWallet, -withdrawal.getAmount());
+        }else {
+            // Créditer le portefeuille de l'utilisateur si la demande est refusée.
+            walletService.addBalance(userWallet, withdrawal.getAmount());
         }
         return new ResponseEntity<>(withdrawal, HttpStatus.OK);
     }
 
-@GetMapping("/api/withdrawal")
+    @GetMapping("/api/withdrawal")
     public ResponseEntity<List<Withdrawal>> getWithdrawalHistory(
             @RequestHeader("Authorization")String jwt) throws Exception {
-    User user = userService.findUserProfileByJwt(jwt);
+        User user = userService.findUserProfileByJwt(jwt);
 
-    List<Withdrawal> withdrawals = withdrawalService.getUsersWithdrawalHistory(user);
-    return new ResponseEntity<>(withdrawals, HttpStatus.OK);
-}
+        List<Withdrawal> withdrawals = withdrawalService.getUsersWithdrawalHistory(user);
+        return new ResponseEntity<>(withdrawals, HttpStatus.OK);
+    }
     @GetMapping("/api/admin/withdrawal")
     public ResponseEntity<List<Withdrawal>> getAllWithdrawalRequest(
             @RequestHeader("Authorization")String jwt) throws Exception {

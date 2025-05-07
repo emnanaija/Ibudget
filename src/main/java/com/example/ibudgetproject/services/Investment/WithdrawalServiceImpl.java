@@ -39,7 +39,7 @@ public class WithdrawalServiceImpl implements WithdrawalService{
         if (accept){
             withdrawal1.setStatus(WithdrawalStatus.SUCESS);
         }else {
-            withdrawal1.setStatus(WithdrawalStatus.PENDING);
+            withdrawal1.setStatus(WithdrawalStatus.DECLINE);
         }
         return withdrawalRepository.save(withdrawal1);
     }

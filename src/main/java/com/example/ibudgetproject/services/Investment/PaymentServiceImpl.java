@@ -21,10 +21,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PaymentServiceImpl implements PaymentService {
-   @Autowired
+    @Autowired
     private PaymentServiceRepository paymentServiceRepository;
-       @Value("${stripe.api.key}")
-       private String stripeSecretKey;
+    @Value("${stripe.api.key}")
+    private String stripeSecretKey;
 
     @Value("${razorpay.api.key}")
     private String RazorApiKey;
@@ -33,11 +33,11 @@ public class PaymentServiceImpl implements PaymentService {
     private String RazorApiSecretKey;
     @Override
     public PaymentOrder createOrder(User user, Long amount, PaymentMethod paymentMethod) {
-       PaymentOrder paymentOrder=new PaymentOrder();
-       paymentOrder.setUser(user);
-       paymentOrder.setAmount(amount);
-       paymentOrder.setPaymentMethod(paymentMethod);
-       paymentOrder.setStatus(PaymentOrderStatus.PENDING);
+        PaymentOrder paymentOrder=new PaymentOrder();
+        paymentOrder.setUser(user);
+        paymentOrder.setAmount(amount);
+        paymentOrder.setPaymentMethod(paymentMethod);
+        paymentOrder.setStatus(PaymentOrderStatus.PENDING);
 
 
         return paymentServiceRepository.save(paymentOrder);
@@ -50,9 +50,9 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public Boolean ProceedPaymentOrder(PaymentOrder paymentOrder, String paymentId) throws RazorpayException {
-       if (paymentOrder.getStatus()==null){
-           paymentOrder.setStatus(PaymentOrderStatus.PENDING);
-       }
+        if (paymentOrder.getStatus()==null){
+            paymentOrder.setStatus(PaymentOrderStatus.PENDING);
+        }
         if (paymentOrder.getStatus().equals(PaymentOrderStatus.PENDING)){
             if (paymentOrder.getPaymentMethod().equals(PaymentMethod.RAZORPAY)){
                 RazorpayClient razorpay=new RazorpayClient(RazorApiKey,RazorApiSecretKey);
@@ -128,8 +128,8 @@ public class PaymentServiceImpl implements PaymentService {
         SessionCreateParams params=SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl("http://localhost:8082/wallet?order_id="+ orderId)
-                .setCancelUrl("http://localhost:8082/payment/cancel")
+                .setSuccessUrl("http://localhost:4200/payment-success?order_id=" + orderId) // URL modifiée
+                .setCancelUrl("http://localhost:4200/wallet")
                 .addLineItem(SessionCreateParams.LineItem.builder()
                         .setQuantity(1L)
                         .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
@@ -148,7 +148,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         Session session= Session.create(params);
 
-        System.out.println("session __________" + session);
+        System.out.println("session ________" + session);
         PaymentResponse res= new PaymentResponse();
         res.setPayment_url(session.getUrl());
         return res;
