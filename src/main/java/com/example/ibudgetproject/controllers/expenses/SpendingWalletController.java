@@ -1,5 +1,6 @@
 package com.example.ibudgetproject.controllers.expenses;
 
+import com.example.ibudgetproject.entities.Investment.Wallet;
 import com.example.ibudgetproject.entities.expenses.SpendingWallet;
 import com.example.ibudgetproject.services.expenses.SpendingWalletService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,14 @@ public class SpendingWalletController {
 
 
     }
+    @PutMapping("/{id}/activate")
+    public SpendingWallet activateWallet(@PathVariable Long id) {
+        return walletService.activateWallet(id);
+
+
+    }
+
+
     // Endpoint pour récupérer tous les wallets
     @GetMapping
     public ResponseEntity<List<SpendingWallet>> getAllWallets() {

@@ -42,4 +42,14 @@ public class SpendingWalletService {
         return walletRepository.findAll();
     }
 
+    public SpendingWallet activateWallet(Long id) {
+        Optional<SpendingWallet> walletOptional = walletRepository.findById(id);
+        if (walletOptional.isPresent()) {
+            SpendingWallet wallet = walletOptional.get();
+            wallet.setStatut(StatutWallet.ACTIF); // Changer le statut à INACTIF
+            return walletRepository.save(wallet);
+        } else {
+            throw new RuntimeException("Wallet non trouvé !");
+        }
+    }
 }

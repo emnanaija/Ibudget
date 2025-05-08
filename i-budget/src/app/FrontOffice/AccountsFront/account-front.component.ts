@@ -7,11 +7,12 @@ import { AnimatedBackgroundComponent } from '../dashboard/components/animated-ba
 import { SidebarComponent } from '../dashboard/components/sidebar/sidebar.component';
 import { HeaderComponent } from '../dashboard/components/header/header.component';
 import { gsap } from 'gsap';
+import {TutorialComponent} from '../tutorial.component';
 
 @Component({
   selector: 'app-account-front',
   standalone: true,
-  imports: [CommonModule, AnimatedBackgroundComponent, SidebarComponent, HeaderComponent, RechargeFormComponent],
+  imports: [CommonModule, AnimatedBackgroundComponent, SidebarComponent, HeaderComponent, RechargeFormComponent, TutorialComponent],
   templateUrl: './account-front.component.html',
   styleUrls: ['./account-front.component.css']
 })
@@ -26,6 +27,7 @@ export class AccountFrontComponent implements OnInit, AfterViewInit {
 
   coins = new Array(5);
   moneyArray = new Array(6);
+  isTutorialActive: boolean = false;
 
   @ViewChild('accountInfoSection', { static: false }) accountInfoSection?: ElementRef;
   @ViewChild('balanceAmount', { static: false }) balanceAmount?: ElementRef;
@@ -33,6 +35,7 @@ export class AccountFrontComponent implements OnInit, AfterViewInit {
   @ViewChild('rechargeSection', { static: false }) rechargeSection?: ElementRef;
   @ViewChild('walletAnimation', { static: false }) walletAnimation?: ElementRef;
   @ViewChild('cardElement', { static: false }) cardElement?: ElementRef;
+  @ViewChild('tutorialOverlay', { static: false }) tutorialOverlay?: ElementRef;
 
   constructor(
     private accountService: AccountService,
@@ -50,6 +53,57 @@ export class AccountFrontComponent implements OnInit, AfterViewInit {
       this.loadAccountInfo(userId);
     } else {
       this.errorMessage = 'Unable to identify current user. Please log in again.';
+    }
+  }
+  handleTutorialToggled(isActive: boolean): void {
+    this.isTutorialActive = isActive;
+
+    if (this.tutorialOverlay?.nativeElement) {  // Add this null check
+      if (isActive) {
+        gsap.to(this.tutorialOverlay.nativeElement, {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.out",
+          onStart: () => {
+            this.tutorialOverlay!.nativeElement.style.pointerEvents = 'all';
+          }
+        });
+      } else {
+        gsap.to(this.tutorialOverlay.nativeElement, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => {
+            this.tutorialOverlay!.nativeElement.style.pointerEvents = 'none';
+          }
+        });
+      }
+    }
+
+    // Optionally highlight different sections based on tutorial step
+    this.highlightSection(isActive ? 'account-info' : null);
+  }
+
+  highlightSection(sectionId: string | null): void {
+    // Remove any existing highlights
+    const existingHighlight = document.querySelector('.tutorial-highlight');
+    if (existingHighlight) {
+      existingHighlight.remove();
+    }
+
+    if (!sectionId) return;
+
+    // Create highlight for the specified section
+    const section = document.querySelector(`.${sectionId}`);
+    if (section) {
+      const rect = section.getBoundingClientRect();
+      const highlight = document.createElement('div');
+      highlight.classList.add('tutorial-highlight', 'active');
+      highlight.style.top = `${rect.top}px`;
+      highlight.style.left = `${rect.left}px`;
+      highlight.style.width = `${rect.width}px`;
+      highlight.style.height = `${rect.height}px`;
+      document.body.appendChild(highlight);
     }
   }
 

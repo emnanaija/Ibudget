@@ -1,6 +1,8 @@
 package com.example.ibudgetproject.services.expenses;
 
+import com.example.ibudgetproject.entities.expenses.Depense;
 import com.example.ibudgetproject.entities.expenses.ExpenseCategory;
+import com.example.ibudgetproject.repositories.expenses.DepenseRepository;
 import com.example.ibudgetproject.repositories.expenses.ExpenseCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +14,8 @@ public class ExpenseCategoryService {
 
     @Autowired
     private ExpenseCategoryRepository categoryRepository;
-
+    @Autowired
+    private DepenseRepository depenseRepository;
     // ✅ Ajouter une catégorie (montantDepensé est toujours 0.0)
     public ExpenseCategory addCategory(ExpenseCategory category) {
         if (category.getNom() == null || category.getNom().isEmpty()) {
@@ -21,7 +24,7 @@ public class ExpenseCategoryService {
         if (categoryRepository.existsByNom(category.getNom())) {
             throw new RuntimeException("Une catégorie avec ce nom existe déjà !");
         }
-        category.setMontantDepensé(0.0); // Assurer que ce champ est toujours 0
+        category.setMontantDepense(0.0); // Assurer que ce champ est toujours 0
         return categoryRepository.save(category);
     }
 
@@ -33,7 +36,7 @@ public class ExpenseCategoryService {
             ExpenseCategory category = existingCategory.get();
             category.setNom(categoryDetails.getNom());
             category.setDescription(categoryDetails.getDescription());
-            category.setBudgetAlloué(categoryDetails.getBudgetAlloué());
+            category.setBudgetAlloue(categoryDetails.getBudgetAlloue());
             // ❌ Ne pas modifier montantDepensé ici
             return categoryRepository.save(category);
         } else {
@@ -70,8 +73,8 @@ public class ExpenseCategoryService {
             Map<String, Object> categorieData = new HashMap<>();
             categorieData.put("id", categorie.getId());
             categorieData.put("nom", categorie.getNom());
-            categorieData.put("budget_alloué", categorie.getBudgetAlloué());
-            categorieData.put("montant_dépensé", categorie.getMontantDepensé());
+            categorieData.put("budget_alloué", categorie.getBudgetAlloue());
+            categorieData.put("montant_dépensé", categorie.getMontantDepense());
             categorieData.put("solde_restant", categorie.getSoldeRestant()); // Calcul automatique
 
             resultat.add(categorieData);
@@ -83,8 +86,8 @@ public class ExpenseCategoryService {
         List<Map<String, Object>> alertes = new ArrayList<>();
 
         for (ExpenseCategory categorie : categories) {
-            double budgetAlloue = categorie.getBudgetAlloué();
-            double montantDepense = categorie.getMontantDepensé();
+            double budgetAlloue = categorie.getBudgetAlloue();
+            double montantDepense = categorie.getMontantDepense();
 
             // Vérifier si 70% du budget est dépassé
             if (montantDepense >= 0.7 * budgetAlloue) {
@@ -99,6 +102,30 @@ public class ExpenseCategoryService {
             }
         }
         return alertes;
+    }
+    public List<Map<String, Object>> getCategoriesWithWallets() {
+        List<ExpenseCategory> categories = categoryRepository.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (ExpenseCategory category : categories) {
+            Map<String, Object> categoryData = new HashMap<>();
+            categoryData.put("id", category.getId());
+            categoryData.put("nom", category.getNom());
+
+            // Récupérer les dépenses associées à cette catégorie
+            List<Depense> depenses = depenseRepository.findByCategory(category);
+
+            // Ajouter les wallets associés
+            List<Long> walletIds = new ArrayList<>();
+            for (Depense depense : depenses) {
+                walletIds.add(depense.getWallet().getId());  // Récupérer l'ID du wallet de chaque dépense
+            }
+
+            categoryData.put("wallets", walletIds);  // Ajouter les IDs de wallet associés à la catégorie
+            result.add(categoryData);
+        }
+
+        return result;
     }
 
 }

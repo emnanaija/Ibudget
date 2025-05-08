@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins="http://localhost:4200")  // Assure-toi d'utiliser une origine valide
+
 @RequestMapping("/api/categories")
 public class ExpenseCategoryController {
 
@@ -58,5 +60,8 @@ public class ExpenseCategoryController {
     public List<Map<String, Object>> getAlertesDepenses() {
         return categoryService.getAlertesDepenses();
     }
-
+    @GetMapping("/categories-with-wallets")
+    public List<Map<String, Object>> getCategoriesWithWallets() {
+        return categoryService.getCategoriesWithWallets();
+    }
 }

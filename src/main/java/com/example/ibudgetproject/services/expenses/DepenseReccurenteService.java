@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,11 +74,11 @@ public class DepenseReccurenteService {
     }
 
 
-   //@Scheduled(cron = "0 * * * * ?") // Exécution toutes les minutes
+    //@Scheduled(cron = "0 * * * * ?") // Exécution toutes les minutes
     public void traiterDepensesRecurrentes() {
         logger.info("🔄 Job de traitement des dépenses récurrentes exécuté à {}", LocalDateTime.now());
 
-      //  LocalDate today = LocalDate.now();
+        //  LocalDate today = LocalDate.now();
         LocalDate today = LocalDate.of(2025, 5, 26); // Simule qu'on est en mai 2025
 
         List<DepenseReccurente> depensesRecurrentes = depenseRecurrenteRepository.findAll();
@@ -114,7 +115,7 @@ public class DepenseReccurenteService {
 
 
         // Appel de createDepenseManuelle pour gérer l'enregistrement et les mises à jour
-       depenseService.createDepenseManuelle(depense);
+        depenseService.createDepenseManuelle(depense);
     }
 
 
@@ -160,13 +161,55 @@ public class DepenseReccurenteService {
 
     //financal advice
 
+    // Récupérer les dépenses groupées par catégorie
     public Map<ExpenseCategory, List<DepenseReccurente>> getDepensesParCategorie() {
         List<DepenseReccurente> toutesLesDepenses = depenseRecurrenteRepository.findAll();
-
-        // Grouper les dépenses par catégorie
         return toutesLesDepenses.stream()
                 .collect(Collectors.groupingBy(DepenseReccurente::getCategorie));
     }
+
+    // Calculer le montant total des dépenses par catégorie
+    public List<Map<String, Object>> getDepenseTotalesParCategorie() {
+        Map<ExpenseCategory, List<DepenseReccurente>> groupedData = getDepensesParCategorie();
+
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        for (Map.Entry<ExpenseCategory, List<DepenseReccurente>> entry : groupedData.entrySet()) {
+            ExpenseCategory categorie = entry.getKey();
+            List<DepenseReccurente> depenses = entry.getValue();
+
+            // Calculer la somme des montants
+            double total = depenses.stream()
+                    .mapToDouble(depense -> depense.getMontant().doubleValue()) // Attention ici si montant est BigDecimal
+                    .sum();
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("categorie", categorie.getNom()); // ou getName(), selon ton modèle
+            map.put("montantTotal", total);
+            result.add(map);
+        }
+
+        return result;
+    }
+
+
+    public Map<Long, LocalDate> getProchainesDatesExecution() {
+        LocalDate today = LocalDate.now();
+        List<DepenseReccurente> depenses = depenseRecurrenteRepository.findAll();
+
+        Map<Long, LocalDate> result = new HashMap<>();
+
+        for (DepenseReccurente depense : depenses) {
+            LocalDate prochaineDate = depense.getDateDebut();
+            while (!prochaineDate.isAfter(today)) {
+                prochaineDate = calculerProchaineDate(depense, prochaineDate);
+            }
+            result.put(depense.getId(), prochaineDate);
+        }
+
+        return result;
+    }
+
 }
 
 

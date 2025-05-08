@@ -2,6 +2,7 @@ package com.example.ibudgetproject.entities.expenses;
 
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,17 +29,18 @@ public class ExpenseCategory {
 
     private String description; // Description facultative de la catégorie
 
-    @Column(nullable = false)
-    private double budgetAlloué; // Budget alloué pour cette catégorie
+    @Column(name = "budget_alloué") // Nom dans la base
+    private double budgetAlloue;    // Nom dans l'entité Java
 
     @Column(name = "montantDepensé", nullable = false)
-    private double montantDepensé = 0.0;
+    private double montantDepense = 0.0;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
 
     private List<Depense> depenses;
     public double getSoldeRestant() {
-        return budgetAlloué - montantDepensé;
+        return budgetAlloue - montantDepense;
     }
     @Override
     public String toString() {

@@ -1,6 +1,9 @@
 <div class="app-container">
   <app-animated-background></app-animated-background>
 
+  <!-- Tutorial overlay -->
+  <div class="tutorial-overlay" #tutorialOverlay [class.active]="isTutorialActive"></div>
+
   <button class="sidebar-toggle" (click)="toggleSidebar()" [class.collapsed]="isSidebarCollapsed">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <line x1="3" y1="12" x2="21" y2="12"></line>
@@ -52,6 +55,52 @@
       </div>
     </div>
   </div>
-  <img src="7EBE508E-2BC1-4EA0-96BB-A7D7853871C3-removebg-preview (1).png" alt="Extreme Right Image" class="extreme-right-image" />
 
+  <!-- Add the tutorial character component -->
+  <div class="tutorial-character-container">
+    <app-tutorial
+      [characterImageSrc]="'7EBE508E-2BC1-4EA0-96BB-A7D7853871C3-removebg-preview (1).png'"
+      (tutorialToggled)="handleTutorialToggled($event)"
+    ></app-tutorial>
+  </div>
+
+  <!-- Additional celebration styles for recharge animation -->
+  <style>
+    @keyframes float {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0); }
+    }
+
+    .money-burst {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,215,0,0.8) 0%, rgba(255,215,0,0) 70%);
+      transform: translate(-50%, -50%);
+      z-index: 100;
+    }
+
+    .confetti {
+      position: fixed;
+      top: -20px;
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      z-index: 2500;
+    }
+
+    .added-amount {
+      position: absolute;
+      right: 5px;
+      color: #4caf50;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-shadow: 0 0 5px rgba(0,0,0,0.3);
+      z-index: 10;
+    }
+  </style>
 </div>

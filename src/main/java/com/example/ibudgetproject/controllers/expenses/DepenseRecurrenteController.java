@@ -12,12 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/depenses-recurrentes")
 @RequiredArgsConstructor
+@CrossOrigin(origins="http://localhost:4200")  // Assure-toi d'utiliser une origine valide
 public class DepenseRecurrenteController {
 
     private final DepenseReccurenteService depenseRecurrenteService;
@@ -86,5 +88,14 @@ public class DepenseRecurrenteController {
         // Retourner les recommandations dans la réponse HTTP
         return ResponseEntity.ok(recommendations);
     }
-
+    @GetMapping("/totales-par-categorie")
+    public ResponseEntity<List<Map<String, Object>>> getDepenseTotalesParCategorie() {
+        List<Map<String, Object>> result = depenseRecurrenteService.getDepenseTotalesParCategorie();
+        return ResponseEntity.ok(result);
+    }
+    // 🔁 Endpoint pour obtenir les prochaines dates d'exécution
+    @GetMapping("/prochaines-executions")
+    public Map<Long, LocalDate> getProchainesExecutions() {
+        return depenseRecurrenteService.getProchainesDatesExecution();
+    }
 }

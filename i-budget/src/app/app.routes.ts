@@ -36,10 +36,60 @@ import {
   InvestmentPortfolioComponent
 } from './FrontOffice/dashboard/components/investment/investment-portfolio/investment-portfolio.component';
 import {InvestmentComponent} from './BackOffice/investment/investment.component';
+import {
+  PageDesDepensesComponent
+} from './FrontOffice/dashboard/components/pages/page-des-depenses/page-des-depenses.component';
+import {
+  ExpenseCategoryPageComponent
+} from './FrontOffice/dashboard/components/pages/expense-categories/expense-category-page/expense-category-page.component';
+import {FetePageComponent} from './FrontOffice/dashboard/components/pages/fete-page/fete-page.component';
+import {
+  PageDepensesReccurentesComponent
+} from './FrontOffice/dashboard/components/pages/depenses-reccurentes/page-depenses-reccurentes/page-depenses-reccurentes.component';
+import {PageDesDepensesComponentback} from './BackOffice/pages/page-des-depenses/page-des-depenses.component';
+import {
+  PageDepensesReccurentesComponentback
+} from './BackOffice/pages/depenses-reccurentes/page-depenses-reccurentes/page-depenses-reccurentes.component';
+import {
+  ExpenseCategoryPageComponentback
+} from './BackOffice/pages/expense-categories/expense-category-page/expense-category-page.component';
+import {FetePageComponentback} from './BackOffice/pages/fete-page/fete-page.component';
+import {WalletPageComponent} from './BackOffice/pages/Expensewallet/wallet-page/wallet-page.component';
+import {
+  PagepredictionComponent
+} from './FrontOffice/dashboard/components/pages/predictioncateg/pageprediction/pageprediction.component';
+import {
+  CompteEpargnePageComponent
+} from './Pages/saving/compte-epargne/compte-epargne-page/compte-epargne-page.component';
+import {DepotPageComponent} from './Pages/saving/depot-page/depot-page.component';
+import {ObjectifPageComponent} from './Pages/saving/objectif-page/objectif-page.component';
+import {CompteEpargneListComponent} from './BackOffice/saving/compte-epargne-list/compte-epargne-list.component';
+import {ScheduledTransactionComponent} from './FrontOffice/ScheduledTransactions/scheduled-transaction.component';
 
 // Import other components as needed
 
 export const routes: Routes = [
+
+  //routes amine
+  {path: 'saving', component: CompteEpargnePageComponent},
+  {path: 'depot', component:DepotPageComponent},
+  {path:'objectif', component:ObjectifPageComponent},
+  {path:'savingAd',component:CompteEpargneListComponent},
+
+  // routes emna
+  //frontend
+  { path: 'depenses', component: PageDesDepensesComponent },
+  { path: 'ajoutercategorie', component: ExpenseCategoryPageComponent },
+  { path: 'fetes', component: FetePageComponent },  // Définir la route pour la page des fêtes
+  { path: 'depensesReccurentes', component:PageDepensesReccurentesComponent  },  // Définir la route pour la page des fêtes
+  //backend
+  { path: 'depensesReccurentesback', component:PageDepensesReccurentesComponentback  } , // Définir la route pour la page des fêtes
+  { path: 'depensesback', component: PageDesDepensesComponentback },
+  { path: 'ajoutercategorieback', component: ExpenseCategoryPageComponentback },
+  { path: 'fetesback', component: FetePageComponentback },
+  { path: 'wallets', component: WalletPageComponent },
+  //prediction
+  { path: 'predict', component: PagepredictionComponent },
   { path: 'investment', component: InvestmentComponent },
   { path: 'coins', component: CoinListComponent },
   { path: 'coins/details/:coinId', component: CoinDetailComponent },
@@ -57,6 +107,15 @@ export const routes: Routes = [
     path: 'transactionsFront',
     component: CreateTransactionFrontComponent
   },
+  {
+    path: 'Scheduled',
+    component: ScheduledTransfersComponent
+  },
+  {
+    path: 'ScheduledFront',
+    component: ScheduledTransactionComponent
+  },
+
   {
     path: 'subscription',
     component: SubscriptionFrontComponent
