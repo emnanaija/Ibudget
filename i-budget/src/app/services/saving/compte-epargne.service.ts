@@ -11,7 +11,7 @@ import { TauxInteret } from '../../Models/Saving/taux-interet.model';
   providedIn: 'root'
 })
 export class CompteEpargneService {
-  private apiUrl = 'http://localhost:8080/compte-epargne';
+  private apiUrl = 'http://localhost:80/compte-epargne';
 
   constructor(
     private http: HttpClient,
@@ -22,7 +22,7 @@ export class CompteEpargneService {
   private getAuthHeaders(): HttpHeaders {
     let token: string | null = null;
     if (isPlatformBrowser(this.platformId)) {
-      token = localStorage.getItem('auth_token');
+      token = localStorage.getItem('accessToken');
     }
     return new HttpHeaders({
       'Authorization': `Bearer ${token || ''}`,

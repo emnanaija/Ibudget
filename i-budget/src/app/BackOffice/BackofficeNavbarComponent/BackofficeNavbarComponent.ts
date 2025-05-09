@@ -50,6 +50,49 @@ import { CommonModule } from '@angular/common';
             <i class="fa-solid fa-coins nav-icon"></i> </div>
           <span class="nav-text">Investissement</span>
         </a>
+
+        <a [routerLink]="['/depensesReccurentesback']"
+           routerLinkActive="active"
+           class="nav-item">
+          <div class="icon-container">
+            <i class="fa-solid fa-calendar-check nav-icon"></i>
+          </div>
+          <span class="nav-text">Recurring Expenses</span>
+        </a>
+
+
+        <a [routerLink]="['/fetesback']"
+           routerLinkActive="active"
+           class="nav-item">
+          <div class="icon-container">
+            <i class="fa-solid fa-gift nav-icon"></i> </div>
+          <span class="nav-text">Events</span>
+        </a>
+
+        <a [routerLink]="['/depensesback']"
+           routerLinkActive="active"
+           class="nav-item">
+          <div class="icon-container">
+            <i class="fa-solid fa-receipt nav-icon"></i>
+          </div>
+          <span class="nav-text">Expenses</span>
+        </a>
+        <a [routerLink]="['/wallets']"
+           routerLinkActive="active"
+           class="nav-item">
+          <div class="icon-container">
+            <i class="fa-solid fa-receipt nav-icon"></i>
+          </div>
+          <span class="nav-text">Expenses</span>
+        </a>
+        <a [routerLink]="['/savingAd']"
+           routerLinkActive="active"
+           class="nav-item">
+          <div class="icon-container">
+            <i class="fa-solid fa-receipt nav-icon"></i>
+          </div>
+          <span class="nav-text">Expenses</span>
+        </a>
       </div>
 
       <div class="navbar-footer">
@@ -71,7 +114,7 @@ import { CommonModule } from '@angular/common';
       left: 0;
       height: 100vh;
       backdrop-filter: blur(15px);
-      width: 100px;
+      width: 90px;
       background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
       color: white;
       display: flex;
@@ -91,8 +134,9 @@ import { CommonModule } from '@angular/common';
 
     .navbar-header {
       padding: 0 15px;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       width: 100%;
+      flex-shrink: 0;
     }
 
     .logo {
@@ -136,13 +180,36 @@ import { CommonModule } from '@angular/common';
       display: flex;
       flex-direction: column;
       align-items: center;
+      overflow-y: auto;
+      padding: 0 5px;
+      /* Styling the scrollbar */
+      scrollbar-width: thin;
+      scrollbar-color: rgba(96, 165, 250, 0.3) transparent;
+    }
+
+    /* For WebKit browsers (Chrome, Safari) */
+    .navbar-links::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .navbar-links::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .navbar-links::-webkit-scrollbar-thumb {
+      background-color: rgba(96, 165, 250, 0.3);
+      border-radius: 20px;
+    }
+
+    .navbar-links::-webkit-scrollbar-thumb:hover {
+      background-color: rgba(96, 165, 250, 0.5);
     }
 
     .nav-item {
       display: flex;
       align-items: center;
-      padding: 15px;
-      margin: 8px 0;
+      padding: 12px;
+      margin: 6px 0;
       width: 90%;
       border-radius: 12px;
       font-family: "Century Gothic", sans-serif;
@@ -151,6 +218,7 @@ import { CommonModule } from '@angular/common';
       transition: all 0.3s ease;
       position: relative;
       overflow: hidden;
+      flex-shrink: 0;
     }
 
     .nav-item:hover {
@@ -180,18 +248,19 @@ import { CommonModule } from '@angular/common';
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
+      width: 36px;
+      height: 36px;
       border-radius: 10px;
       margin-right: 15px;
       background: rgba(255, 255, 255, 0.08);
       transition: all 0.3s ease;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      flex-shrink: 0;
     }
 
     .backoffice-navbar:not(:hover) .icon-container {
-      width: 45px;
-      height: 45px;
+      width: 40px;
+      height: 40px;
       background: linear-gradient(135deg, rgba(96, 165, 250, 0.1), rgba(139, 92, 246, 0.1));
       border-radius: 12px;
       margin: 0 auto;
@@ -209,7 +278,7 @@ import { CommonModule } from '@angular/common';
     }
 
     .nav-icon, .logout-icon {
-      font-size: 18px;
+      font-size: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -219,7 +288,7 @@ import { CommonModule } from '@angular/common';
 
     .backoffice-navbar:not(:hover) .nav-icon,
     .backoffice-navbar:not(:hover) .logout-icon {
-      font-size: 20px;
+      font-size: 18px;
       color: #60a5fa;
     }
 
@@ -243,12 +312,15 @@ import { CommonModule } from '@angular/common';
       transform: translateX(-10px);
       transition: opacity 0.3s ease, transform 0.3s ease;
       font-weight: 500;
+      font-size: 14px;
     }
 
     .navbar-footer {
       margin-top: auto;
       width: 100%;
-      padding: 20px 15px;
+      padding: 15px;
+      flex-shrink: 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .logout-btn {
@@ -272,6 +344,23 @@ import { CommonModule } from '@angular/common';
 
     .logout-btn:hover .logout-icon {
       color: #f87171;
+    }
+
+    /* Media query for shorter screens */
+    @media screen and (max-height: 600px) {
+      .navbar-header {
+        margin-bottom: 10px;
+      }
+
+      .nav-item {
+        padding: 8px;
+        margin: 4px 0;
+      }
+
+      .icon-container {
+        width: 32px;
+        height: 32px;
+      }
     }
   `]
 })

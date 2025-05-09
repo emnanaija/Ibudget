@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+
+// Fix 1: Correct the import statement and remove the random 'z'
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,9 +15,15 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 
+// Dashboard components
 import { AnimatedBackgroundComponent } from '../dashboard/components/animated-background/animated-background.component';
 import { SidebarComponent } from '../dashboard/components/sidebar/sidebar.component';
 import { HeaderComponent } from '../dashboard/components/header/header.component';
+import {TransactionTutorialComponent} from '../transaction-tutorial.component';
+import {TutorialComponent} from '../tutorial.component';
+import {gsap} from 'gsap';
+
+// Fix 2: Import the TransactionTutorialComponent
 
 @Component({
   selector: 'app-scheduled-transaction',
@@ -26,7 +34,10 @@ import { HeaderComponent } from '../dashboard/components/header/header.component
     FullCalendarModule,
     AnimatedBackgroundComponent,
     SidebarComponent,
-    HeaderComponent
+    HeaderComponent,
+    TransactionTutorialComponent,
+    TutorialComponent,
+    // Fix 3: Add the TransactionTutorialComponent to imports
   ],
   templateUrl: './scheduled-transaction.component.html',
   styleUrls: ['./scheduled-transaction.component.css']
@@ -37,6 +48,12 @@ export class ScheduledTransactionComponent implements OnInit {
   users: any[] = [];
   scheduledTransactions: any[] = [];
   calendarEvents: EventInput[] = [];
+  isTutorialActive: boolean = false;
+  @ViewChild('tutorialOverlay', { static: false }) tutorialOverlay?: ElementRef;
+
+  // Add tutorial properties
+  showTutorial = true;
+  tutorialCharacterSrc = 'assets/images/tutorial-character.png';
 
   // Animation state: 'hidden' (form showing), 'animating' (cards moving), 'complete' (receipt showing)
   animationState: 'hidden' | 'animating' | 'complete' = 'hidden';
@@ -52,11 +69,48 @@ export class ScheduledTransactionComponent implements OnInit {
     },
     eventClick: this.handleEventClick.bind(this),
     dateClick: this.handleDateClick.bind(this),
-    editable: true,
+    editable: false, // Set to false to prevent users from dragging events
     selectable: true,
     weekends: true,
     events: this.calendarEvents,
     eventColor: '#4caf50',
+    eventTimeFormat: {
+      hour: '2-digit',
+      minute: '2-digit',
+      meridiem: 'short'
+    },
+    eventDidMount: (info) => {
+      // Add tooltip with more details
+      const tooltip = document.createElement('div');
+      tooltip.className = 'calendar-tooltip';
+      tooltip.innerHTML = `
+        <div><strong>Amount:</strong> $${info.event.extendedProps['amount']}</div>
+        <div><strong>Type:</strong> ${info.event.extendedProps['type']}</div>
+        <div><strong>Ref:</strong> ${info.event.extendedProps['refNum']}</div>
+        ${info.event.extendedProps['description'] ? 
+          `<div><strong>Description:</strong> ${info.event.extendedProps['description']}</div>` : ''}
+      `;
+      
+      // Show tooltip on hover
+      info.el.addEventListener('mouseover', () => {
+        document.body.appendChild(tooltip);
+        const rect = info.el.getBoundingClientRect();
+        tooltip.style.position = 'absolute';
+        tooltip.style.top = `${rect.bottom + window.scrollY + 5}px`;
+        tooltip.style.left = `${rect.left + window.scrollX}px`;
+        tooltip.style.zIndex = '1000';
+        tooltip.style.backgroundColor = 'white';
+        tooltip.style.padding = '8px';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+      });
+      
+      info.el.addEventListener('mouseout', () => {
+        if (document.body.contains(tooltip)) {
+          document.body.removeChild(tooltip);
+        }
+      });
+    },
     height: 'auto'
   };
 
@@ -131,50 +185,65 @@ export class ScheduledTransactionComponent implements OnInit {
     }
   }
 
+  // Add tutorial handler method
+  toggleTutorial(): void {
+    this.showTutorial = !this.showTutorial;
+  }
+
+  // Handle tutorial events
+
+
   loadScheduledTransactions(): void {
     if (!this.currentUserId) return;
 
-    // Here you would call a service method to get scheduled transactions
-    // For now, let's simulate it with sample data
-    // In a real implementation, you'd have an endpoint like:
-    // this.transactionService.getScheduledTransactions(this.currentUserId).subscribe(...)
+    // First try to load from localStorage
+    const savedTransactions = this.getSavedTransactions();
+    
+    if (savedTransactions && savedTransactions.length > 0) {
+      // Use saved transactions if available
+      this.scheduledTransactions = savedTransactions;
+      console.log('Loaded saved transactions:', savedTransactions);
+    } else {
+      // Sample data - replace with API call
+      const sampleTransactions = [
+        {
+          idTransaction: 1001,
+          amount: 150.00,
+          transactionType: 'Transfer',
+          status: 'SCHEDULED',
+          refNum: 'SCH-20250310-1430',
+          descreption: 'Monthly rent payment',
+          scheduledTime: '2025-05-10T14:30:00',
+          feeAmount: 0.75,
+          sender: { userId: this.currentUserId },
+          receiver: { userId: 4, firstName: 'Jane', lastName: 'Doe' }
+        },
+        {
+          idTransaction: 1002,
+          amount: 50.00,
+          transactionType: 'PAYMENT',
+          status: 'SCHEDULED',
+          refNum: 'SCH-20250315-0900',
+          descreption: 'Internet bill',
+          scheduledTime: '2025-05-15T09:00:00',
+          feeAmount: 0.50,
+          sender: { userId: this.currentUserId },
+          receiver: { userId: 5, firstName: 'John', lastName: 'Smith' }
+        }
+      ];
 
-    // Sample data - replace with API call
-    const sampleTransactions = [
-      {
-        idTransaction: 1001,
-        amount: 150.00,
-        transactionType: 'Transfer',
-        status: 'SCHEDULED',
-        refNum: 'SCH-20250310-1430',
-        descreption: 'Monthly rent payment',
-        scheduledTime: '2025-03-10T14:30:00',
-        feeAmount: 0.75,
-        sender: { userId: this.currentUserId },
-        receiver: { userId: 4, firstName: 'Jane', lastName: 'Doe' }
-      },
-      {
-        idTransaction: 1002,
-        amount: 50.00,
-        transactionType: 'PAYMENT',
-        status: 'SCHEDULED',
-        refNum: 'SCH-20250315-0900',
-        descreption: 'Internet bill',
-        scheduledTime: '2025-03-15T09:00:00',
-        feeAmount: 0.50,
-        sender: { userId: this.currentUserId },
-        receiver: { userId: 5, firstName: 'John', lastName: 'Smith' }
-      }
-    ];
-
-    this.scheduledTransactions = sampleTransactions;
+      this.scheduledTransactions = sampleTransactions;
+      // Save sample transactions to localStorage
+      this.saveTransactions(this.scheduledTransactions);
+    }
 
     // Convert transactions to calendar events
-    this.calendarEvents = sampleTransactions.map(transaction => {
+    this.calendarEvents = this.scheduledTransactions.map(transaction => {
       return {
         id: transaction.idTransaction.toString(),
-        title: `$${transaction.amount} to User #${transaction.receiver.userId}`,
+        title: `$${transaction.amount} - ${transaction.transactionType}`,
         start: transaction.scheduledTime,
+        allDay: false,
         extendedProps: {
           refNum: transaction.refNum,
           description: transaction.descreption,
@@ -188,6 +257,31 @@ export class ScheduledTransactionComponent implements OnInit {
 
     // Update calendar with events
     this.calendarOptions.events = this.calendarEvents;
+    console.log('Calendar events updated:', this.calendarEvents);
+  }
+
+  // Add methods for localStorage persistence
+  private getSavedTransactions(): any[] {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const key = `scheduledTransactions_${this.currentUserId}`;
+      const savedData = localStorage.getItem(key);
+      if (savedData) {
+        try {
+          return JSON.parse(savedData);
+        } catch (e) {
+          console.error('Error parsing saved transactions:', e);
+          return [];
+        }
+      }
+    }
+    return [];
+  }
+
+  private saveTransactions(transactions: any[]): void {
+    if (typeof window !== 'undefined' && window.localStorage && this.currentUserId) {
+      const key = `scheduledTransactions_${this.currentUserId}`;
+      localStorage.setItem(key, JSON.stringify(transactions));
+    }
   }
 
   handleEventClick(info: any): void {
@@ -334,29 +428,48 @@ export class ScheduledTransactionComponent implements OnInit {
           this.successMessage = `Transaction scheduled successfully for ${scheduledTime.toLocaleString()}! Reference: ${this.transaction.refNum}`;
           this.isSubmitting = false;
 
-          // Add the new transaction to the calendar
+          // Create a complete transaction object with all required fields
+          const newTransaction = {
+            idTransaction: response.idTransaction || Date.now(),
+            amount: this.transaction.amount,
+            transactionType: this.transaction.transactionType,
+            status: 'SCHEDULED',
+            refNum: this.transaction.refNum,
+            descreption: this.transaction.descreption,
+            scheduledTime: scheduledTime.toISOString(),
+            feeAmount: this.transaction.feeAmount,
+            sender: { userId: this.currentUserId },
+            receiver: this.transaction.receiver
+          };
+
+          // Add the new event to the calendar
           const newEvent = {
-            id: (response.idTransaction || Date.now()).toString(),
-            title: `$${response.amount} to User #${response.receiver.userId}`,
-            start: scheduledTime.toISOString(),
+            id: newTransaction.idTransaction.toString(),
+            title: `$${newTransaction.amount} - ${newTransaction.transactionType}`,
+            start: newTransaction.scheduledTime,
+            allDay: false,
             extendedProps: {
-              refNum: response.refNum,
-              description: response.descreption,
-              amount: response.amount,
-              type: response.transactionType,
-              receiver: response.receiver,
-              fee: response.feeAmount
+              refNum: newTransaction.refNum,
+              description: newTransaction.descreption,
+              amount: newTransaction.amount,
+              type: newTransaction.transactionType,
+              receiver: newTransaction.receiver,
+              fee: newTransaction.feeAmount
             }
           };
 
+          // Add the new event to the calendar
           this.calendarEvents = [...this.calendarEvents, newEvent];
           this.calendarOptions.events = this.calendarEvents;
 
+          // Add to scheduledTransactions array
+          this.scheduledTransactions.push(newTransaction);
+          
+          // Save updated transactions to localStorage
+          this.saveTransactions(this.scheduledTransactions);
+
           // Start the animation sequence
           this.startTransactionAnimation();
-
-          // Reload scheduled transactions
-          this.loadScheduledTransactions();
         },
         error: (error) => {
           console.error('Error scheduling transaction:', error);
@@ -407,5 +520,55 @@ export class ScheduledTransactionComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
     this.feeNotification = false;
+  }
+  handleTutorialToggled(isActive: boolean): void {
+    this.isTutorialActive = isActive;
+
+    if (this.tutorialOverlay?.nativeElement) {  // Add this null check
+      if (isActive) {
+        gsap.to(this.tutorialOverlay.nativeElement, {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.out",
+          onStart: () => {
+            this.tutorialOverlay!.nativeElement.style.pointerEvents = 'all';
+          }
+        });
+      } else {
+        gsap.to(this.tutorialOverlay.nativeElement, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => {
+            this.tutorialOverlay!.nativeElement.style.pointerEvents = 'none';
+          }
+        });
+      }
+    }
+
+    // Optionally highlight different sections based on tutorial step
+    this.highlightSection(isActive ? 'account-info' : null);
+  }
+  highlightSection(sectionId: string | null): void {
+    // Remove any existing highlights
+    const existingHighlight = document.querySelector('.tutorial-highlight');
+    if (existingHighlight) {
+      existingHighlight.remove();
+    }
+
+    if (!sectionId) return;
+
+    // Create highlight for the specified section
+    const section = document.querySelector(`.${sectionId}`);
+    if (section) {
+      const rect = section.getBoundingClientRect();
+      const highlight = document.createElement('div');
+      highlight.classList.add('tutorial-highlight', 'active');
+      highlight.style.top = `${rect.top}px`;
+      highlight.style.left = `${rect.left}px`;
+      highlight.style.width = `${rect.width}px`;
+      highlight.style.height = `${rect.height}px`;
+      document.body.appendChild(highlight);
+    }
   }
 }

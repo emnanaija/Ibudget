@@ -1,6 +1,7 @@
 <!-- Main App Container -->
 <div class="app-container">
   <app-animated-background></app-animated-background>
+  <div class="tutorial-overlay" #tutorialOverlay [class.active]="isTutorialActive"></div>
 
   <!-- Sidebar Toggle Button -->
   <button class="sidebar-toggle" [class.collapsed]="isSidebarCollapsed" (click)="toggleSidebar()">
@@ -27,28 +28,29 @@
       <p>Schedule transactions for future dates and manage your planned payments</p>
     </div>
 
-    <!-- Calendar and Form Layout -->
-    <div class="scheduled-transaction-layout">
-      <!-- Calendar container on the left -->
-      <div class="calendar-container">
-        <div class="calendar-card">
-          <div class="calendar-header">
-            <h3>Your Scheduled Transactions</h3>
-            <div class="calendar-legend">
-              <div class="legend-item">
-                <span class="legend-dot"></span>
-                <span>Scheduled Transaction</span>
+      <!-- Calendar and Form Layout -->
+      <div class="scheduled-transaction-layout">
+        <!-- Calendar container on the left -->
+        <div class="calendar-container">
+          <div class="calendar-card">
+            <div class="calendar-header">
+              <h3>Your Scheduled Transactions</h3>
+              <div class="calendar-legend">
+                <div class="legend-item">
+                  <span class="legend-dot"></span>
+                  <span>Scheduled Transaction</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="calendar-body">
-            <full-calendar [options]="calendarOptions"></full-calendar>
-          </div>
-          <div class="calendar-footer">
-            <p>💡 <strong>Tip:</strong> Click on a date to schedule a transaction or click on an event to view details.</p>
+            <div class="calendar-body">
+              <full-calendar [options]="calendarOptions"></full-calendar>
+            </div>
+            <div class="calendar-footer">
+              <p>💡 <strong>Tip:</strong> Click on a date to schedule a transaction or click on an event to view details.</p>
+            </div>
           </div>
         </div>
-      </div>
+
 
       <!-- Event details popup -->
       <div class="event-details-popup" *ngIf="isViewingEvent && selectedEvent">
@@ -56,23 +58,15 @@
           <button class="close-button" (click)="closeEventDetails()">✖</button>
           <h3>Scheduled Transaction Details</h3>
 
-          <div class="event-details">
-            <div class="detail-row">
-              <span class="detail-label">Amount:</span>
-              <span class="detail-value">{{selectedEvent.amount | currency}}</span>
+          <!-- In your event details modal/popup -->
+          <div class="event-details" *ngIf="isViewingEvent && selectedEvent">
+            <div class="status-badge {{selectedEvent.statusClass}}">
+              {{selectedEvent.status}}
             </div>
-            <div class="detail-row">
-              <span class="detail-label">Reference:</span>
-              <span class="detail-value">{{selectedEvent.refNum}}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Type:</span>
-              <span class="detail-value">{{selectedEvent.transactionType}}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Scheduled For:</span>
-              <span class="detail-value">{{selectedEvent.formattedDate}}</span>
-            </div>
+
+            <!-- Rest of your event details -->
+            <h3>${{selectedEvent.amount}} - {{selectedEvent.transactionType}}</h3>
+            <p><strong>Date:</strong> {{selectedEvent.formattedDate}}</p>
             <div class="detail-row">
               <span class="detail-label">Receiver:</span>
               <span class="detail-value">User #{{selectedEvent.receiver.userId}}</span>
@@ -115,10 +109,7 @@
             {{errorMessage}}
           </div>
 
-          <!-- Enhanced form header -->
-          <div class="form-header">
-            <h4><span class="highlight-text">Schedule New Transaction</span></h4>
-          </div>
+
 
           <!-- Benefits section -->
           <div class="transaction-benefits">
@@ -294,4 +285,42 @@
       <div class="animation-message">Scheduling your transaction...</div>
     </div>
   </div>
+
 </div>
+<!-- Add the tutorial character component -->
+<div class="tutorial-character-container">
+  <app-transaction-tutorial
+    [characterImageSrc]="'Planning_for_Future_Finances-removebg-preview.png'"
+    (tutorialToggled)="handleTutorialToggled($event)"
+  ></app-transaction-tutorial>
+</div>
+
+
+<style>
+  .tutorial-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+  }
+
+  .tutorial-image {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  @media (max-width: 768px) {
+    .scheduled-transaction-layout {
+      flex-direction: column;
+    }
+
+    .tutorial-container {
+      margin-top: 20px;
+    }
+  }
+</style>

@@ -9,7 +9,7 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class MonteCarloService {
-  private apiUrl = 'http://localhost:8080/simulation';
+  private apiUrl = 'http://localhost:8090/simulation';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 

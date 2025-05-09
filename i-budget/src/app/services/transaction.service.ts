@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { delay } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 export interface SimTransaction {
@@ -81,4 +82,20 @@ export class TransactionService {
   batchTransactions(transactions: SimTransaction[]): Observable<SimTransaction[]> {
     return this.http.post<SimTransaction[]>(`${this.apiUrl}/batch`, transactions);
   }
+
+  executeScheduledTransaction(transaction: SimTransaction): Observable<any> {
+      // In a real implementation, you would call your backend API
+      // For now, we'll simulate a successful response
+      return of({ ...transaction, status: 'COMPLETED' }).pipe(
+        delay(500) // Simulate network delay
+      );
+    }
+  
+    cancelScheduledTransaction(transaction: SimTransaction): Observable<any> {
+      // In a real implementation, you would call your backend API
+      // For now, we'll simulate a successful response
+      return of({ ...transaction, status: 'CANCELLED' }).pipe(
+        delay(500) // Simulate network delay
+      );
+    }
 }

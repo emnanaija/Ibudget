@@ -13,9 +13,9 @@ export interface ApiResponse {
   providedIn: 'root'
 })
 export class ObjectifService {
-  private apiUrl = 'http://localhost:8080/objectif'; // Adaptez l'URL de votre API
-  private compteEpargneUrl = 'http://localhost:8080/compte-epargne'; // URL pour les comptes épargne
-  private adminApiUrl='http://localhost:8080/compte-epargne/admin/comptes-epargne'; 
+  private apiUrl = 'http://localhost:8090/objectif'; // Adaptez l'URL de votre API
+  private compteEpargneUrl = 'http://localhost:8090/compte-epargne'; // URL pour les comptes épargne
+  private adminApiUrl='http://localhost:8090/compte-epargne/admin/comptes-epargne';
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
@@ -37,7 +37,7 @@ export class ObjectifService {
  checkObjectifAlert(objectif: any): Observable<ApiResponse> {
   return this.http.post<ApiResponse>(`${this.apiUrl}/check-alert`, objectif, { headers: this.getAuthHeaders() });
 }
- 
+
   createObjectif(objectif: any): Observable<ApiResponse> { // Le type de 'objectif' peut être 'any' car il contient l'ID du compte
     return this.http.post<ApiResponse>(this.apiUrl, objectif, { headers: this.getAuthHeaders() });
   }

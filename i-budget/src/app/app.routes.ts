@@ -74,7 +74,7 @@ export const routes: Routes = [
   {path: 'saving', component: CompteEpargnePageComponent},
   {path: 'depot', component:DepotPageComponent},
   {path:'objectif', component:ObjectifPageComponent},
-  {path:'savingAd',component:CompteEpargneListComponent},
+    {path:'savingAd',component:CompteEpargneListComponent},
 
   // routes emna
   //frontend

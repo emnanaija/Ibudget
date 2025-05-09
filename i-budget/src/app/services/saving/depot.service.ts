@@ -10,8 +10,8 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class DepotService {
-  private apiUrl = 'http://localhost:8080/depot'; // Adaptez l'URL de votre API
-  private compteEpargneUrl = 'http://localhost:8080/compte-epargne'; // URL pour les comptes épargne
+  private apiUrl = 'http://localhost:8090/depot'; // Adaptez l'URL de votre API
+  private compteEpargneUrl = 'http://localhost:8090/compte-epargne'; // URL pour les comptes épargne
 
   constructor(private http: HttpClient, private authService: AuthService) {}
 
