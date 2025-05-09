@@ -1977,7 +1977,7 @@ input:checked + .toggle-slider:before {
   bottom: 0;
   right: 0;
   z-index: 2000;
-  width: 350px;
+  width: 380px;
   filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.3));
 
 }
