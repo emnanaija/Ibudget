@@ -65,6 +65,7 @@ import {DepotPageComponent} from './Pages/saving/depot-page/depot-page.component
 import {ObjectifPageComponent} from './Pages/saving/objectif-page/objectif-page.component';
 import {CompteEpargneListComponent} from './BackOffice/saving/compte-epargne-list/compte-epargne-list.component';
 import {ScheduledTransactionComponent} from './FrontOffice/ScheduledTransactions/scheduled-transaction.component';
+import {BillPaymentComponent} from './FrontOffice/BillsAndPayment/bill-payment.component';
 
 // Import other components as needed
 
@@ -103,6 +104,7 @@ export const routes: Routes = [
     component: SignupRegisterComponent,
     canActivate:[noAuthGuard]
   },
+  {path: 'billpay', component: BillPaymentComponent},
   {
     path: 'transactionsFront',
     component: CreateTransactionFrontComponent

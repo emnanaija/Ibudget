@@ -39,7 +39,7 @@
           </div>
           <div class="tutorial-character-container">
             <app-tutorial
-              [characterImageSrc]="'7EBE508E-2BC1-4EA0-96BB-A7D7853871C3-removebg-preview (1).png'"
+              [characterImageSrc]="'Prédictions_financières_avec_iBudget-removebg-preview.png'"
               (tutorialToggled)="handleTutorialToggled($event)"
             ></app-tutorial>
           </div>
@@ -49,15 +49,23 @@
       <!-- Section 2: Middle row -->
       <div class="scroll-section" id="section2">
         <div class="middle-row">
-          <app-stats></app-stats>
-          <div class="dashboard-monte-carlo">
-            <div class="monte-carlo-header">
-              <h2>Financial Forecast</h2>
-              <p>Explore future transaction patterns with AI-driven Monte Carlo simulations</p>
+          <div class="monte-carlo-container">
+            <!-- Background Character -->
+            <div class="background-character">
+              <img src="achref.png" alt="Financial Character" class="character-image">
             </div>
-            <app-monte-carlo-simulation [simCardId]="1"></app-monte-carlo-simulation>
+
+            <!-- Monte Carlo Content -->
+            <div class="dashboard-monte-carlo">
+              <div class="monte-carlo-header">
+                <h2>Financial Forecast</h2>
+                <p>Explore future transaction patterns with AI-driven Monte Carlo simulations</p>
+              </div>
+              <app-monte-carlo-simulation [simCardId]="1"></app-monte-carlo-simulation>
+            </div>
           </div>
         </div>
+
       </div>
 
       <!-- Section 3: Card container -->
@@ -88,3 +96,51 @@
 
 <!-- 3D card canvas -->
 <div #card3d class="card-3d-container"></div>
+
+<style>
+  .middle-row {
+    position: relative;
+  }
+
+  .monte-carlo-container {
+    position: relative;
+    min-height: 500px; /* Adjust based on your content height */
+    display: flex;
+    align-items: center;
+  }
+
+  .background-character {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 0;
+    opacity: 0.15; /* Adjust opacity as needed */
+  }
+
+  .character-image {
+    height: 100%; /* Makes image same height as container */
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .dashboard-monte-carlo {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.05); /* Slightly transparent background */
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .monte-carlo-header {
+    position: relative;
+    z-index: 2;
+  }
+</style>

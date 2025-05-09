@@ -2,6 +2,7 @@ package com.example.ibudgetproject.controllers.Transactions;
 
 import com.example.ibudgetproject.entities.Transactions.Bill;
 
+import com.example.ibudgetproject.services.Transactions.BillService;
 import com.example.ibudgetproject.services.Transactions.Interfaces.IBillService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,17 @@ public class BillController {
 
     @Autowired
     private IBillService billService;
+
+    private final BillService billServices;
+
+    public BillController(BillService billServices) {
+        this.billServices = billServices;
+    }
+    @GetMapping("/random")
+    public List<Bill> getRandomBills(
+            @RequestParam(defaultValue = "5") int count) {
+        return billServices .generateRandomBills(count);
+    }
 
     @PostMapping("/add")
     public Bill addBill(@RequestBody Bill bill) {
