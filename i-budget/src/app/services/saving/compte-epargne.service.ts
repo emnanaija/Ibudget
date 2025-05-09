@@ -3,15 +3,15 @@ import { HttpClient, HttpHeaders,HttpResponse } from '@angular/common/http';
 import { isPlatformBrowser } from '@angular/common';
 import { Observable, catchError, throwError } from 'rxjs';
 import { CompteEpargne,SimCardAccount } from '../../Models/Saving/compte-epargne.model';
-import { AuthService } from '../User/auth.service';
 import { TauxInteret } from '../../Models/Saving/taux-interet.model';
+import {AuthService} from './auth.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompteEpargneService {
-  private apiUrl = 'http://localhost:80/compte-epargne';
+  private apiUrl = 'http://localhost:8090/compte-epargne';
 
   constructor(
     private http: HttpClient,
@@ -23,22 +23,38 @@ export class CompteEpargneService {
     let token: string | null = null;
     if (isPlatformBrowser(this.platformId)) {
       token = localStorage.getItem('accessToken');
+      console.log('Token retrieved for API call:', token ? `${token.substring(0, 10)}...` : 'No token found');
     }
+
+    if (!token) {
+      console.warn('No authentication token available - API calls may fail with 401');
+    }
+
     return new HttpHeaders({
       'Authorization': `Bearer ${token || ''}`,
       'Content-Type': 'application/json'
     });
   }
+
   // CRUD Basique
   getAllComptes(): Observable<CompteEpargne[]> {
     console.log('Récupération des comptes épargne');
-    return this.http.get<CompteEpargne[]>(this.apiUrl, { headers: this.getAuthHeaders() }).pipe(
+    return this.http.get<CompteEpargne[]>(this.apiUrl, {
+      headers: this.getAuthHeaders(),
+      withCredentials: true // Try with credentials if your API uses cookies
+    }).pipe(
       catchError(error => {
         console.error('Erreur lors de la récupération des comptes:', {
           status: error.status,
           statusText: error.statusText,
           error: error.error
         });
+
+        if (error.status === 401) {
+          console.error('Erreur d\'authentification - vérifiez votre token');
+          // You might want to redirect to login or refresh token here
+        }
+
         return throwError(() => new Error('Erreur lors de la récupération des comptes épargne'));
       })
     );
@@ -50,37 +66,56 @@ export class CompteEpargneService {
     });
   }
 
+  // In the createCompte method, update the error handling:
+
   createCompte(compte: CompteEpargne, simCardId: number): Observable<CompteEpargne> {
     const url = `${this.apiUrl}?simCardId=${simCardId}`;
-    console.log('Envoi de la requête:', { url, compte, headers: this.getAuthHeaders() });
+    const headers = this.getAuthHeaders();
+    console.log('Envoi de la requête:', {
+      url,
+      compte,
+      headers: headers.keys().map(key => `${key}: ${headers.get(key)}`)
+    });
 
     return this.http.post<CompteEpargne>(
       url,
       compte,
-      { headers: this.getAuthHeaders() }
+      { headers: headers }
     ).pipe(
       catchError(error => {
         console.error('Erreur HTTP complète:', error);
         let errorMessage = 'Erreur inconnue lors de la création du compte';
-        if (error.error && typeof error.error.message === 'string') {
-          if (error.error.message.includes('dépasser le solde')) {
-            errorMessage = 'Le solde dépasse celui de votre carte SIM';
-          } else if (error.error.message.includes('Carte SIM introuvable')) {
-            errorMessage = 'ID de carte SIM invalide';
-          } else {
+
+        // Log more detailed error information
+        console.error('Status:', error.status);
+        console.error('Status Text:', error.statusText);
+        console.error('URL:', error.url);
+
+        if (error.error) {
+          console.error('Error body:', error.error);
+          if (typeof error.error === 'string') {
+            try {
+              const parsedError = JSON.parse(error.error);
+              console.error('Parsed error:', parsedError);
+              errorMessage = parsedError.message || errorMessage;
+            } catch (e) {
+              errorMessage = error.error;
+            }
+          } else if (error.error.message) {
             errorMessage = error.error.message;
           }
-        } else if (error.status === 401) {
+        }
+
+        if (error.status === 401) {
           errorMessage = 'Authentification échouée : token invalide ou expiré';
         } else if (error.status === 404) {
           errorMessage = 'Ressource non trouvée';
-        } else {
-          console.error('Détails de l\'erreur:', {
-            status: error.status,
-            statusText: error.statusText,
-            error: error.error
-          });
+        } else if (error.status === 400) {
+          errorMessage = 'Requête invalide: ' + errorMessage;
+        } else if (error.status === 500) {
+          errorMessage = 'Erreur serveur: ' + errorMessage;
         }
+
         return throwError(() => new Error(errorMessage));
       })
     );

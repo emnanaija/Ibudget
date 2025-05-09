@@ -44,7 +44,7 @@ public class ClaimService implements IClaimService{
             throw new IllegalArgumentException("Le claim doit être associé à un utilisateur.");
         }
 
-        long beneficiaryId = insurancePolicy.getUser().getUserId();
+        long beneficiaryId = insurancePolicy.getUser().getIdUser();
 
         // Vérifier si une Compensation existe déjà pour ce bénéficiaire
         Compensation compensation = compensationRepository.findByBeneficiaryid(beneficiaryId);
@@ -70,7 +70,38 @@ public class ClaimService implements IClaimService{
         // Sauvegarder le Claim
         return claimRepository.save(claim);
     }
+    @Override
+    public void confirmClaim(int claimId) {
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new RuntimeException("Claim not found with id: " + claimId));
 
+        claim.setExpert_report(true);
+
+        // Si vous voulez créer une compensation automatiquement
+        if (claim.getCompensation() == null && claim.getInsurancePolicy() != null
+                && claim.getInsurancePolicy().getUser() != null) {
+            Compensation compensation = new Compensation();
+            compensation.setBeneficiaryid(claim.getInsurancePolicy().getUser().getIdUser());
+            compensation.setAmount_paid(claim.getClaimed_amount());
+            compensation.setPayment_status(true);
+            compensation.setPayment_date(LocalDateTime.now());
+            compensation = compensationRepository.save(compensation);
+
+            claim.setCompensation(compensation);
+        }
+
+        claimRepository.save(claim);
+    }
+
+    @Override
+    public void rejectClaim(int claimId) {
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new RuntimeException("Claim not found with id: " + claimId));
+
+
+        claim.setExpert_report(false);
+        claimRepository.save(claim);
+    }
     @Override
     public Claim updateClaim(Claim claim) {
         if (claimRepository.existsById(claim.getId())) {
@@ -104,7 +135,7 @@ public class ClaimService implements IClaimService{
 
     @Override
     public List<Claim> getClaimsByInsurance(int insuranceId) {
-       return claimRepository.findByInsurancePolicy_Id(insuranceId);
+        return claimRepository.findByInsurancePolicy_Id(insuranceId);
 
 
     }

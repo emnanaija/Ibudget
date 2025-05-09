@@ -7,6 +7,6 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   getToken(): string | null {
     // Implémentation basique - à adapter selon votre système d'authentification
-    return localStorage.getItem('auth_token');
+    return localStorage.getItem('accessToken');
   }
 }

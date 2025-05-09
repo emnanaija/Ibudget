@@ -5,7 +5,6 @@ import { gsap } from 'gsap';
 
 import { AnimatedBackgroundComponent } from './components/animated-background/animated-background.component';
 import { StatsComponent } from './components/stats/stats.component';
-import { SavingsComponent } from './components/savings/savings.component';
 import { BalanceComponent } from './components/balance/balance.component';
 import { AlertsComponent } from './components/alerts/alerts.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
@@ -16,6 +15,7 @@ import { SaveMoreComponent } from './components/save-more/save-more.component';
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
 import {MonteCarloSimulationComponent} from '../../BackOffice/MonteCarloSim/monte-carlo-simulation.component';
 import { RouterModule } from '@angular/router';
+import {TutorialComponent} from '../tutorial.component';
 gsap.registerPlugin(ScrollToPlugin);
 
 @Component({
@@ -25,7 +25,6 @@ gsap.registerPlugin(ScrollToPlugin);
     RouterModule,
     AnimatedBackgroundComponent, // Add the new background component
     StatsComponent,
-    SavingsComponent,
     BalanceComponent,
     AlertsComponent,
     SidebarComponent,
@@ -33,12 +32,15 @@ gsap.registerPlugin(ScrollToPlugin);
     CardContainerComponent,
     MoneyGoComponent,
     SaveMoreComponent,
-    MonteCarloSimulationComponent
+    MonteCarloSimulationComponent,
+
+    TutorialComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements AfterViewInit, OnDestroy {
+
 
 
   private renderer!: THREE.WebGLRenderer;
@@ -51,6 +53,8 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
 
   constructor(private el: ElementRef) {}
   @ViewChild('contentArea') contentArea!: ElementRef;
+  @ViewChild('tutorialOverlay', { static: false }) tutorialOverlay?: ElementRef;
+
   currentSection = 'section1';
   sections = ['section1', 'section2', 'section3', 'section4'];
   isScrolling = false;
@@ -64,6 +68,59 @@ export class DashboardComponent implements AfterViewInit, OnDestroy {
     this.setupAnimations();
 
   }
+  isTutorialActive: boolean = false;
+
+  handleTutorialToggled(isActive: boolean): void {
+    this.isTutorialActive = isActive;
+
+    if (this.tutorialOverlay?.nativeElement) {  // Add this null check
+      if (isActive) {
+        gsap.to(this.tutorialOverlay.nativeElement, {
+          opacity: 1,
+          duration: 0.3,
+          ease: "power2.out",
+          onStart: () => {
+            this.tutorialOverlay!.nativeElement.style.pointerEvents = 'all';
+          }
+        });
+      } else {
+        gsap.to(this.tutorialOverlay.nativeElement, {
+          opacity: 0,
+          duration: 0.3,
+          ease: "power2.in",
+          onComplete: () => {
+            this.tutorialOverlay!.nativeElement.style.pointerEvents = 'none';
+          }
+        });
+      }
+    }
+
+    // Optionally highlight different sections based on tutorial step
+    this.highlightSection(isActive ? 'account-info' : null);
+  }
+  highlightSection(sectionId: string | null): void {
+    // Remove any existing highlights
+    const existingHighlight = document.querySelector('.tutorial-highlight');
+    if (existingHighlight) {
+      existingHighlight.remove();
+    }
+
+    if (!sectionId) return;
+
+    // Create highlight for the specified section
+    const section = document.querySelector(`.${sectionId}`);
+    if (section) {
+      const rect = section.getBoundingClientRect();
+      const highlight = document.createElement('div');
+      highlight.classList.add('tutorial-highlight', 'active');
+      highlight.style.top = `${rect.top}px`;
+      highlight.style.left = `${rect.left}px`;
+      highlight.style.width = `${rect.width}px`;
+      highlight.style.height = `${rect.height}px`;
+      document.body.appendChild(highlight);
+    }
+  }
+
   setupScrollListeners(): void {
     const contentArea = this.contentArea.nativeElement;
 

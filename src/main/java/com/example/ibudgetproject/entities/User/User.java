@@ -199,5 +199,12 @@ public class User implements UserDetails, Principal {
     @JsonIgnore
     private List<CompteEpargne> comptesEpargne = new ArrayList<>();
 
+    //--------------loj
+
+    public long getIdUser() {
+        return userId;
+    }
+
+
 
 }

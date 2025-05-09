@@ -1,6 +1,7 @@
 <div class="dashboard-container">
   <!-- Use the new reusable animated background component -->
   <app-animated-background></app-animated-background>
+  <div class="tutorial-overlay" #tutorialOverlay [class.active]="isTutorialActive"></div>
 
   <!-- Sidebar Toggle Button -->
   <button class="sidebar-toggle" [class.collapsed]="isSidebarCollapsed" (click)="toggleSidebar()">
@@ -36,8 +37,11 @@
           <div class="image-column" style="text-align: center; font-family: 'Century Gothic';">
             <img src="/Capture_d_écran_2025-02-16_165806-removebg-preview.png" alt="i-Budget" style="max-height: 120px; filter: drop-shadow(5px 5px 10px rgba(0, 0, 0, 0.8));" />
           </div>
-          <div class="dashboard-monte-carlo alerts-right">
-            <app-alerts></app-alerts>
+          <div class="tutorial-character-container">
+            <app-tutorial
+              [characterImageSrc]="'7EBE508E-2BC1-4EA0-96BB-A7D7853871C3-removebg-preview (1).png'"
+              (tutorialToggled)="handleTutorialToggled($event)"
+            ></app-tutorial>
           </div>
         </div>
       </div>
@@ -46,7 +50,6 @@
       <div class="scroll-section" id="section2">
         <div class="middle-row">
           <app-stats></app-stats>
-          <app-savings></app-savings>
           <div class="dashboard-monte-carlo">
             <div class="monte-carlo-header">
               <h2>Financial Forecast</h2>

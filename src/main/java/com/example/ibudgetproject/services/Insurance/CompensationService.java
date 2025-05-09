@@ -89,6 +89,17 @@ public class CompensationService implements ICompensationService{
         return compensationRepository.findAll();
     }
 
+
+    @Override
+    public Compensation getCompensationByBeneficiaryId(long beneficiaryId) {
+        Compensation compensation = compensationRepository.findLatestByBeneficiaryid(beneficiaryId);
+        if (compensation == null) {
+            throw new RuntimeException("Aucune compensation trouvée pour le bénéficiaire ID: " + beneficiaryId);
+        }
+        return compensation;
+    }
+
+
     public Compensation calculateCompensation(List<Claim> claims) {
         // Pas besoin de grouper par police
 
@@ -98,7 +109,7 @@ public class CompensationService implements ICompensationService{
         for (Claim claim : claims) {
             InsurancePolicy policy = claim.getInsurancePolicy();
 
-            if (policy.getStatus().equalsIgnoreCase("ACTIVE") && claim.isExpert_report()) {
+            if ( claim.isExpert_report()) {
                 double claimPaidAmount = calculatePolicyCompensation(policy, List.of(claim)); // Calculer pour chaque réclamation
                 totalPaidAmount += claimPaidAmount;
 
@@ -113,7 +124,7 @@ public class CompensationService implements ICompensationService{
         compensation.setPayment_date(LocalDateTime.now());
         compensation.setPayment_method("Bank Transfer");
         compensation.setPayment_status(true);
-        compensation.setBeneficiaryid(beneficiary.getUserId());
+        compensation.setBeneficiaryid(beneficiary.getIdUser());
         compensation.setComment("Compensation calculated based on claims and policies.");
         compensation.setCoveredClaims(claims);
 
@@ -212,20 +223,20 @@ public class CompensationService implements ICompensationService{
     }
 
     public void sendCompensationSms(Compensation compensation, User user) {
-
-
-         String accountSid = "ACb65e44c3e078d2e73b833e4dcb25007a"; // Initialisation directe
-         String authToken = "c53c4a301803fe75bc81f49fd4c172c0"; // Initialisation directe
-         String twilioPhoneNumber = "+121653946055"; // Initialisation directe
-        Twilio.init(accountSid, authToken);
-
-        String messageBody = "Votre compensation de " + compensation.getAmount_paid() + " a été traitée.";
-        PhoneNumber to = new PhoneNumber("+53946055");  // <- Numéro statique
-
-        PhoneNumber from = new PhoneNumber(twilioPhoneNumber);
-        Message message = Message.creator(to, from, messageBody).create();
-
-        System.out.println("SMS envoyé avec succès : " + message.getSid());
+//
+//
+//        String accountSid = "ACb65e44c3e078d2e73b833e4dcb25007a"; // Initialisation directe
+//        String authToken = "c53c4a301803fe75bc81f49fd4c172c0"; // Initialisation directe
+//        String twilioPhoneNumber = "+121653946055"; // Initialisation directe
+//        Twilio.init(accountSid, authToken);
+//
+//        String messageBody = "Votre compensation de " + compensation.getAmount_paid() + " a été traitée.";
+//        PhoneNumber to = new PhoneNumber("+53946055");  // <- Numéro statique
+//
+//        PhoneNumber from = new PhoneNumber(twilioPhoneNumber);
+//        Message message = Message.creator(to, from, messageBody).create();
+//
+//        System.out.println("SMS envoyé avec succès : " + message.getSid());
     }
 
 }

@@ -686,7 +686,7 @@ app-transactions {
 /* Ensure app-balance has proper width */
 app-balance {
   flex: 2.5;
-  min-width: 450px; /* Minimum width */
+  min-width: 1450px; /* Minimum width */
 }
 
 .card-container-wrapper {
@@ -752,8 +752,8 @@ app-balance {
 }
 
 .middle-row > * {
-  flex: 1 1 280px;
-  max-width: 32%;
+  flex: 1 1 480px;
+  max-width: 100%;
   min-width: 260px;
 }
 
@@ -782,7 +782,7 @@ app-balance {
 
 /* monte section */
 .monte-carlo-header {
-  text-align: left;
+  text-align: right;
   margin-bottom: 20px;
   padding-bottom: 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
@@ -790,6 +790,7 @@ app-balance {
 
 .crafting-text {
   margin-top: 30px;
+  left: 50px;
   font-family: 'Century Gothic', sans-serif;
   font-size: 2.1rem;
   text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.6);

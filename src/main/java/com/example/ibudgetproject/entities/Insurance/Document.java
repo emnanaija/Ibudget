@@ -16,19 +16,30 @@ import lombok.Setter;
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id ;
+    private Long id;
+
     @JsonProperty("fileName")
     private String fileName;
+
     @JsonProperty("filePath")
     private String filePath;
+
+    private String documentType;
+
     @JsonProperty("description")
     private String description;
 
-@ManyToOne
-@JoinColumn(name = "claim_id")
-@JsonIgnore
-private Claim claim ;
+    // Add the missing fields
+    private String originalFileName;
+    private String fileSize;
+    private String mimeType;
 
+    @ManyToOne
+    @JoinColumn(name = "claim_id")
+    @JsonIgnore
+    private Claim claim;
+
+    // Original getters and setters
     public String getFileName() {
         return fileName;
     }
@@ -68,6 +79,37 @@ private Claim claim ;
     public Long getId() {
         return id;
     }
+
+    // Add getters and setters for the new fields
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
+    }
+
+    public String getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(String fileSize) {
+        this.fileSize = fileSize;
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public String getDocumentType() {
+        return documentType;
+    }
+
+    public void setDocumentType(String documentType) {
+        this.documentType = documentType;
+    }
 }
-
-

@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-
-@Service("insuranceEmailService")
-public class EmailService implements IEmailService{
+@Service
+public class EmaillService implements IEmailService{
     @Autowired
     private JavaMailSender mailSender;
     public void sendHtmlEmail(String to, String subject, String htmlContent) throws MessagingException {

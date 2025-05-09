@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="image-container">
       <img
-        src="/7EBE508E-2BC1-4EA0-96BB-A7D7853871C3-removebg-preview%20(1).png"
+        src="/Prédictions_financières_avec_iBudget-removebg-preview.png"
         alt="Person holding phone with app display"
         class="modern-image"
       />

@@ -3,6 +3,7 @@ package com.example.ibudgetproject.services.Insurance;
 
 import com.example.ibudgetproject.entities.Insurance.InsurancePolicy;
 import com.example.ibudgetproject.repositories.Insurance.InsuranceRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -23,7 +24,7 @@ public class ProvisioningService implements IProvisioningService {
 
     private static final Random random = new Random();
 
-    public void generateProvisioningReport() throws IOException {
+    public void generateProvisioningReport(HttpServletResponse response) throws IOException {
         List<InsurancePolicy> policies = insuranceRepository.findAll();
         Map<Integer, Double> primesRegroupees = calculerPrimesRegroupees(policies);
         Map<Integer, Double> primesAcquises = calculerPrimesAcquises(primesRegroupees);
@@ -32,22 +33,22 @@ public class ProvisioningService implements IProvisioningService {
         Map<Integer, Double[]> coutsEtPSAP = calculerCoutsEtPSAP(primesAcquises, paiementsCumules);
 
         // Création du fichier Excel
-        Workbook workbook = new XSSFWorkbook();
-        Sheet sheet = workbook.createSheet("Provisioning Report");
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Provisioning Report");
 
-        // Écriture des données dans le fichier Excel
-        int rowNum = 0;
-        rowNum = ecrireTableau(sheet, rowNum, "Primes regroupées par année:", primesRegroupees);
-        rowNum = ecrireTableau(sheet, rowNum, "Primes acquises:", primesAcquises);
-        rowNum = ecrireTableauPaiementsNonCumules(sheet, rowNum, "Paiements non cumulés:", paiementsNonCumules);
-        rowNum = ecrireTableau(sheet, rowNum, "Paiements cumulés:", paiementsCumules);
-        ecrireTableauCoutsEtPSAP(sheet, rowNum, "Coûts ultimes, paiements et PSAP:", coutsEtPSAP);
+            // Écriture des données dans le fichier Excel
+            int rowNum = 0;
+            rowNum = ecrireTableau(sheet, rowNum, "Primes regroupées par année:", primesRegroupees);
+            rowNum = ecrireTableau(sheet, rowNum, "Primes acquises:", primesAcquises);
+            rowNum = ecrireTableauPaiementsNonCumules(sheet, rowNum, "Paiements non cumulés:", paiementsNonCumules);
+            rowNum = ecrireTableau(sheet, rowNum, "Paiements cumulés:", paiementsCumules);
+            ecrireTableauCoutsEtPSAP(sheet, rowNum, "Coûts ultimes, paiements et PSAP:", coutsEtPSAP);
 
-        // Enregistrement du fichier Excel
-        FileOutputStream fileOut = new FileOutputStream("ProvisioningReport.xlsx");
-        workbook.write(fileOut);
-        fileOut.close();
-        workbook.close();
+            // Écrire le workbook dans la réponse
+            workbook.write(response.getOutputStream());
+        } catch (IOException e) {
+            throw new IOException("Erreur lors de la génération du rapport Excel", e);
+        }
     }
 
     private Map<Integer, Double> calculerPrimesRegroupees(List<InsurancePolicy> policies) {

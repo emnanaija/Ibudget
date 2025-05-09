@@ -15,6 +15,7 @@ import java.util.List;
 
 @Getter
 @Entity
+
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -58,12 +59,12 @@ public class InsurancePolicy {
         WEEKLY,
         ONCE
     }
-@PrePersist
-public void initializeFields(){
-    this.subscription_date = LocalDateTime.now();
-    this.expiration_date = subscription_date.plus(1, ChronoUnit.YEARS);
-
-}
+    @PrePersist
+    public void initializeFields() {
+        this.subscription_date = LocalDateTime.now();
+        this.expiration_date = subscription_date.plus(1, ChronoUnit.YEARS);
+        this.status = "INACTIVE";
+    }
 
 
     // Méthode toString pour afficher les détails de la police
@@ -91,11 +92,11 @@ public void initializeFields(){
         this.user = user;
     }
 
-    @ManyToOne(optional = true)
-   @JsonIgnore
-    @JoinColumn(name = "id_user", nullable = false)
 
-    private User user ;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public int getInsurance_policy_id() {
         return id;
@@ -152,6 +153,7 @@ public void initializeFields(){
     public void setExpiration_date(LocalDateTime expiration_date) {
         this.expiration_date = expiration_date;
     }
+
 
     public String getStatus() {
         return status;

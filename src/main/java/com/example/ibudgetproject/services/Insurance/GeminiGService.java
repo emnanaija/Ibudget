@@ -17,18 +17,19 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
+@Service
 @AllArgsConstructor
-@Service("insuranceGeminiService")
-public class GeminiService implements IGeminiService{
+
+public class GeminiGService implements IGeminiService{
 
     private final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
     private final String apiKey = "AIzaSyBewFzBhs8qe4kL_sqX7b_4O2ISH3K14Yc"; // Clé API
     private final RestTemplate restTemplate = new RestTemplate();
     @Autowired
-    private InsuranceRepository insuranceRepository;
+    private  InsuranceRepository insuranceRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private  UserRepository userRepository;
 
     public double calculatePremium(int insuranceId) {
         Optional<InsurancePolicy> insuranceOpt = insuranceRepository.findById(insuranceId);
@@ -38,8 +39,8 @@ public class GeminiService implements IGeminiService{
         }
 
         InsurancePolicy insurance = insuranceOpt.get();
-        String prompt = "Calculate the insurance premium for a " + insurance.getUser().getGender() +
-                " year old " + insurance.getUser().getProfession() +
+        String prompt = "Calculate the insurance premium for a " + insurance.getUser().getDateOfBirth() +
+                " born in this year" + insurance.getUser().getProfession() +
                 " with insurance type: " + insurance.getInsurance_type() + " and details: " + insurance.getDetails();
 
         HttpHeaders headers = new HttpHeaders();
@@ -115,5 +116,38 @@ public class GeminiService implements IGeminiService{
         } catch (NumberFormatException e) {
             return 0.0;
         }
+    }
+
+
+    public String generateTunisianNotification(InsurancePolicy policy, String specialDateName) {
+        String prompt = "Crée une notification en dialecte tunisien avec des emojis pour informer un client que son contrat d'assurance numéro " +
+                policy.getPolicy_number() + " a été souscrit le jour de " + specialDateName +
+                " et qu'il a bénéficié d'une réduction de 10% sur sa prime. Inclut des détails sur la date et la réduction.";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        Map<String, Object> content = new HashMap<>();
+        Map<String, Object> part = new HashMap<>();
+        part.put("text", prompt);
+        content.put("parts", List.of(part));
+        requestBody.put("contents", List.of(content));
+
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<Map> response = restTemplate.exchange(
+                GEMINI_API_URL + "?key=" + apiKey, HttpMethod.POST, entity, Map.class);
+
+        if (response.getBody() != null && response.getBody().containsKey("candidates")) {
+            String outputText = response.getBody().get("candidates").toString();
+            return extractNotificationText(outputText);
+        }
+
+        return "Notification non générée.";
+    }
+
+    private String extractNotificationText(String text) {
+        // Supprimez les crochets, guillemets et autres caractères inutiles de la réponse de l'API
+        return text.replaceAll("[\\[\\]{}\"']", "").trim();
     }
 }

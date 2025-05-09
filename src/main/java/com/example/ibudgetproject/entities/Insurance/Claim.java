@@ -131,4 +131,6 @@ public class Claim {
     public void setCompensation(Compensation compensation) {
         this.compensation = compensation;
     }
+
+
 }
